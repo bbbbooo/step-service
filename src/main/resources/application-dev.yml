@@ -1,0 +1,51 @@
+spring:
+  config:
+    import: "optional:configserver:http://3.129.125.36:80/"
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/onestep?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: onestep
+    password: onestep
+    hikari:
+      auto-commit: true
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL57Dialect
+    generate-ddl: true
+    show-sql: true
+    database: mysql
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+    hibernate:
+      ddl-auto: create-drop
+    defer-datasource-initialization: true
+  sql:
+    init:
+      data-locations: classpath:sql/data.sql
+      mode: always
+      platform: mysql
+      encoding: UTF-8
+  # file upload
+  servlet:
+    multipart:
+      # 파일 업로드 가능 여부 선택
+      enabled: true
+      # 업로드된 파일의 임시 저장 경로
+      #            location: C:\
+      # 한 번에 최대 업로드 가능 용량
+      max-request-size: 100MB
+      # 파일 하나의 최대 크기
+      max-file-size: 20MB
+logging:
+  level:
+    org.mybatis: TRACE
+    org.thymeleaf: TRACE
+    org.quartz.core: TRACE
+    org.hibernate.SQL: TRACE
+    org.h2.server.web: TRACE
+    com.midnights.demo: TRACE
+    org.springframework.web: TRACE
+
+#encrypt:
+#    key: key-brain
