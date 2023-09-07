@@ -22,6 +22,7 @@ public class Scrap {
     @Column(name = "scrap_no")
     private Long scrapNo;
 
+
     @Comment("회원 번호")
     @Column(name = "member_no")
     private Long memberNo;
