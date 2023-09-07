@@ -32,6 +32,7 @@ out/
 /dist/
 /nbdist/
 /.nb-gradle/
+.github/workflows/prtest.yml
 
 ### VS Code ###
 .vscode/
