@@ -38,6 +38,10 @@ dependencies {
 
     // https://mvnrepository.com/artifact/org.hibernate.validator/hibernate-validator
     implementation group: 'org.hibernate.validator', name: 'hibernate-validator', version: '6.2.0.Final'
+
+    // https://mvnrepository.com/artifact/org.springframework.security/spring-security-oauth2-jose
+    implementation 'org.springframework.security:spring-security-oauth2-jose:6.1.2'
+
 }
 
 tasks.named('test') {
