@@ -1,12 +1,10 @@
 package com.example.stepbackend.aggregate.entity;
 
+import com.example.stepbackend.aggregate.entity.vo.UserVO;
 import lombok.Builder;
 import lombok.Getter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Getter
 @Entity
@@ -14,17 +12,19 @@ import javax.persistence.Table;
 public class Token {
 
     @Id
-    @Column(name = "user_email", nullable = false)
-    private String userEmail;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @Column(name = "refresh_token", nullable = false)
-    private String refreshToken;
+    @Embedded
+    private UserVO user;
+
+    @Column(name = "access_token", nullable = false)
+    private String accessToken;
 
     public Token() {}
 
-    @Builder
-    public Token(String userEmail, String refreshToken) {
-        this.userEmail = userEmail;
-        this.refreshToken = refreshToken;
+    public Token(UserVO user, String accessToken) {
+        this.user = user;
+        this.accessToken = accessToken;
     }
 }
