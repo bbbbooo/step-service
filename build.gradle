@@ -28,6 +28,8 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.projectlombok:lombok'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
     //mysql
@@ -36,6 +38,12 @@ dependencies {
 
     // https://mvnrepository.com/artifact/org.hibernate.validator/hibernate-validator
     implementation group: 'org.hibernate.validator', name: 'hibernate-validator', version: '6.2.0.Final'
+
+    // https://mvnrepository.com/artifact/org.springframework.security/spring-security-oauth2-jose
+//    implementation 'org.springframework.security:spring-security-oauth2-jose:6.1.2'
+
+    implementation 'org.springframework.security:spring-security-oauth2-jose:5.7.10'
+
 }
 
 tasks.named('test') {
