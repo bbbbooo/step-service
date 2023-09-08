@@ -40,7 +40,7 @@ spring:
       client:
         registration:
           kakao:
-            client-id: 	21f04815fbbdc192e201be195418d4c7
+            client-id: 21f04815fbbdc192e201be195418d4c7
             client-secret: rxVNheALkzqkNgiyA62OeNsKlJWHcBtj
             redirect-uri: http://localhost:8888/oauth2/callback/kakao
             client-authentication-method: post
