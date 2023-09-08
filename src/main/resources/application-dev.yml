@@ -35,6 +35,22 @@ spring:
       max-request-size: 100MB
       # 파일 하나의 최대 크기
       max-file-size: 20MB
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            client-id: 	21f04815fbbdc192e201be195418d4c7
+            client-secret: rxVNheALkzqkNgiyA62OeNsKlJWHcBtj
+            redirect-uri: http://localhost:8888/oauth2/callback/kakao
+            client-authentication-method: post
+            authorization-grant-type: authorization_code
+            scope:
+              - profile_nickname
+              - profile_image
+              - account_email
+            client-name: Kakao
+
 logging:
   level:
     org.mybatis: TRACE
