@@ -55,6 +55,7 @@ public class User {
 
     public User() {}
 
+
     @Builder
     public User(String nickname, String email, String profileImage, Boolean emailVerified, String UID, Provider provider, Role role, LocalDateTime createdDate) {
         this.nickname = nickname;
