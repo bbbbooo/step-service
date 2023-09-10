@@ -22,3 +22,6 @@ spring:
         git:
           uri:
 
+app:
+  cors:
+    allowedOrigins: http://localhost:8888
