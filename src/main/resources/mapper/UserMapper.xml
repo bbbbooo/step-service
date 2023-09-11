@@ -12,4 +12,39 @@
         <result property="role" column="role"/>
         <result property="createdDate" column="created_date"/>
     </resultMap>
+
+    <select id="findAll" resultMap="findUserMap">
+        SELECT
+               *
+          FROM user
+         ORDER BY created_date DESC
+    </select>
+
+    <select id="findById" resultMap="findUserMap">
+        SELECT
+               *
+          FROM user
+         WHERE id = #{id}
+    </select>
+
+    <select id="findByUID" resultMap="findUserMap">
+        SELECT
+               *
+          FROM user
+         WHERE uid = #{uid}
+    </select>
+
+    <select id="findByAccessToken" resultMap="findUserMap">
+        SELECT
+               *
+          FROM user
+         WHERE access_token = #{accessToken}
+    </select>
+
+    <select id="findByEmail" resultMap="findUserMap">
+        SELECT
+               *
+          FROM MEMBER_TB
+         WHERE email = #{email}
+    </select>
 </mapper>
