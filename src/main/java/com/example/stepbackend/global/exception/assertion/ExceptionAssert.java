@@ -2,7 +2,7 @@ package com.example.stepbackend.global.exception.assertion;
 
 import com.example.stepbackend.global.exception.InvalidParameterException;
 import com.example.stepbackend.global.exception.ResourceNotFoundException;
-import com.example.stepbackend.global.exception.UserNotFoundException;
+import com.example.stepbackend.global.exception.UserAuthenticationException;
 import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
 
@@ -18,7 +18,7 @@ public class ExceptionAssert extends Assert {
 
     public static void isUserExist(Object object) {
         if(object == null) {
-            throw new UserNotFoundException("사용자가 존재하지 않습니다.");
+            throw new UserAuthenticationException("사용자가 존재하지 않습니다.");
         }
     }
 

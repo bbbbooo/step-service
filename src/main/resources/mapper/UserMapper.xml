@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.stepbackend.repository.UserMapper">
+    <resultMap id="findUserMap" type="com.example.stepbackend.aggregate.entity.User">
+        <id property="id" column="id"/>
+        <result property="nickname" column="nickname"/>
+        <result property="email" column="email"/>
+        <result property="profileImage" column="profile_image"/>
+        <result property="UID" column="uid"/>
+        <result property="provider" column="provider"/>
+        <result property="role" column="role"/>
+        <result property="createdDate" column="created_date"/>
+    </resultMap>
+</mapper>

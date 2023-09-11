@@ -36,7 +36,10 @@ dependencies {
     //mysql
     implementation 'mysql:mysql-connector-java:8.0.25'
     runtimeOnly 'com.mysql:mysql-connector-j'
-
+    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.3.1'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.2'
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
     // https://mvnrepository.com/artifact/org.hibernate.validator/hibernate-validator
     implementation group: 'org.hibernate.validator', name: 'hibernate-validator', version: '6.2.0.Final'
 
@@ -44,7 +47,10 @@ dependencies {
 //    implementation 'org.springframework.security:spring-security-oauth2-jose:6.1.2'
 
     implementation 'org.springframework.security:spring-security-oauth2-jose:5.7.10'
-
+    // https://mvnrepository.com/artifact/org.xmlunit/xmlunit-core
+    testImplementation 'org.xmlunit:xmlunit-core:2.9.1'
+    // https://mvnrepository.com/artifact/org.apache.ibatis/ibatis-sqlmap
+    implementation 'org.apache.ibatis:ibatis-sqlmap:2.3.4.726'
 }
 
 tasks.named('test') {

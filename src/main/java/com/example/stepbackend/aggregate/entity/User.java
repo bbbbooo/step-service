@@ -62,6 +62,18 @@ public class User {
         this.UID = UID;
         this.provider = provider;
         this.role = role;
-        this.createdDate = createdDate;
+        this.createdDate = LocalDateTime.now();
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 }
