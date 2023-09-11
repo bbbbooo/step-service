@@ -12,10 +12,10 @@ public class ScrapService {
 
     private final ScrapRepository scrapRepository;
 
+    /* 스크랩 저장 */
     @Transactional
-    public void createScrap(Long questionNo) {
-        Scrap scrap = scrapRepository.findByProblemNo(questionNo);
-
+    public void createScrap(Long questionNo, Long memberNo) {
+        Scrap scrap = Scrap.toEntity(questionNo, memberNo);
         scrapRepository.save(scrap);
     }
 }

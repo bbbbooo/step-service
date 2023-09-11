@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@Transactional
 class ScrapServiceTest {
 
     @Autowired
@@ -19,16 +18,31 @@ class ScrapServiceTest {
     @Autowired
     private ScrapRepository scrapRepository;
 
-    @DisplayName("스크랩 저장 확인")
+    @DisplayName("회원 번호와 문제 번호를 받아 스크랩을 저장하는지")
     @Test
     void createScrapTest(){
         //given
-        Long questionNo = 1L;
+        Long memberNo = 1L;
+        Long questionNo = 4L;
+        Long scrapNo = 1L;
 
         //when
-        scrapService.createScrap(questionNo);
+        scrapService.createScrap(questionNo, memberNo);
 
         //then
-        Assertions.assertEquals(1, scrapRepository.findById(questionNo));
+        Assertions.assertEquals(memberNo, scrapRepository.findById(scrapNo).get().getMemberNo());
+        Assertions.assertEquals(questionNo, scrapRepository.findById(scrapNo).get().getQuestionNo());
+    }
+
+    @DisplayName("생성된 스크랩 조회")
+    @Test
+    void readScrapTest(){
+        //given
+
+
+        //when
+
+
+        //then
     }
 }
