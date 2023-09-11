@@ -1,16 +1,21 @@
 package com.example.stepbackend.service;
 
+import com.example.stepbackend.aggregate.dto.scrap.ScrapListDTO;
 import com.example.stepbackend.repository.ScrapRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
+@Transactional
 class ScrapServiceTest {
 
     @Autowired
@@ -24,7 +29,7 @@ class ScrapServiceTest {
         //given
         Long memberNo = 1L;
         Long questionNo = 4L;
-        Long scrapNo = 1L;
+        Long scrapNo = 12L;
 
         //when
         scrapService.createScrap(questionNo, memberNo);
@@ -34,15 +39,17 @@ class ScrapServiceTest {
         Assertions.assertEquals(questionNo, scrapRepository.findById(scrapNo).get().getQuestionNo());
     }
 
-    @DisplayName("생성된 스크랩 조회")
+    @DisplayName("한 회원에 대한 스크랩 모두 조회")
     @Test
-    void readScrapTest(){
+    void findScrapTest(){
         //given
-
+        Long memberNo = 1L;
+        Pageable pageable = PageRequest.of(0, 10);
 
         //when
-
+        Page<ScrapListDTO> scrapPage = scrapService.findAllScrap(memberNo, pageable);
 
         //then
+        assertNotNull(scrapPage);
     }
 }
