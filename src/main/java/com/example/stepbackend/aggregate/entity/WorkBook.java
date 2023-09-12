@@ -6,18 +6,18 @@ import org.hibernate.annotations.Comment;
 import javax.persistence.*;
 
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
+@Builder
 @Entity
-public class QuestionToMember {
+public class WorkBook {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
-    @Comment("회원 맞춤형 문제 번호")
-    private Long questionToMemberNo;
+    @Comment("나만의 문제 번호")
+    private Long workBookNo;
 
     @Column
     @Comment("회원 번호")
@@ -27,11 +27,10 @@ public class QuestionToMember {
     @Comment("문제 번호")
     private Long questionNo;
 
-    @Column
-    @Comment("사용자가 입력한 정답 번호")
-    private Integer markedNo;
-
-    @Column
-    @Comment("정답 여부")
-    private Boolean correctedMarkingStatus;
+    public static WorkBook toEntity(Long memberNo, Long questionNo) {
+        return WorkBook.builder()
+                .memberNo(memberNo)
+                .questionNo(questionNo)
+                .build();
+    }
 }

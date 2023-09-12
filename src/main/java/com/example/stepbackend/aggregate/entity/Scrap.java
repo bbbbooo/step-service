@@ -1,8 +1,8 @@
 package com.example.stepbackend.aggregate.entity;
 
+import com.example.stepbackend.aggregate.dto.scrap.CreateScrapDTO;
 import lombok.*;
 import org.hibernate.annotations.Comment;
-import org.hibernate.annotations.GeneratorType;
 
 import javax.persistence.*;
 
@@ -21,7 +21,6 @@ public class Scrap {
     @Column
     private Long scrapNo;
 
-
     @Comment("회원 번호")
     @Column
     private Long memberNo;
@@ -30,9 +29,19 @@ public class Scrap {
     @Column
     private Long questionNo;
 
-    public static Scrap toEntity(Long questionNo, Long memberNo) {
+    @Column
+    @Comment("사용자가 입력한 정답 번호")
+    private Integer markedNo;
+
+    @Column
+    @Comment("정답 여부")
+    private Boolean correctedMarkingStatus;
+
+    public static Scrap toEntity(CreateScrapDTO createScrapDTO, Long memberNo) {
         return Scrap.builder()
-                .questionNo(questionNo)
+                .questionNo(createScrapDTO.getQuestionNo())
+                .markedNo(createScrapDTO.getMarkedNo())
+                .correctedMarkingStatus(createScrapDTO.getCorrectedMarkingStatus())
                 .memberNo(memberNo)
                 .build();
     }
