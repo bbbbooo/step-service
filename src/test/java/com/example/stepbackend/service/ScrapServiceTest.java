@@ -1,7 +1,7 @@
 package com.example.stepbackend.service;
 
+import com.example.stepbackend.aggregate.dto.scrap.CreateScrapDTO;
 import com.example.stepbackend.aggregate.dto.scrap.ScrapListDTO;
-import com.example.stepbackend.aggregate.entity.Scrap;
 import com.example.stepbackend.repository.ScrapRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -13,7 +13,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,20 +27,24 @@ class ScrapServiceTest {
     @Autowired
     private ScrapRepository scrapRepository;
 
-    @DisplayName("회원 번호와 문제 번호를 받아 스크랩을 저장하는지")
+    @DisplayName("요청과 회원 번호를 받아 스크랩을 저장하는지")
     @Test
     void createScrapTest(){
         //given
         Long memberNo = 1L;
-        Long questionNo = 4L;
+        CreateScrapDTO createScrapDTO = CreateScrapDTO.builder()
+                .questionNo(1L)
+                .markedNo(2)
+                .correctedMarkingStatus(false)
+                .build();
         Long scrapNo = 12L;
 
         //when
-        scrapService.createScrap(questionNo, memberNo);
+        scrapService.createScrap(createScrapDTO, memberNo);
 
         //then
         Assertions.assertEquals(memberNo, scrapRepository.findById(scrapNo).get().getMemberNo());
-        Assertions.assertEquals(questionNo, scrapRepository.findById(scrapNo).get().getQuestionNo());
+        Assertions.assertEquals(createScrapDTO.getQuestionNo(), scrapRepository.findById(scrapNo).get().getQuestionNo());
     }
 
     @DisplayName("한 회원에 대한 스크랩 모두 조회")
