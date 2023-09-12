@@ -3,14 +3,11 @@ package com.example.stepbackend.controller;
 import com.example.stepbackend.aggregate.dto.scrap.ScrapDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 
 @Controller
-@RequestMapping("/api/v1/scrap")
+@RequestMapping("/api/v1/question")
 @RequiredArgsConstructor
 public class ScrapController {
     @GetMapping("")
@@ -19,10 +16,10 @@ public class ScrapController {
         return "testPage";
     }
 
-    @PostMapping("/create")
-    public String create(@ModelAttribute ScrapDTO scrapDTO){
-
-
-        return null;
-    }
+//    @PostMapping("/{questionNo}/scrap")
+//    public String create(@PathVariable Long questionNo, ){
+//
+//
+//        return null;
+//    }
 }
