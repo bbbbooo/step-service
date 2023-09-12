@@ -23,5 +23,10 @@ spring:
           uri:
 
 app:
+  oauth2:
+    authorizedRedirectUris: http://localhost:8888/oauth2/redirect
+  auth:
+    tokenSecret: adjlaksjdlkasjdlkajwkljelk12j3lk1j2lk3j1lk23jlkdjalksje12lk3jl1k2j3lk12j3kjaslkjdlkasjd12312dasdasd
+    tokenExpirationMsec: 1800000
   cors:
     allowedOrigins: http://localhost:8888

@@ -12,5 +12,5 @@ public enum Role {
     USER("ROLE_USER", "유저");
 
     private String key;
-    private String title;
+    private String value;
 }

@@ -27,4 +27,8 @@ public class Token {
         this.user = user;
         this.accessToken = accessToken;
     }
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
 }
