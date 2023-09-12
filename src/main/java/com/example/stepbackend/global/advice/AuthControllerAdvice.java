@@ -23,6 +23,7 @@ public class AuthControllerAdvice {
     protected ResponseEntity<ErrorResponse> handleHttpRequestMethodNotSupportedException(
             HttpRequestMethodNotSupportedException ex) {
 
+
         ErrorResponseBody errorResponseBody = new ErrorResponseBody()
                 .setCode(HttpStatus.METHOD_NOT_ALLOWED.getReasonPhrase())
                 .setClasses(ex.getClass().getSimpleName());
