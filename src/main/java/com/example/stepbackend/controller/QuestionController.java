@@ -20,7 +20,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 
 @RestController
-@RequestMapping("question")
+@RequestMapping("/question")
 @RequiredArgsConstructor
 public class QuestionController {
 
@@ -37,8 +37,13 @@ public class QuestionController {
         } catch (ResourceNotFoundException e) {
             e.printStackTrace();
 
-            URI uri = new URI("https://e7c65ef5-9801-4a42-a7e4-694188b45666.mock.pstmn.io/data");
-            ResponseEntity<String> responseEntity =  restTemplate.getForEntity(uri, String.class);
+            String uri = "https://e7c65ef5-9801-4a42-a7e4-694188b45666.mock.pstmn.io/data";
+            ResponseEntity<String> responseEntity;
+            try {
+                responseEntity = restTemplate.getForEntity(uri, String.class);
+            } catch (Exception ex) {
+                return ResponseEntity.badRequest().body(ex.getMessage());
+            }
 
             JSONParser jsonParser = new JSONParser();
             JSONObject jsonObject = (JSONObject) jsonParser.parse(responseEntity.getBody().toString());
