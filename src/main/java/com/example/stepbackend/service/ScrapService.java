@@ -36,4 +36,14 @@ public class ScrapService {
         Page<ScrapListDTO> pagedScraps = ScrapListDTO.fromEntity(scraps);
         return pagedScraps;
     }
+
+    /* 한 회원에 대한 모든 스크랩 삭제*/
+    @Transactional
+    public void cancelScrap(Long memberNo, List<Long> questionNos) {
+        List<Scrap> scraps = scrapRepository.findByMemberNoAndQuestionNoIn(memberNo, questionNos);
+
+        for(Scrap scrap : scraps){
+            scrapRepository.delete(scrap);
+        }
+    }
 }

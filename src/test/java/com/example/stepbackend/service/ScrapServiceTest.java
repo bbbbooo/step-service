@@ -1,6 +1,7 @@
 package com.example.stepbackend.service;
 
 import com.example.stepbackend.aggregate.dto.scrap.ScrapListDTO;
+import com.example.stepbackend.aggregate.entity.Scrap;
 import com.example.stepbackend.repository.ScrapRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -11,6 +12,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -51,5 +56,19 @@ class ScrapServiceTest {
 
         //then
         assertNotNull(scrapPage);
+    }
+
+    @DisplayName("한 회원에 대한 스크랩 취소")
+    @Test
+    void cancelScrap(){
+        //given
+        Long memberNo = 1L;
+        List<Long> questionNos = Arrays.asList(1L, 2L, 3L);
+
+        //when
+        scrapService.cancelScrap(memberNo, questionNos);
+
+        //then
+        Assertions.assertEquals(0, scrapRepository.findByMemberNoAndQuestionNoIn(memberNo, questionNos).size());
     }
 }
