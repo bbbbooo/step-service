@@ -1,5 +1,6 @@
 package com.example.stepbackend.service;
 
+import com.example.stepbackend.aggregate.dto.scrap.CreateScrapDTO;
 import com.example.stepbackend.aggregate.dto.scrap.ScrapListDTO;
 import com.example.stepbackend.aggregate.entity.Question;
 import com.example.stepbackend.aggregate.entity.Scrap;
@@ -22,8 +23,8 @@ public class ScrapService {
 
     /* 스크랩 저장 */
     @Transactional
-    public void createScrap(Long questionNo, Long memberNo) {
-        Scrap scrap = Scrap.toEntity(questionNo, memberNo);
+    public void createScrap(CreateScrapDTO createScrapDTO, Long memberNo) {
+        Scrap scrap = Scrap.toEntity(createScrapDTO, memberNo);
         scrapRepository.save(scrap);
     }
 

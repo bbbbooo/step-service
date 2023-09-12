@@ -1,5 +1,6 @@
 package com.example.stepbackend.aggregate.entity;
 
+import com.example.stepbackend.aggregate.dto.scrap.CreateScrapDTO;
 import lombok.*;
 import org.hibernate.annotations.Comment;
 
@@ -36,9 +37,11 @@ public class Scrap {
     @Comment("정답 여부")
     private Boolean correctedMarkingStatus;
 
-    public static Scrap toEntity(Long questionNo, Long memberNo) {
+    public static Scrap toEntity(CreateScrapDTO createScrapDTO, Long memberNo) {
         return Scrap.builder()
-                .questionNo(questionNo)
+                .questionNo(createScrapDTO.getQuestionNo())
+                .markedNo(createScrapDTO.getMarkedNo())
+                .correctedMarkingStatus(createScrapDTO.getCorrectedMarkingStatus())
                 .memberNo(memberNo)
                 .build();
     }
