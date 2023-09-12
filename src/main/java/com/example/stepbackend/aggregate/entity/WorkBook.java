@@ -6,10 +6,10 @@ import org.hibernate.annotations.Comment;
 import javax.persistence.*;
 
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
+@Builder
 @Entity
 public class WorkBook {
 
@@ -26,4 +26,11 @@ public class WorkBook {
     @Column
     @Comment("문제 번호")
     private Long questionNo;
+
+    public static WorkBook toEntity(Long memberNo, Long questionNo) {
+        return WorkBook.builder()
+                .memberNo(memberNo)
+                .questionNo(questionNo)
+                .build();
+    }
 }
