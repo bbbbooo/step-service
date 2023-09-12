@@ -27,6 +27,6 @@ public class WorkbookService {
     public void createWorkbookTest(Long memberNo, List<Long> questionNos) {
         List<Question> questions = scrapRepository.findAllByMemberNo(memberNo);
 
-        List<CreateWorkBookDTO> createWorkBookDTOList = CreateWorkBookDTO.fromEntity(questions);
+//        List<CreateWorkBookDTO> createWorkBookDTOList = CreateWorkBookDTO.fromEntity(questions);
     }
 }
