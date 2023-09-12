@@ -20,7 +20,7 @@ spring:
     defer-datasource-initialization: true
   sql:
     init:
-#      data-locations: classpath:sql/data.sql
+      data-locations: classpath:sql/data.sql
       mode: always
       platform: mysql
       encoding: UTF-8
@@ -67,5 +67,7 @@ logging:
     com.midnights.demo: TRACE
     org.springframework.web: TRACE
 
+mybatis:
+  mapper-locations: mapper/**/*.xml
 #encrypt:
 #    key: key-brain
