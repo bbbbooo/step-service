@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.stream.Stream;
 
 @SpringBootTest
-@Transactional
+
 public class CustomTokenServiceTest {
 
     @Autowired
