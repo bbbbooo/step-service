@@ -28,10 +28,10 @@ public class QuestionToMember {
     private Long questionNo;
 
     @Column
-    @Comment("문제 번호")
+    @Comment("회원이 체크한 보기")
     private Integer markedNo;
 
     @Column
-    @Comment("문제 번호")
+    @Comment("보기 정답")
     private Boolean correctedMarkingStatus;
 }
