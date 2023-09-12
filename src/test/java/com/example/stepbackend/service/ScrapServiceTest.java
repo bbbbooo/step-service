@@ -1,7 +1,6 @@
 package com.example.stepbackend.service;
 
 import com.example.stepbackend.aggregate.dto.scrap.ScrapListDTO;
-import com.example.stepbackend.aggregate.entity.Scrap;
 import com.example.stepbackend.repository.ScrapRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -13,7 +12,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
