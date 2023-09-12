@@ -37,6 +37,8 @@ dependencies {
     implementation 'mysql:mysql-connector-java:8.0.25'
     runtimeOnly 'com.mysql:mysql-connector-j'
 
+    testImplementation 'com.github.tomakehurst:wiremock-jre8:2.33.0'
+
     // https://mvnrepository.com/artifact/org.hibernate.validator/hibernate-validator
     implementation group: 'org.hibernate.validator', name: 'hibernate-validator', version: '6.2.0.Final'
 
@@ -44,7 +46,6 @@ dependencies {
 //    implementation 'org.springframework.security:spring-security-oauth2-jose:6.1.2'
 
     implementation 'org.springframework.security:spring-security-oauth2-jose:5.7.10'
-
 }
 
 tasks.named('test') {
