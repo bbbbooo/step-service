@@ -7,21 +7,9 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class CreateWorkBookDTO {
+    private Long workBookNo;
+
     private Long questionNo;
 
-    private String questionSubject;
-
-    private String questionBody;
-
-    private Integer questionViewType;
-
-    private String questionLargeClassification;
-
-    private String questionMiddleClassification;
-
-    private String questionSmallClassification;
-
-    private Integer questionCorrectAnswer;
-
-    private String questionSource;
+    private Long memberNo;
 }
