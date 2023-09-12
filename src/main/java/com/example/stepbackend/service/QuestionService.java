@@ -12,8 +12,6 @@ import lombok.RequiredArgsConstructor;
 import net.minidev.json.JSONObject;
 import org.springframework.stereotype.Service;
 
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -25,9 +23,9 @@ public class QuestionService {
     private final QuestionRepository questionRepository;
     private final QuestionToMemberRepository questionToMemberRepository;
 
-    public List<ResQuestionDTO> readQuestion(Long memberNo) throws ResourceNotFoundException, NoSuchAlgorithmException {
+    public List<ResQuestionDTO> readQuestion(Long memberNo) throws ResourceNotFoundException {
         List<Long> questionsBymember = questionToMemberRepository.findQuestionToMemberByQuestionToMemberNo(memberNo);
-        List<Question> questions = questionRepository.findByQuestionNoIn(questionsBymember);
+        List<Question> questions = questionRepository.findByQuestionNoNotIn(questionsBymember);
 
         if(!questions.isEmpty()) {
 

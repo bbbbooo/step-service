@@ -21,7 +21,7 @@ public class ScrapListDTO {
 
     private String questionBody;
 
-    private Integer questionViewType;
+    private String questionViewType;
 
     private String questionLargeClassification;
 
