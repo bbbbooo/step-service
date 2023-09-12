@@ -55,6 +55,7 @@ dependencies {
     testImplementation 'org.xmlunit:xmlunit-core:2.9.1'
     // https://mvnrepository.com/artifact/org.apache.ibatis/ibatis-sqlmap
     implementation 'org.apache.ibatis:ibatis-sqlmap:2.3.4.726'
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 }
 
 tasks.named('test') {

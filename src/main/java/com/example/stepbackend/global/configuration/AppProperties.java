@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 @Component
 @ConfigurationProperties(prefix = "app")
-public class AppPropertise {
+public class AppProperties {
 
     private final Auth auth = new Auth();
 
