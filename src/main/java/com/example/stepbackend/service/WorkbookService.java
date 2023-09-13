@@ -1,17 +1,12 @@
 package com.example.stepbackend.service;
 
-import com.example.stepbackend.aggregate.dto.scrap.ReadScrapDTO;
 import com.example.stepbackend.aggregate.dto.workbook.CreateWorkBookDTO;
-import com.example.stepbackend.aggregate.dto.workbook.ReadWorkBookDTO;
 import com.example.stepbackend.aggregate.entity.WorkBook;
 import com.example.stepbackend.repository.WorkBookRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,13 +31,11 @@ public class WorkbookService {
         return createWorkBookDTO;
     }
 
-//    @Transactional
-//    public void isSharedWorkBook(Long memberNo, List<Long> questionNos, Boolean isShared) {
-//        for (Long questionNo : questionNos){
-//            WorkBook workBook = workBookRepository.findByMemberNoAndQuestionNo(memberNo, questionNo);
-//            workBook.updateIsShared(isShared);
-//        }
-//    }
+    @Transactional
+    public void isSharedWorkBook(Long memberNo, Long workBookNo, Boolean isShared) {
+        WorkBook workBook = workBookRepository.findByMemberNoAndWorkBookNo(memberNo, workBookNo);
+        workBook.updateIsShared(isShared);
+    }
 
 //    @Transactional(readOnly = true)
 //    public Page<ReadWorkBookDTO> getWorkBookMyPage(Long memberNo, Pageable pageable) {
