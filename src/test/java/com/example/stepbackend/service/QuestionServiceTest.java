@@ -81,7 +81,7 @@ class QuestionServiceTest {
     @ParameterizedTest
     @MethodSource("getQuestionInfo")
     @DisplayName("문제 조회")
-    void readQuestion(String questionSubject, String questionBody, String questionViewType,
+    void readQuestion(String questionViewType, String questionSubject, String questionBody, String view1, String view2, String view3, String view4, String view5,
                       String questionLargeClassification, String questionMiddleClassification, String questionSmallClassification,
                       Integer questionCorrectAnswer, String questionSource, Integer questionSourcePublishYear) {
         //given
@@ -89,6 +89,11 @@ class QuestionServiceTest {
         question.setQuestionSubject(questionSubject);
         question.setQuestionBody(questionBody);
         question.setQuestionViewType(questionViewType);
+        question.setView1(view1);
+        question.setView2(view2);
+        question.setView3(view3);
+        question.setView4(view4);
+        question.setView5(view5);
         question.setQuestionLargeClassification(questionLargeClassification);
         question.setQuestionMiddleClassification(questionMiddleClassification);
         question.setQuestionSmallClassification(questionSmallClassification);
