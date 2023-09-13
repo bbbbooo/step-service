@@ -33,4 +33,12 @@ public class WorkbookService {
         }
         return createWorkBookDTOList;
     }
+
+    @Transactional
+    public void isSharedWorkBook(Long memberNo, List<Long> questionNos, Boolean isShared) {
+        for (Long questionNo : questionNos){
+            WorkBook workBook = workBookRepository.findByMemberNoAndQuestionNo(memberNo, questionNo);
+            workBook.updateIsShared(isShared);
+        }
+    }
 }
