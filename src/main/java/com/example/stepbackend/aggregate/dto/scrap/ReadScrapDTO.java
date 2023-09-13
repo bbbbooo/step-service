@@ -1,7 +1,6 @@
 package com.example.stepbackend.aggregate.dto.scrap;
 
 import com.example.stepbackend.aggregate.entity.Question;
-import com.example.stepbackend.aggregate.entity.Scrap;
 import lombok.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -14,7 +13,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class ScrapListDTO {
+public class ReadScrapDTO {
     private Long questionNo;
 
     private String questionSubject;
@@ -33,13 +32,13 @@ public class ScrapListDTO {
 
     private String questionSource;
 
-    public static Page<ScrapListDTO> fromEntity(Page<Question> questions) {
-        List<ScrapListDTO> dtoList = questions.getContent().stream().map(ScrapListDTO::fromEntity).collect(Collectors.toList());
+    public static Page<ReadScrapDTO> fromEntity(Page<Question> questions) {
+        List<ReadScrapDTO> dtoList = questions.getContent().stream().map(ReadScrapDTO::fromEntity).collect(Collectors.toList());
         return new PageImpl<>(dtoList, questions.getPageable(), questions.getTotalElements());
     }
 
-    public static ScrapListDTO fromEntity(Question question) {
-        return ScrapListDTO.builder()
+    public static ReadScrapDTO fromEntity(Question question) {
+        return ReadScrapDTO.builder()
                 .questionNo(question.getQuestionNo())
                 .questionSubject(question.getQuestionSubject())
                 .questionBody(question.getQuestionBody())
