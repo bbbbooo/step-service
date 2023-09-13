@@ -2,9 +2,12 @@ package com.example.stepbackend.service;
 
 import com.example.stepbackend.aggregate.dto.workbook.CreateWorkBookDTO;
 import com.example.stepbackend.aggregate.dto.workbook.CreateWorkBookRequestDTO;
+import com.example.stepbackend.aggregate.dto.workbook.ReadWorkBookDTO;
 import com.example.stepbackend.aggregate.entity.WorkBook;
 import com.example.stepbackend.repository.WorkBookRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

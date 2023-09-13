@@ -38,15 +38,14 @@ class ScrapServiceTest {
                 .markedNo(2)
                 .correctedMarkingStatus(false)
                 .build();
-        Long scrapNo = 12L;
 
         //when
-        scrapService.createScrap(createScrapDTO, memberNo);
+        Scrap scrap = Scrap.toEntity(createScrapDTO, memberNo);
+        Scrap createdScrap = scrapRepository.save(scrap);
 
-        Scrap scrap = scrapRepository.findById(scrapNo).get();
         //then
-        Assertions.assertEquals(memberNo, scrapRepository.findById(scrapNo).get().getMemberNo());
-        Assertions.assertEquals(createScrapDTO.getQuestionNo(), scrapRepository.findById(scrapNo).get().getQuestionNo());
+        Assertions.assertEquals(memberNo, createdScrap.getMemberNo());
+        Assertions.assertEquals(createScrapDTO.getQuestionNo(), createdScrap.getQuestionNo());
     }
 
     @DisplayName("한 회원에 대한 스크랩 모두 조회")
