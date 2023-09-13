@@ -1,9 +1,11 @@
 package com.example.stepbackend.aggregate.entity;
 
+import com.example.stepbackend.aggregate.dto.workbook.CreateWorkBookRequestDTO;
 import lombok.*;
 import org.hibernate.annotations.Comment;
 
 import javax.persistence.*;
+import java.util.stream.Collectors;
 
 @Getter
 @NoArgsConstructor
@@ -20,6 +22,10 @@ public class WorkBook {
     private Long workBookNo;
 
     @Column
+    @Comment("문제집명")
+    private String workBookName;
+
+    @Column
     @Comment("회원 번호")
     private Long memberNo;
 
@@ -31,11 +37,15 @@ public class WorkBook {
     @Comment("공유 여부")
     private Boolean isShared;
 
+    public static WorkBook toEntity(Long memberNo, CreateWorkBookRequestDTO createWorkBookRequestDTO) {
+        String questionNosToString = createWorkBookRequestDTO.getQuestionNos().stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining(", "));
 
-    public static WorkBook toEntity(Long memberNo, String questionNosToString) {
         return WorkBook.builder()
                 .memberNo(memberNo)
                 .questionNos(questionNosToString)
+                .workBookName(createWorkBookRequestDTO.getWorkBookName())
                 .isShared(false)
                 .build();
     }
