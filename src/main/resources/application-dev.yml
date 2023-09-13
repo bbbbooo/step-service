@@ -16,12 +16,12 @@ spring:
         show_sql: true
         format_sql: true
     hibernate:
-      ddl-auto: none
+      ddl-auto: create
     defer-datasource-initialization: true
   sql:
     init:
       data-locations: classpath:static/sql/data.sql
-      mode: never
+      mode: always
       platform: mysql
       encoding: UTF-8
   # file upload
