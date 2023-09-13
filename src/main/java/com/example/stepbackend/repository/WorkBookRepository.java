@@ -8,5 +8,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface WorkBookRepository extends JpaRepository<WorkBook, Long> {
-//    WorkBook findByMemberNoAndQuestionNo(Long memberNo, Long questionNo);
+    WorkBook findByMemberNoAndWorkBookNo(Long memberNo, Long workBookNo);
+
+    Page<WorkBook> findByMemberNo(Long memberNo, Pageable pageable);
 }

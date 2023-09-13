@@ -115,6 +115,8 @@ public class SecurityConfig {
                 .and()
 
                 .authorizeRequests()
+                .antMatchers("/question/**")
+                .permitAll()
                 .antMatchers("/oauth2/**")
                 .hasRole(Role.USER.name())
                 .antMatchers("/blog/**", "/member/**")

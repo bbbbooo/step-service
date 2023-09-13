@@ -1,13 +1,17 @@
 package com.example.stepbackend.service;
 
-import com.example.stepbackend.aggregate.dto.workbook.CreateWorkBookDTO;
-import com.example.stepbackend.aggregate.dto.workbook.CreateWorkBookRequestDTO;
+import com.example.stepbackend.aggregate.dto.workbook.ReadWorkBookDTO;
 import com.example.stepbackend.repository.WorkBookRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
@@ -53,38 +57,39 @@ class WorkbookServiceTest {
     }
 
 
-//    @DisplayName("나만의 문제집 공유 설정")
-//    @ParameterizedTest
-//    @ValueSource(booleans = {false, true})
-//    void isSharedWorkBook(boolean settings){
-//        // given
-//        Long memberNo = 1L;
-//        List<Long> questionNos = Arrays.asList(101L, 102L);
-//
-//        Boolean isShared = settings;
-//
-//        // when
-//        workbookService.isSharedWorkBook(memberNo, questionNos, isShared);
-//
-//        // then
-//        if(isShared){
-//            Assertions.assertTrue(workBookRepository.findByMemberNoAndQuestionNo(memberNo, 102L).getIsShared());
-//        }else{
-//            Assertions.assertFalse(workBookRepository.findByMemberNoAndQuestionNo(memberNo, 101L).getIsShared());
-//        }
-//    }
+    @DisplayName("나만의 문제집 공유 설정")
+    @ParameterizedTest
+    @ValueSource(booleans = {false, true})
+    void isSharedWorkBook(boolean settings){
+        // given
+        Long memberNo = 1L;
+        Long workBookNo = 1L;
+
+        Boolean isShared = settings;
+
+        // when
+        workbookService.isSharedWorkBook(memberNo, workBookNo, isShared);
+
+        // then
+        if(isShared){
+            Assertions.assertTrue(workBookRepository.findByMemberNoAndWorkBookNo(memberNo, workBookNo).getIsShared());
+        }else{
+            Assertions.assertFalse(workBookRepository.findByMemberNoAndWorkBookNo(memberNo, workBookNo).getIsShared());
+        }
+    }
 
 
-//    @DisplayName("나만의 문제집 마이 페이지 조회")
-//    @Test
-//    void getWorkBook(){
-//        // given
-//        Long memberNo = 1L;
-//        Pageable pageable = PageRequest.of(0, 10);
-//
-//        // when
-//        Page<ReadWorkBookDTO> readWorkBookDTOS = workbookService.getWorkBookMyPage(memberNo, pageable);
-//
-//        // then
-//    }
+    @DisplayName("나만의 문제집 마이 페이지 조회")
+    @Test
+    void getWorkBook(){
+        // given
+        Long memberNo = 1L;
+        Pageable pageable = PageRequest.of(0, 10);
+
+        // when
+        Page<ReadWorkBookDTO> readWorkBookDTOS = workbookService.getWorkBookMyPage(memberNo, pageable);
+
+        // then
+        Assertions.assertNotNull(readWorkBookDTOS);
+    }
 }

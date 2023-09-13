@@ -3,6 +3,7 @@ package com.example.stepbackend.service;
 import com.example.stepbackend.aggregate.dto.user.CreateUserDTO;
 import com.example.stepbackend.aggregate.entity.enumType.Provider;
 import com.example.stepbackend.aggregate.entity.enumType.Role;
+import com.example.stepbackend.global.security.service.CustomTokenService;
 import org.assertj.core.internal.bytebuddy.asm.Advice;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -21,6 +22,9 @@ class CreateUserServiceTest {
 
     @Autowired
     private CreateUserService createUserService;
+
+    @Autowired
+    private CustomTokenService customTokenService;
 
     private static Stream<Arguments> getUserInfo() {
         return Stream.of(

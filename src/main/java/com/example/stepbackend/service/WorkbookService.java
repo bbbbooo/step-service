@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,20 +28,18 @@ public class WorkbookService {
         return createWorkBookDTO;
     }
 
-//    @Transactional
-//    public void isSharedWorkBook(Long memberNo, List<Long> questionNos, Boolean isShared) {
-//        for (Long questionNo : questionNos){
-//            WorkBook workBook = workBookRepository.findByMemberNoAndQuestionNo(memberNo, questionNo);
-//            workBook.updateIsShared(isShared);
-//        }
-//    }
+    @Transactional
+    public void isSharedWorkBook(Long memberNo, Long workBookNo, Boolean isShared) {
+        WorkBook workBook = workBookRepository.findByMemberNoAndWorkBookNo(memberNo, workBookNo);
+        workBook.updateIsShared(isShared);
+    }
 
-//    @Transactional(readOnly = true)
-//    public Page<ReadWorkBookDTO> getWorkBookMyPage(Long memberNo, Pageable pageable) {
-//        Page<WorkBook> workBooks = workBookRepository.findByMemberNoOrderByGroupNo(memberNo, pageable);
-//
-//        Page<ReadWorkBookDTO> readWorkBookDTOS = ReadWorkBookDTO.fromEntity(workBooks);
-//
-//        return readWorkBookDTOS;
-//    }
+    @Transactional(readOnly = true)
+    public Page<ReadWorkBookDTO> getWorkBookMyPage(Long memberNo, Pageable pageable) {
+        Page<WorkBook> workBooks = workBookRepository.findByMemberNo(memberNo, pageable);
+
+        Page<ReadWorkBookDTO> readWorkBookDTOS = ReadWorkBookDTO.fromEntity(workBooks);
+
+        return readWorkBookDTOS;
+    }
 }
