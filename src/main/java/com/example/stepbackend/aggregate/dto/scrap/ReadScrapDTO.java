@@ -20,7 +20,7 @@ public class ReadScrapDTO {
 
     private String questionBody;
 
-    private Integer questionViewType;
+    private String questionViewType;
 
     private String questionLargeClassification;
 
