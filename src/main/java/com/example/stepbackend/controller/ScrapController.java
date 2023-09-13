@@ -1,6 +1,5 @@
 package com.example.stepbackend.controller;
 
-import com.example.stepbackend.aggregate.dto.scrap.ScrapDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
