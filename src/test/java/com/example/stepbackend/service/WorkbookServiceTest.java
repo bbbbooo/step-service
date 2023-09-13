@@ -45,20 +45,4 @@ class WorkbookServiceTest {
             ));
         }
     }
-
-    @DisplayName("나만의 문제집 공유 설정")
-    @Test
-    void isSharedWorkBook(){
-
-    }
-
-    @DisplayName("나만의 문제집 좋아요 등록")
-    @Test
-    void heartWorkBook(){
-
-    }
-
-    @DisplayName("나만의 문제집 좋아요 등록")
-    @Test
-    void
 }
