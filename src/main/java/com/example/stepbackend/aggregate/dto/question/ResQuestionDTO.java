@@ -12,6 +12,9 @@ import javax.persistence.Column;
 @AllArgsConstructor
 @ToString
 public class ResQuestionDTO {
+
+    // 문제 번호
+    private Long questionNo;
     // 문제 제목
     private String questionSubject;
 

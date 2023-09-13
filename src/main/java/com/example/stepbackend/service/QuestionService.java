@@ -4,12 +4,13 @@ import com.example.stepbackend.aggregate.dto.question.QuestionDTO;
 import com.example.stepbackend.aggregate.dto.question.ReqQuestionDTO;
 import com.example.stepbackend.aggregate.dto.question.ResQuestionDTO;
 import com.example.stepbackend.aggregate.entity.Question;
-import com.example.stepbackend.aggregate.entity.QuestionToMember;
+import com.example.stepbackend.aggregate.entity.QuestionByMember;
 import com.example.stepbackend.global.exception.ResourceNotFoundException;
 import com.example.stepbackend.repository.QuestionRepository;
-import com.example.stepbackend.repository.QuestionToMemberRepository;
+import com.example.stepbackend.repository.QuestionByMemberRepository;
 import lombok.RequiredArgsConstructor;
 import net.minidev.json.JSONObject;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,15 +22,16 @@ import java.util.stream.Collectors;
 public class QuestionService {
 
     private final QuestionRepository questionRepository;
-    private final QuestionToMemberRepository questionToMemberRepository;
+    private final QuestionByMemberRepository QuestionByMemberRepository;
+    private final ModelMapper modelMapper;
 
-    public List<ResQuestionDTO> readQuestion(Long memberNo) throws ResourceNotFoundException {
-        List<Long> questionsBymember = questionToMemberRepository.findQuestionToMemberByQuestionToMemberNo(memberNo);
+    public List<ResQuestionDTO> readQuestion(Long userId) throws ResourceNotFoundException {
+        List<Long> questionsBymember = QuestionByMemberRepository.findQuestionByMemberByQuestionByMemberNo(userId);
         List<Question> questions = questionRepository.findByQuestionNoNotIn(questionsBymember);
 
         if(!questions.isEmpty()) {
 
-            List<ResQuestionDTO> results = questions.stream().map(question -> new ResQuestionDTO()).collect(Collectors.toList());
+            List<ResQuestionDTO> results = questions.stream().map(question -> modelMapper.map(question, ResQuestionDTO.class)).collect(Collectors.toList());
 
             return results;
         } else {

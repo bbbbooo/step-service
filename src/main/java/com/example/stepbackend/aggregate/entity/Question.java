@@ -1,12 +1,11 @@
 package com.example.stepbackend.aggregate.entity;
 
-import com.example.stepbackend.aggregate.dto.question.ReqQuestionDTO;
 import com.example.stepbackend.aggregate.dto.question.ResQuestionDTO;
 import lombok.*;
 import org.hibernate.annotations.Comment;
 
 import javax.persistence.*;
-
+import org.hibernate.annotations.Table;
 
 @Getter
 @Setter
@@ -14,25 +13,25 @@ import javax.persistence.*;
 @AllArgsConstructor
 @ToString
 @Entity
-@org.hibernate.annotations.Table(appliesTo = "question", comment = "문제 테이블")
+@Table(appliesTo = "question", comment = "문제 테이블")
 public class Question {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column
+    @Column(name = "question_no")
     @Comment("문제 인덱스 번호")
     private Long questionNo;
 
-    @Column(name = "subject")
+    @Column(name = "question_subject")
     @Comment("문제 제목")
     private String questionSubject;
 
-    @Column(name = "main")
+    @Column(name = "question_body")
     @Comment("문제 내용")
     @Lob
     private String questionBody;
 
-    @Column(name = "class")
+    @Column(name = "question_view_type")
     @Comment("문제 유형")
     private String questionViewType;
 
@@ -56,27 +55,27 @@ public class Question {
     @Comment("5번 보기")
     private String view5;
 
-    @Column
+    @Column(name = "question_large_classification")
     @Comment("대분류")
     private String questionLargeClassification;
 
-    @Column
+    @Column(name = "question_middle_classification")
     @Comment("중분류")
     private String questionMiddleClassification;
 
-    @Column
+    @Column(name = "question_small_classification")
     @Comment("소분류")
     private String questionSmallClassification;
 
-    @Column(name = "answer")
+    @Column(name = "question_correct_answer")
     @Comment("정답")
     private Integer questionCorrectAnswer;
 
-    @Column
+    @Column(name = "question_source")
     @Comment("문제 출처")
     private String questionSource;
 
-    @Column
+    @Column(name = "question_source_publish_year")
     @Comment("문제 출처 발행 연도")
     private Integer questionSourcePublishYear;
 

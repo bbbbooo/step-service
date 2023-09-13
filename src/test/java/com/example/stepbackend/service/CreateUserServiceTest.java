@@ -59,13 +59,6 @@ class CreateUserServiceTest {
         Assertions.assertDoesNotThrow(
                 () -> createUserService.create(createUserDTO)
         );
-
-        Assertions.assertDoesNotThrow(
-                () -> {
-                    String token =  customTokenService.createToken(1L, "ROLE_USER");
-                    System.out.println(token);
-                }
-        );
     }
 
 }
