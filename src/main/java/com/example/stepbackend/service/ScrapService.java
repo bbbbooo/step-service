@@ -1,7 +1,7 @@
 package com.example.stepbackend.service;
 
 import com.example.stepbackend.aggregate.dto.scrap.CreateScrapDTO;
-import com.example.stepbackend.aggregate.dto.scrap.ScrapListDTO;
+import com.example.stepbackend.aggregate.dto.scrap.ReadScrapDTO;
 import com.example.stepbackend.aggregate.entity.Question;
 import com.example.stepbackend.aggregate.entity.Scrap;
 import com.example.stepbackend.repository.QuestionRepository;
@@ -30,10 +30,10 @@ public class ScrapService {
 
     /* 한 회원에 대한 모든 스크랩 조회*/
     @Transactional(readOnly = true)
-    public Page<ScrapListDTO> findAllScrap(Long memberNo, Pageable pageable) {
+    public Page<ReadScrapDTO> findAllScrap(Long memberNo, Pageable pageable) {
         Page<Question> questions = scrapRepository.findAllByMemberNo(memberNo, pageable);
 
-        Page<ScrapListDTO> pagedScraps = ScrapListDTO.fromEntity(questions);
+        Page<ReadScrapDTO> pagedScraps = ReadScrapDTO.fromEntity(questions);
         return pagedScraps;
     }
 

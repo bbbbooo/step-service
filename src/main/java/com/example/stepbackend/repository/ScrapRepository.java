@@ -1,6 +1,5 @@
 package com.example.stepbackend.repository;
 
-import com.example.stepbackend.aggregate.dto.scrap.ScrapListDTO;
 import com.example.stepbackend.aggregate.entity.Question;
 import com.example.stepbackend.aggregate.entity.Scrap;
 import org.springframework.data.domain.Page;

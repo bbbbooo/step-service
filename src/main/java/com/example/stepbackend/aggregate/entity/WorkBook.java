@@ -24,13 +24,24 @@ public class WorkBook {
     private Long memberNo;
 
     @Column
-    @Comment("문제 번호")
-    private Long questionNo;
+    @Comment("나만의 문제로 만든 문제 번호들")
+    private String questionNos;
 
-    public static WorkBook toEntity(Long memberNo, Long questionNo) {
+    @Column
+    @Comment("공유 여부")
+    private Boolean isShared;
+
+
+    public static WorkBook toEntity(Long memberNo, String questionNosToString) {
         return WorkBook.builder()
                 .memberNo(memberNo)
-                .questionNo(questionNo)
+                .questionNos(questionNosToString)
+                .isShared(false)
                 .build();
     }
+
+    public void updateIsShared(Boolean isShared) {
+        this.isShared = isShared;
+    }
+
 }

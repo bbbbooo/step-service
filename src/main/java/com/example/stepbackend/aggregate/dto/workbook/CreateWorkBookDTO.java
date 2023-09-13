@@ -1,5 +1,6 @@
 package com.example.stepbackend.aggregate.dto.workbook;
 
+import com.example.stepbackend.aggregate.entity.WorkBook;
 import lombok.*;
 
 @Data
@@ -9,7 +10,15 @@ import lombok.*;
 public class CreateWorkBookDTO {
     private Long workBookNo;
 
-    private Long questionNo;
+    private String questionNos;
 
     private Long memberNo;
+
+    public static CreateWorkBookDTO fromEntity(WorkBook workBook) {
+        return CreateWorkBookDTO.builder()
+                .workBookNo(workBook.getWorkBookNo())
+                .questionNos(workBook.getQuestionNos())
+                .memberNo(workBook.getMemberNo())
+                .build();
+    }
 }
