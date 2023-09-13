@@ -57,40 +57,4 @@ class WorkbookServiceTest {
                         workbook.getQuestionNos().equals(questionNosToString)
                 ));
     }
-
-
-//    @DisplayName("나만의 문제집 공유 설정")
-//    @ParameterizedTest
-//    @ValueSource(booleans = {false, true})
-//    void isSharedWorkBook(boolean settings){
-//        // given
-//        Long memberNo = 1L;
-//        List<Long> questionNos = Arrays.asList(101L, 102L);
-//
-//        Boolean isShared = settings;
-//
-//        // when
-//        workbookService.isSharedWorkBook(memberNo, questionNos, isShared);
-//
-//        // then
-//        if(isShared){
-//            Assertions.assertTrue(workBookRepository.findByMemberNoAndQuestionNo(memberNo, 102L).getIsShared());
-//        }else{
-//            Assertions.assertFalse(workBookRepository.findByMemberNoAndQuestionNo(memberNo, 101L).getIsShared());
-//        }
-//    }
-
-
-//    @DisplayName("나만의 문제집 마이 페이지 조회")
-//    @Test
-//    void getWorkBook(){
-//        // given
-//        Long memberNo = 1L;
-//        Pageable pageable = PageRequest.of(0, 10);
-//
-//        // when
-//        Page<ReadWorkBookDTO> readWorkBookDTOS = workbookService.getWorkBookMyPage(memberNo, pageable);
-//
-//        // then
-//    }
 }
