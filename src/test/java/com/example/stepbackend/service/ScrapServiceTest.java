@@ -1,7 +1,7 @@
 package com.example.stepbackend.service;
 
 import com.example.stepbackend.aggregate.dto.scrap.CreateScrapDTO;
-import com.example.stepbackend.aggregate.dto.scrap.ScrapListDTO;
+import com.example.stepbackend.aggregate.dto.scrap.ReadScrapDTO;
 import com.example.stepbackend.repository.ScrapRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -55,7 +55,7 @@ class ScrapServiceTest {
         Pageable pageable = PageRequest.of(0, 10);
 
         //when
-        Page<ScrapListDTO> scrapPage = scrapService.findAllScrap(memberNo, pageable);
+        Page<ReadScrapDTO> scrapPage = scrapService.findAllScrap(memberNo, pageable);
 
         //then
         assertNotNull(scrapPage);

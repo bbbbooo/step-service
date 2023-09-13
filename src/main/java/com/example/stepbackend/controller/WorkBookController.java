@@ -22,12 +22,12 @@ public class WorkBookController {
 
     @PostMapping("create")
     @ResponseBody
-    public ResponseEntity<List<CreateWorkBookDTO>> create(@RequestBody SelectedItemsDTO selectedItemsDTO){
+    public ResponseEntity<CreateWorkBookDTO> create(@RequestBody SelectedItemsDTO selectedItemsDTO){
         Long memberNo = 1L;
-        List<Long> selectedItems = selectedItemsDTO.getSelectedItems();
+        List<Integer> selectedItems = selectedItemsDTO.getSelectedItems();
 
-        List<CreateWorkBookDTO> createWorkBookDTOList = workbookService.createWorkbook(memberNo, selectedItems);
+        CreateWorkBookDTO createWorkBookDTO = workbookService.createWorkbook(memberNo, selectedItems);
 
-        return ResponseEntity.ok(createWorkBookDTOList);
+        return ResponseEntity.ok(createWorkBookDTO);
     }
 }

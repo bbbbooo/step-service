@@ -9,5 +9,5 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SelectedItemsDTO {
-    private List<Long> selectedItems;
+    private List<Integer> selectedItems;
 }

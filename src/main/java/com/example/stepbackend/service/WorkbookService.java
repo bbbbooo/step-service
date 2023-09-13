@@ -1,14 +1,17 @@
 package com.example.stepbackend.service;
 
 import com.example.stepbackend.aggregate.dto.workbook.CreateWorkBookDTO;
+import com.example.stepbackend.aggregate.dto.workbook.ReadWorkBookDTO;
 import com.example.stepbackend.aggregate.entity.WorkBook;
 import com.example.stepbackend.repository.WorkBookRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -17,28 +20,32 @@ public class WorkbookService {
     private final WorkBookRepository workBookRepository;
 
     @Transactional
-    public List<CreateWorkBookDTO> createWorkbook(Long memberNo, List<Long> questionNos) {
-        List<CreateWorkBookDTO> createWorkBookDTOList = new ArrayList<>();
-        for (Long questionNo : questionNos){
-            WorkBook workBook = WorkBook.toEntity(memberNo, questionNo);
-            workBookRepository.save(workBook);
+    public CreateWorkBookDTO createWorkbook(Long memberNo, List<Integer> questionNos) {
 
-            CreateWorkBookDTO createWorkBookDTO = CreateWorkBookDTO.builder()
-                    .workBookNo(workBook.getWorkBookNo())
-                    .memberNo(workBook.getMemberNo())
-                    .questionNo(workBook.getQuestionNo())
-                    .build();
+        String questionNosToString = questionNos.stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining(", "));
 
-            createWorkBookDTOList.add(createWorkBookDTO);
-        }
-        return createWorkBookDTOList;
+        WorkBook workBook = WorkBook.toEntity(memberNo, questionNosToString);
+        workBookRepository.save(workBook);
+
+        CreateWorkBookDTO createWorkBookDTO = CreateWorkBookDTO.fromEntity(workBook);
+
+        return createWorkBookDTO;
     }
 
     @Transactional
-    public void isSharedWorkBook(Long memberNo, List<Long> questionNos, Boolean isShared) {
-        for (Long questionNo : questionNos){
-            WorkBook workBook = workBookRepository.findByMemberNoAndQuestionNo(memberNo, questionNo);
-            workBook.updateIsShared(isShared);
-        }
+    public void isSharedWorkBook(Long memberNo, Long workBookNo, Boolean isShared) {
+        WorkBook workBook = workBookRepository.findByMemberNoAndWorkBookNo(memberNo, workBookNo);
+        workBook.updateIsShared(isShared);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<ReadWorkBookDTO> getWorkBookMyPage(Long memberNo, Pageable pageable) {
+        Page<WorkBook> workBooks = workBookRepository.findByMemberNo(memberNo, pageable);
+
+        Page<ReadWorkBookDTO> readWorkBookDTOS = ReadWorkBookDTO.fromEntity(workBooks);
+
+        return readWorkBookDTOS;
     }
 }
