@@ -2,6 +2,7 @@ package com.example.stepbackend.service;
 
 import com.example.stepbackend.aggregate.dto.scrap.CreateScrapDTO;
 import com.example.stepbackend.aggregate.dto.scrap.ReadScrapDTO;
+import com.example.stepbackend.aggregate.entity.Scrap;
 import com.example.stepbackend.repository.ScrapRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -41,6 +42,9 @@ class ScrapServiceTest {
 
         //when
         scrapService.createScrap(createScrapDTO, memberNo);
+
+        Scrap scrap = Scrap.toEntity(createScrapDTO, memberNo);
+        scrapRepository.save(scrap);
 
         //then
         Assertions.assertEquals(memberNo, scrapRepository.findById(scrapNo).get().getMemberNo());

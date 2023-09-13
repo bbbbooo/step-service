@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta charset="UTF-8">
+    <title>Header</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.7.0/flowbite.min.js"></script>
+    <link rel="stylesheet" th:href="@{/css/fonts.css}" />
+</head>
+<body>
+<!--
+This example requires updating your template:
+
+```
+<html class="h-full bg-blue-100">
+<body class="h-full">
+```
+-->
+    <!-- https://tailwindui.com/components/application-ui/application-shells/stacked -->
+    <div class=" max-w-full min-h-full">
+        <header class="bg-white shadow">
+            <div class="flex ax-w-3xl md:mx-auto py-6 sm:px-6 lg:px-8 space-x-6">
+<!--                <img class="inline" src="../../static/assets/img/CACAMUCA.svg" alt="cacamuca">-->
+                <a href="/">
+                    <img class="inline w-60 h-20" th:src="@{/assets/img/step_logo.svg}" alt="로고"/>
+                </a>
+                <div class="grow"></div>
+                <div class="flex items-center gap-x-6">
+<!--                    <p th:text="${#authentication.name}"></p>-->
+                    <a sec:authorize="isAnonymous()" href="/member/registration" class="rounded-md bg-blue-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">회원가입</a>
+                    <a sec:authorize="isAnonymous()" href="/member/login" class="rounded-md bg-blue-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">로그인</a>
+<!--                    <a sec:authorize="hasAnyRole('ROLE_MEMBER', 'ROLE_ADMIN')" href="/logout" class="rounded-md bg-blue-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">로그아웃</a>-->
+<!--                    <a sec:authorize="hasAnyRole('ROLE_ADMIN')" href="/member/admin-list" class="rounded-md bg-blue-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">관리자페이지</a>-->
+<!--                    <a sec:authorize="hasAnyRole('ROLE_MEMBER', 'ROLE_ADMIN')" href="/member/my-page" class="rounded-md bg-blue-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">마이페이지</a>-->
+<!--                    <a sec:authorize="hasAnyRole('ROLE_MEMBER', 'ROLE_ADMIN')" href="/review/review" class="rounded-md bg-blue-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">리뷰쓰기</a>-->
+<!--                    <a sec:authorize="hasAnyRole('ROLE_MEMBER', 'ROLE_ADMIN')" href="/request" class="rounded-md bg-blue-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">식품 등록 요청</a>-->
+                </div>
+            </div>
+        </header>
+    </div>
+
+    <nav class="bg-blue-200">
+        <div class="max-w-screen-xl items-center justify-between mx-auto p-4">
+            <div class="bg-blue-200 hidden w-full md:block md:w-auto" id="navbar-dropdown">
+                <ul class="bg-blue-200 flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:border-0 md:bg-blue-200">
+                    <li>
+                        <button id="dropdownAsiaLink" data-dropdown-toggle="dropdownAsia" class="ml-8 bg-blue-200 flex items-center justify-between w-full py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 md:w-auto">
+                            AI문제추천
+<!--                            <svg class="w-2.5 h-2.5 ml-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">-->
+<!--                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>-->
+<!--                            </svg>-->
+                        </button>
+<!--                        <form action="/" method="get">-->
+<!--                        <div id="dropdownAsia" class="z-10 hidden font-normal bg-white divide-y divide-gray-100 rounded-lg shadow w-44">-->
+<!--                            <ul class="py-2 text-sm text-gray-700 " aria-labelledby="dropdownLargeButton">-->
+<!--                                <li>-->
+<!--                                    <a href="/country/?country=한국" class="block px-4 py-2 hover:bg-gray-100">한국(KOREA)</a>-->
+<!--                                </li>-->
+<!--                            </ul>-->
+<!--                        </div>-->
+<!--                        </form>-->
+                    </li>
+
+                    <li>
+                        <button id="dropdownEuropeLink" data-dropdown-toggle="dropdownEurope" class="ml-24 w-full bg-blue-200 flex items-center justify-between w-full py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 md:w-auto">
+                            나만의 문제집 만들기
+<!--                            <svg class="w-2.5 h-2.5 ml-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">-->
+<!--                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>-->
+<!--                            </svg>-->
+                        </button>
+<!--                        <form action="/" method="get">-->
+<!--                        &lt;!&ndash; Dropdown menu &ndash;&gt;-->
+<!--                        <div id="dropdownEurope" class="z-10 hidden font-normal bg-white divide-y divide-gray-100 rounded-lg shadow w-44">-->
+<!--                            <ul class="py-2 text-sm text-gray-700" aria-labelledby="dropdownLargeButton">-->
+<!--                                <li>-->
+<!--                                    <a href="/country/?country=프랑스" class="block px-4 py-2 hover:bg-gray-100">프랑스(FRANCE)</a>-->
+<!--                                </li>-->
+<!--                            </ul>-->
+<!--                        </div>-->
+<!--                        </form>-->
+                    </li>
+
+                    <li>
+                        <button id="dropdownNorthALink" data-dropdown-toggle="dropdownNorthA" class="ml-24 w-full bg-blue-200 flex items-center justify-between w-full py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 md:w-auto">
+                            문제집 자랑
+<!--                            <svg class="w-2.5 h-2.5 ml-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">-->
+<!--                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>-->
+<!--                            </svg>-->
+                        </button>
+<!--                        <form action="/" method="get">-->
+<!--                        &lt;!&ndash; Dropdown menu &ndash;&gt;-->
+<!--                        <div id="dropdownNorthA" class="z-10 hidden font-normal bg-white divide-y divide-gray-100 rounded-lg shadow w-44">-->
+<!--                            <ul class="py-2 text-sm text-gray-700" aria-labelledby="dropdownLargeButton">-->
+<!--                                <li>-->
+<!--                                    <a href="/country/?country=미국" class="block px-4 py-2 hover:bg-gray-100">미국(USA)</a>-->
+<!--                                </li>-->
+<!--                                <li>-->
+<!--                                    <a href="/country/?country=캐나다" class="block px-4 py-2 hover:bg-gray-100">캐나다(CANADA)</a>-->
+<!--                                </li>-->
+<!--                            </ul>-->
+<!--                        </div>-->
+<!--                        </form>-->
+                    </li>
+
+                    <li>
+                        <button id="dropdownEtcLink" data-dropdown-toggle="dropdownEtc" class="ml-24 w-full bg-blue-200 flex items-center justify-between w-full py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 md:w-auto">
+                            나의 학습현황
+<!--                            <svg class="w-2.5 h-2.5 ml-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">-->
+<!--                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>-->
+<!--                            </svg>-->
+                        </button>
+<!--                        <form action="/" method="get">-->
+<!--                        &lt;!&ndash; Dropdown menu &ndash;&gt;-->
+<!--                        <div id="dropdownEtc" class="z-10 hidden font-normal bg-white divide-y divide-gray-100 rounded-lg shadow w-44">-->
+<!--                            <ul class="py-2 text-sm text-gray-700" aria-labelledby="dropdownLargeButton">-->
+<!--                                <li>-->
+<!--                                    <a href="/country/?country=기타국가" class="block px-4 py-2 hover:bg-gray-100">기타국가</a>-->
+<!--                                </li>-->
+<!--                            </ul>-->
+<!--                        </div>-->
+<!--                        </form>-->
+                    </li>
+                </ul>
+            </div>
+        </div>
+</nav>
+</body>
+</html>
