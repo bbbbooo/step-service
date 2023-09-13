@@ -1,5 +1,6 @@
 package com.example.stepbackend.service;
 
+import com.example.stepbackend.aggregate.dto.workbook.ReadWorkBookDTO;
 import com.example.stepbackend.repository.WorkBookRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -8,6 +9,9 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
@@ -76,16 +80,17 @@ class WorkbookServiceTest {
     }
 
 
-//    @DisplayName("나만의 문제집 마이 페이지 조회")
-//    @Test
-//    void getWorkBook(){
-//        // given
-//        Long memberNo = 1L;
-//        Pageable pageable = PageRequest.of(0, 10);
-//
-//        // when
-//        Page<ReadWorkBookDTO> readWorkBookDTOS = workbookService.getWorkBookMyPage(memberNo, pageable);
-//
-//        // then
-//    }
+    @DisplayName("나만의 문제집 마이 페이지 조회")
+    @Test
+    void getWorkBook(){
+        // given
+        Long memberNo = 1L;
+        Pageable pageable = PageRequest.of(0, 10);
+
+        // when
+        Page<ReadWorkBookDTO> readWorkBookDTOS = workbookService.getWorkBookMyPage(memberNo, pageable);
+
+        // then
+        Assertions.assertNotNull(readWorkBookDTOS);
+    }
 }

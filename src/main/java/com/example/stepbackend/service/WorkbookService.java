@@ -1,9 +1,12 @@
 package com.example.stepbackend.service;
 
 import com.example.stepbackend.aggregate.dto.workbook.CreateWorkBookDTO;
+import com.example.stepbackend.aggregate.dto.workbook.ReadWorkBookDTO;
 import com.example.stepbackend.aggregate.entity.WorkBook;
 import com.example.stepbackend.repository.WorkBookRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,12 +40,12 @@ public class WorkbookService {
         workBook.updateIsShared(isShared);
     }
 
-//    @Transactional(readOnly = true)
-//    public Page<ReadWorkBookDTO> getWorkBookMyPage(Long memberNo, Pageable pageable) {
-//        Page<WorkBook> workBooks = workBookRepository.findByMemberNoOrderByGroupNo(memberNo, pageable);
-//
-//        Page<ReadWorkBookDTO> readWorkBookDTOS = ReadWorkBookDTO.fromEntity(workBooks);
-//
-//        return readWorkBookDTOS;
-//    }
+    @Transactional(readOnly = true)
+    public Page<ReadWorkBookDTO> getWorkBookMyPage(Long memberNo, Pageable pageable) {
+        Page<WorkBook> workBooks = workBookRepository.findByMemberNo(memberNo, pageable);
+
+        Page<ReadWorkBookDTO> readWorkBookDTOS = ReadWorkBookDTO.fromEntity(workBooks);
+
+        return readWorkBookDTOS;
+    }
 }
