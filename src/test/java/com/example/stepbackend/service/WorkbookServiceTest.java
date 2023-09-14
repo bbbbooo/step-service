@@ -3,6 +3,8 @@ package com.example.stepbackend.service;
 import com.example.stepbackend.aggregate.dto.workbook.CreateWorkBookDTO;
 import com.example.stepbackend.aggregate.dto.workbook.CreateWorkBookRequestDTO;
 import com.example.stepbackend.aggregate.dto.workbook.ReadWorkBookDTO;
+import com.example.stepbackend.aggregate.dto.workbook.ReadWorkBookDetailDTO;
+import com.example.stepbackend.aggregate.entity.WorkBook;
 import com.example.stepbackend.repository.WorkBookRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -94,4 +96,26 @@ class WorkbookServiceTest {
         // then
         Assertions.assertNotNull(readWorkBookDTOS);
     }
+
+    @DisplayName("나만의 문제집 상세 조회")
+    @Test
+    void getWorkBookDetail(){
+        // given
+        Long memberNo = 1L;
+        Long workBookNo = 1L;
+
+        WorkBook workBook = workBookRepository.findByMemberNoAndWorkBookNo(memberNo, workBookNo);
+
+        List<Integer> questionNos = Arrays.stream(workBook.getQuestionNos().split(", "))
+                .map(Integer::valueOf)
+                .collect(Collectors.toList());
+
+        // when
+        ReadWorkBookDetailDTO readWorkBookDetailDTO = workbookService.getWorkBookDetailMyPage(memberNo, workBookNo);
+
+        // then
+        Assertions.assertEquals(readWorkBookDetailDTO.getWorkBookName(),workBook.getWorkBookName());
+        Assertions.assertEquals(readWorkBookDetailDTO.getQuestionNos(), questionNos);
+    }
+
 }
