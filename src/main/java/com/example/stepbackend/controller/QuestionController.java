@@ -25,14 +25,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-@RestController
+@Controller
 @RequestMapping("/question")
 @RequiredArgsConstructor
 public class QuestionController {
 
     private final QuestionService questionService;
 
-    @PostMapping("{memberNo}")
+    @GetMapping
+    public String question() {
+        return "questions/question";
+    }
+
+    @PostMapping
+    @ResponseBody
     public ResponseEntity readQuestion(@CurrentUser User user) throws Exception {
         try {
             // db에 저장된 문제 탐색
