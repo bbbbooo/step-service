@@ -9,7 +9,6 @@ import javax.persistence.Column;
 @Data
 @Builder
 public class CreateScrapDTO {
-    private Long questionNo;
 
     private Integer markedNo;
 

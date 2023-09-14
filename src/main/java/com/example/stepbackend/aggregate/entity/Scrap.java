@@ -37,9 +37,9 @@ public class Scrap {
     @Comment("정답 여부")
     private Boolean correctedMarkingStatus;
 
-    public static Scrap toEntity(CreateScrapDTO createScrapDTO, Long memberNo) {
+    public static Scrap toEntity(CreateScrapDTO createScrapDTO, Long memberNo, Long questionNo) {
         return Scrap.builder()
-                .questionNo(createScrapDTO.getQuestionNo())
+                .questionNo(questionNo)
                 .markedNo(createScrapDTO.getMarkedNo())
                 .correctedMarkingStatus(createScrapDTO.getCorrectedMarkingStatus())
                 .memberNo(memberNo)
