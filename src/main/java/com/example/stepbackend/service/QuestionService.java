@@ -1,10 +1,8 @@
 package com.example.stepbackend.service;
 
 import com.example.stepbackend.aggregate.dto.question.QuestionDTO;
-import com.example.stepbackend.aggregate.dto.question.ReqQuestionDTO;
 import com.example.stepbackend.aggregate.dto.question.ResQuestionDTO;
 import com.example.stepbackend.aggregate.entity.Question;
-import com.example.stepbackend.aggregate.entity.QuestionByMember;
 import com.example.stepbackend.global.exception.ResourceNotFoundException;
 import com.example.stepbackend.repository.QuestionRepository;
 import com.example.stepbackend.repository.QuestionByMemberRepository;
@@ -14,7 +12,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,7 +24,7 @@ public class QuestionService {
 
     public List<ResQuestionDTO> readQuestion(Long userId) throws ResourceNotFoundException {
         List<Long> questionsBymember = QuestionByMemberRepository.findQuestionByMemberByQuestionByMemberNo(userId);
-        List<Question> questions = questionRepository.findByQuestionNoNotIn(questionsBymember);
+        List<Question> questions = questionRepository.findTop20ByQuestionNoNotIn(questionsBymember);
 
         if(!questions.isEmpty()) {
 

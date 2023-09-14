@@ -17,59 +17,68 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletResponse;
+import java.lang.reflect.Array;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-@RestController
+@Controller
 @RequestMapping("/question")
 @RequiredArgsConstructor
 public class QuestionController {
 
     private final QuestionService questionService;
 
-    @PostMapping("{memberNo}")
-    public ResponseEntity readQuestion(@CurrentUser User user) throws Exception {
-        try {
-            // db에 저장된 문제 탐색
-            Long userId = 1L;
-            List<ResQuestionDTO> res = questionService.readQuestion(userId);
-            return ResponseEntity.ok(res);
-        } catch (ResourceNotFoundException e) {
-            e.printStackTrace();
+    @GetMapping
+    public ModelAndView question(ModelAndView mv) {
+        Long userId = 1L;
+        List<ResQuestionDTO> res = questionService.readQuestion(userId);
 
-            String uri = "https://73e6fc73-1c71-424e-a25b-f77760a2e6e9.mock.pstmn.io/data";
-            ResponseEntity<String> responseEntity;
-            try {
-                RestTemplate restTemplate = new RestTemplate();
-                responseEntity = restTemplate.getForEntity(uri, String.class);
-            } catch (Exception ex) {
-                return ResponseEntity.badRequest().body(ex.getMessage());
-            }
-
-            JSONParser jsonParser = new JSONParser();
-            JSONObject jsonObject = (JSONObject) jsonParser.parse(responseEntity.getBody().toString());
-            JSONArray questions = (JSONArray) jsonObject.get("ques");
-
-            List<QuestionDTO> questionDTOS = new ArrayList<>();
-
-            for(Object questionObj : questions) {
-                JSONObject questionJSON = (JSONObject) questionObj;
-                QuestionDTO questionDTO =  questionService.convertToDto(questionJSON);
-                questionService.registQuestion(questionDTO);
-                questionDTOS.add(questionDTO);
-            }
-
-            HashMap map = new HashMap<>();
-            map.put("ques", questionDTOS);
-            return new ResponseEntity<>(map, HttpStatus.OK);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.badRequest().body(e.getMessage());
+        if(!res.isEmpty()) {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.appendField("res", res);
+            mv.addObject("res", jsonObject);
         }
+
+        mv.setViewName("questions/question");
+
+        return mv;
+    }
+
+    @PostMapping
+    @ResponseBody
+    public ResponseEntity readQuestion(@CurrentUser User user) throws Exception {
+        String uri = "https://73e6fc73-1c71-424e-a25b-f77760a2e6e9.mock.pstmn.io/data";
+        ResponseEntity<String> responseEntity;
+
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            responseEntity = restTemplate.getForEntity(uri, String.class);
+        } catch (Exception ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        }
+
+        JSONParser jsonParser = new JSONParser();
+        JSONObject jsonObject = (JSONObject) jsonParser.parse(responseEntity.getBody().toString());
+        JSONArray questions = (JSONArray) jsonObject.get("ques");
+
+        List<QuestionDTO> questionDTOS = new ArrayList<>();
+
+        for(Object questionObj : questions) {
+            JSONObject questionJSON = (JSONObject) questionObj;
+            QuestionDTO questionDTO =  questionService.convertToDto(questionJSON);
+            questionService.registQuestion(questionDTO);
+            questionDTOS.add(questionDTO);
+        }
+
+        HashMap map = new HashMap<>();
+        map.put("ques", questionDTOS);
+        return new ResponseEntity<>(map, HttpStatus.OK);
     }
 }
