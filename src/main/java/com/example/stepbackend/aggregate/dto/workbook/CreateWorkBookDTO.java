@@ -12,6 +12,8 @@ public class CreateWorkBookDTO {
 
     private String questionNos;
 
+    private String workBookName;
+
     private Long memberNo;
 
     public static CreateWorkBookDTO fromEntity(WorkBook workBook) {
@@ -19,6 +21,7 @@ public class CreateWorkBookDTO {
                 .workBookNo(workBook.getWorkBookNo())
                 .questionNos(workBook.getQuestionNos())
                 .memberNo(workBook.getMemberNo())
+                .workBookName(workBook.getWorkBookName())
                 .build();
     }
 }

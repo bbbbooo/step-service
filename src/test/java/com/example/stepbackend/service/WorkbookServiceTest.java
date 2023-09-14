@@ -1,6 +1,10 @@
 package com.example.stepbackend.service;
 
+import com.example.stepbackend.aggregate.dto.workbook.CreateWorkBookDTO;
+import com.example.stepbackend.aggregate.dto.workbook.CreateWorkBookRequestDTO;
 import com.example.stepbackend.aggregate.dto.workbook.ReadWorkBookDTO;
+import com.example.stepbackend.aggregate.dto.workbook.ReadWorkBookDetailDTO;
+import com.example.stepbackend.aggregate.entity.WorkBook;
 import com.example.stepbackend.repository.WorkBookRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -18,10 +22,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-
 @SpringBootTest
 @Transactional
 class WorkbookServiceTest {
@@ -37,24 +37,27 @@ class WorkbookServiceTest {
     @Test
     void createWorkbook(){
         // given
-        List<Integer> questionNos = Arrays.asList(1,2,3,4);
         Long memberNo = 1L;
+        List<Integer> questionNos = Arrays.asList(1,2,3,4);
+        String workBookName = "미미스크립트";
 
-        WorkBookRepository workBookRepository = mock(WorkBookRepository.class);
-        WorkbookService workbookService = new WorkbookService(workBookRepository);
+        CreateWorkBookRequestDTO createWorkBookRequest = CreateWorkBookRequestDTO.builder()
+                .workBookName(workBookName)
+                .questionNos(questionNos)
+                .build();
 
         String questionNosToString = questionNos.stream()
                 .map(String::valueOf)
                 .collect(Collectors.joining(", "));
 
         // when
-        workbookService.createWorkbook(memberNo, questionNos);
+        CreateWorkBookDTO createWorkBookDTO = workbookService.createWorkbook(createWorkBookRequest, memberNo);
 
         // then
-        verify(workBookRepository).save(argThat(workbook ->
-                workbook.getMemberNo().equals(memberNo) &&
-                        workbook.getQuestionNos().equals(questionNosToString)
-                ));
+        Assertions.assertTrue(createWorkBookDTO.getMemberNo().equals(memberNo) &&
+                createWorkBookDTO.getQuestionNos().equals(questionNosToString) &&
+                createWorkBookDTO.getWorkBookName().equals(workBookName)
+                );
     }
 
 
@@ -93,4 +96,26 @@ class WorkbookServiceTest {
         // then
         Assertions.assertNotNull(readWorkBookDTOS);
     }
+
+    @DisplayName("나만의 문제집 상세 조회")
+    @Test
+    void getWorkBookDetail(){
+        // given
+        Long memberNo = 1L;
+        Long workBookNo = 1L;
+
+        WorkBook workBook = workBookRepository.findByMemberNoAndWorkBookNo(memberNo, workBookNo);
+
+        List<Integer> questionNos = Arrays.stream(workBook.getQuestionNos().split(", "))
+                .map(Integer::valueOf)
+                .collect(Collectors.toList());
+
+        // when
+        ReadWorkBookDetailDTO readWorkBookDetailDTO = workbookService.getWorkBookDetailMyPage(memberNo, workBookNo);
+
+        // then
+        Assertions.assertEquals(readWorkBookDetailDTO.getWorkBookName(),workBook.getWorkBookName());
+        Assertions.assertEquals(readWorkBookDetailDTO.getQuestionNos(), questionNos);
+    }
+
 }
