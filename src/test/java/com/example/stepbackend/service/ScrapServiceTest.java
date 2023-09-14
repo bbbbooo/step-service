@@ -33,19 +33,20 @@ class ScrapServiceTest {
     void createScrapTest(){
         //given
         Long memberNo = 1L;
+        Long questionNo = 1L;
         CreateScrapDTO createScrapDTO = CreateScrapDTO.builder()
-                .questionNo(1L)
                 .markedNo(2)
                 .correctedMarkingStatus(false)
                 .build();
 
+
         //when
-        Scrap scrap = Scrap.toEntity(createScrapDTO, memberNo);
+        Scrap scrap = Scrap.toEntity(createScrapDTO, memberNo, questionNo);
         Scrap createdScrap = scrapRepository.save(scrap);
 
         //then
         Assertions.assertEquals(memberNo, createdScrap.getMemberNo());
-        Assertions.assertEquals(createScrapDTO.getQuestionNo(), createdScrap.getQuestionNo());
+        Assertions.assertEquals(questionNo, createdScrap.getQuestionNo());
     }
 
     @DisplayName("한 회원에 대한 스크랩 모두 조회")

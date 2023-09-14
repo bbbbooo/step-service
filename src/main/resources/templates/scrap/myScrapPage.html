@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:if="${allScrap.totalPages > 0}">
+    <div th:each="scraps : ${allScrap.content}">
+        <a th:text="${scraps.questionNo}"></a>
+        <a th:text="${scraps.questionBody}"></a>
+        <a th:text="${scraps.questionCorrectAnswer}"></a>
+        <a th:text="${scraps.questionLargeClassification}"></a>
+        <a th:text="${scraps.questionMiddleClassification}"></a>
+        <a th:text="${scraps.questionSmallClassification}"></a>
+    </div>
+    <div>
+        <!-- 이전 버튼 -->
+        <a th:if="${allScrap.hasPrevious}" th:href="@{${'myScrap'}(page=0)}">이전</a>
+
+        <!-- 페이지 번호 -->
+        <span th:each="i : ${#numbers.sequence(0, allScrap.totalPages - 1)}">
+            <a th:if="${allScrap.number == i}" th:text="${i + 1}"></a>
+            <a th:if="${allScrap.number != i}" th:href="@{${'myScrap'}(page=${i})}" th:text="${i + 1}"></a>
+        </span>
+
+        <!-- 다음 버튼 -->
+        <a th:if="${allScrap.hasNext}" th:href="@{${'myScrap'}(page=${allScrap.totalPages - 1})}">다음</a>
+    </div>
+</div>
+</body>
+</html>

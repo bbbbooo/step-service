@@ -69,6 +69,18 @@ class WorkbookServiceTest {
         Long memberNo = 1L;
         Long workBookNo = 1L;
 
+        List<Integer> questionNos = Arrays.asList(1,2,3);
+        String workBookName = "미미스크립트";
+
+        CreateWorkBookRequestDTO createWorkBookRequestDTO = CreateWorkBookRequestDTO.builder()
+                .workBookName(workBookName)
+                .questionNos(questionNos)
+                .build();
+
+        WorkBook workBook = WorkBook.toEntity(memberNo, createWorkBookRequestDTO);
+
+        workBookRepository.save(workBook);
+
         Boolean isShared = settings;
 
         // when
@@ -103,6 +115,18 @@ class WorkbookServiceTest {
         // given
         Long memberNo = 1L;
         Long workBookNo = 1L;
+
+        List<Integer> saveQuestionNos = Arrays.asList(1,2,3);
+        String workBookName = "미미스크립트";
+
+        CreateWorkBookRequestDTO createWorkBookRequestDTO = CreateWorkBookRequestDTO.builder()
+                .workBookName(workBookName)
+                .questionNos(saveQuestionNos)
+                .build();
+
+        WorkBook saveWorkBook = WorkBook.toEntity(memberNo, createWorkBookRequestDTO);
+
+        workBookRepository.save(saveWorkBook);
 
         WorkBook workBook = workBookRepository.findByMemberNoAndWorkBookNo(memberNo, workBookNo);
 
