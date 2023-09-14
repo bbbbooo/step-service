@@ -1,8 +1,10 @@
 package com.example.stepbackend.service;
 
 import com.example.stepbackend.aggregate.dto.question.QuestionDTO;
+import com.example.stepbackend.aggregate.dto.question.ReqQuestionByMemberDTO;
 import com.example.stepbackend.aggregate.dto.question.ResQuestionDTO;
 import com.example.stepbackend.aggregate.entity.Question;
+import com.example.stepbackend.aggregate.entity.QuestionByMember;
 import com.example.stepbackend.global.exception.ResourceNotFoundException;
 import com.example.stepbackend.repository.QuestionRepository;
 import com.example.stepbackend.repository.QuestionByMemberRepository;
@@ -10,8 +12,10 @@ import lombok.RequiredArgsConstructor;
 import net.minidev.json.JSONObject;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -19,11 +23,11 @@ import java.util.stream.Collectors;
 public class QuestionService {
 
     private final QuestionRepository questionRepository;
-    private final QuestionByMemberRepository QuestionByMemberRepository;
+    private final QuestionByMemberRepository questionByMemberRepository;
     private final ModelMapper modelMapper;
 
     public List<ResQuestionDTO> readQuestion(Long userId) throws ResourceNotFoundException {
-        List<Long> questionsBymember = QuestionByMemberRepository.findQuestionByMemberByQuestionByMemberNo(userId);
+        List<Long> questionsBymember = questionByMemberRepository.findQuestionByMemberByQuestionByMemberNo(userId);
         List<Question> questions = questionRepository.findTop20ByQuestionNoNotIn(questionsBymember);
 
         if(!questions.isEmpty()) {
@@ -36,6 +40,7 @@ public class QuestionService {
         }
     }
 
+    @Transactional
     public void registQuestion(QuestionDTO reqQuestionDto) throws Exception {
 
         if(reqQuestionDto == null) throw new Exception("등록할 문제가 없습니다.");
@@ -69,5 +74,19 @@ public class QuestionService {
         result.setView5(view5);
 
         return result;
+    }
+
+    @Transactional
+    public Long registQuestionByMember(ReqQuestionByMemberDTO req, Long memberNo) {
+
+        QuestionByMember questionByMember = new QuestionByMember();
+        questionByMember.setQuestionNo(req.getQuestionNo());
+        questionByMember.setMemberNo(memberNo);
+        questionByMember.setMarkedNo(req.getMarkedNo());
+        questionByMember.setCorrectedMarkingStatus(req.getCorrectedMarkingStatus());
+
+        QuestionByMember foundMemberHistory = questionByMemberRepository.save(questionByMember);
+
+        return foundMemberHistory.getQuestionByMemberNo();
     }
 }

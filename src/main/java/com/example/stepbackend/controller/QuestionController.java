@@ -1,6 +1,7 @@
 package com.example.stepbackend.controller;
 
 import com.example.stepbackend.aggregate.dto.question.QuestionDTO;
+import com.example.stepbackend.aggregate.dto.question.ReqQuestionByMemberDTO;
 import com.example.stepbackend.aggregate.dto.question.ResQuestionDTO;
 import com.example.stepbackend.aggregate.entity.User;
 import com.example.stepbackend.global.common.annotation.CurrentUser;
@@ -29,7 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-@RequestMapping("/question")
+@RequestMapping("/questions")
 @RequiredArgsConstructor
 public class QuestionController {
 
@@ -52,6 +53,16 @@ public class QuestionController {
     }
 
     @PostMapping
+    @ResponseBody
+    public ResponseEntity postQuestionByMember(@CurrentUser User user, @RequestBody ReqQuestionByMemberDTO req) {
+
+        Long memberNo = 1L;
+        questionService.registQuestionByMember(req, memberNo);
+
+        return new ResponseEntity<>("true", HttpStatus.OK);
+    }
+
+    @PostMapping("/creation-question")
     @ResponseBody
     public ResponseEntity readQuestion(@CurrentUser User user) throws Exception {
         String uri = "https://73e6fc73-1c71-424e-a25b-f77760a2e6e9.mock.pstmn.io/data";

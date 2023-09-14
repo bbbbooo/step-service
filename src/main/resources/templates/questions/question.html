@@ -6,6 +6,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://kit.fontawesome.com/ba60aefbce.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body>
 <th:block th:insert="~{common/header}" />
@@ -94,7 +95,7 @@
         </div>
         <div>
             <div class="btn_wrap btn_center_wrap">
-                <button type="button" onclick="isAnser();" class="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">
+                <button type="button" onclick="isAnswer();" class="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">
                     <span>채점 후 결과 확인</span>
                 </button>
                 <button type="button" class="text-white bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-green-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">
@@ -163,6 +164,7 @@
 <th:block th:insert="~{common/footer}" />
 <script th:inline="javascript">
     let res = /*[[${res}]]*/ null;
+    let item = null;
 
     for (let i = 0; i < res.res.length; i++) {
         let item = res.res[i];
@@ -182,7 +184,7 @@
 
     if (spanParagraph && storedData) {
         // let item = storedData;
-        let item = JSON.parse(storedData);
+        item = JSON.parse(storedData);
 
         // console.log(storedData);
 
@@ -198,6 +200,7 @@
 
     let imageMap = false;
     let answer = null;
+    let correctedMarkingStatus = null;
 
     function addImageBefore(number) {
 
@@ -245,7 +248,7 @@
         }
     });
 
-    function isAnser() {
+    function isAnswer() {
         if(answer === null) {
             alert('문제를 선택하지 않았습니다.');
         } else {
@@ -259,16 +262,27 @@
         document.querySelector('.modal').style.display = 'block';
 
         // 정답 표시
-        if(answer === storedData.questionCorrectAnswer) {
-            console.log(answer);
+        if(answer == item.questionCorrectAnswer) {
             document.getElementById('ans-wrong').innerText = '정답';
+            correctedMarkingStatus = true;
         }
 
         // 오답 표시
-        if(answer !== storedData.questionCorrectAnswer) {
-            // console.log(answer);
+        if(answer != item.questionCorrectAnswer) {
             document.getElementById('ans-wrong').innerText = '오답';
+            correctedMarkingStatus = false;
         }
+
+        const data = {
+            questionNo : item.questionNo,
+            markedNo: answer,
+            correctedMarkingStatus : correctedMarkingStatus
+        }
+
+        axios.post('/questions', data)
+            .then((res) => {
+                console.log(res)
+            })
     }
 
     function closeModal() {
