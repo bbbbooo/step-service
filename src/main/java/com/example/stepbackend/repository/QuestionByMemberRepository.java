@@ -13,7 +13,7 @@ import java.util.Optional;
 
 public interface QuestionByMemberRepository extends JpaRepository<QuestionByMember, Long> {
 
-    @Query(value = "SELECT A.question_no FROM question_to_member A WHERE A.member_no = :memberNo", nativeQuery = true)
+    @Query(value = "SELECT A.question_no FROM question_by_member A WHERE A.member_no = :memberNo", nativeQuery = true)
     List<Long> findQuestionByMemberByQuestionByMemberNo(@Param("memberNo") Long memberNo);
 
     Page<QuestionByMember> findByMemberNo(Long memberNo, Pageable pageable);
