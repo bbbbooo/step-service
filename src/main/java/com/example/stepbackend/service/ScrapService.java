@@ -23,8 +23,8 @@ public class ScrapService {
 
     /* 스크랩 저장 */
     @Transactional
-    public void createScrap(CreateScrapDTO createScrapDTO, Long memberNo) {
-        Scrap scrap = Scrap.toEntity(createScrapDTO, memberNo);
+    public void createScrap(CreateScrapDTO createScrapDTO, Long memberNo, Long questionNo) {
+        Scrap scrap = Scrap.toEntity(createScrapDTO, memberNo, questionNo);
         scrapRepository.save(scrap);
     }
 

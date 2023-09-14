@@ -1,7 +1,7 @@
 package com.example.stepbackend.controller;
 
 import com.example.stepbackend.aggregate.dto.workbook.CreateWorkBookDTO;
-import com.example.stepbackend.aggregate.dto.workbook.SelectedItemsDTO;
+import com.example.stepbackend.aggregate.dto.workbook.CreateWorkBookRequestDTO;
 import com.example.stepbackend.service.WorkbookService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,11 +22,9 @@ public class WorkBookController {
 
     @PostMapping("create")
     @ResponseBody
-    public ResponseEntity<CreateWorkBookDTO> create(@RequestBody SelectedItemsDTO selectedItemsDTO){
+    public ResponseEntity<CreateWorkBookDTO> create(@RequestBody CreateWorkBookRequestDTO createWorkBookRequestDTO){
         Long memberNo = 1L;
-        List<Integer> selectedItems = selectedItemsDTO.getSelectedItems();
-
-        CreateWorkBookDTO createWorkBookDTO = workbookService.createWorkbook(memberNo, selectedItems);
+        CreateWorkBookDTO createWorkBookDTO = workbookService.createWorkbook(createWorkBookRequestDTO, memberNo);
 
         return ResponseEntity.ok(createWorkBookDTO);
     }

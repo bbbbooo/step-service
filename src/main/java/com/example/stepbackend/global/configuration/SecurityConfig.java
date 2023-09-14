@@ -142,10 +142,10 @@ public class SecurityConfig {
                 .exceptionHandling()
                 .accessDeniedHandler(customAccessDeniedHandler);
 
-        http
-                .addFilterBefore(tokenAuthenticationFilter(customTokenService, customUserDetailService), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(authenticationExceptionFilter(resolver), TokenAuthenticationFilter.class)
-                .addFilterBefore(nullPointExceptionFilter, AuthenticationExceptionFilter.class);
+//        http
+//                .addFilterBefore(tokenAuthenticationFilter(customTokenService, customUserDetailService), UsernamePasswordAuthenticationFilter.class)
+//                .addFilterBefore(authenticationExceptionFilter(resolver), TokenAuthenticationFilter.class)
+//                .addFilterBefore(nullPointExceptionFilter, AuthenticationExceptionFilter.class);
 
         return http.build();
     }
