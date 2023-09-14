@@ -5,14 +5,11 @@ import com.example.stepbackend.aggregate.dto.question.ReqQuestionByMemberDTO;
 import com.example.stepbackend.aggregate.dto.question.ResQuestionDTO;
 import com.example.stepbackend.aggregate.entity.User;
 import com.example.stepbackend.global.common.annotation.CurrentUser;
-import com.example.stepbackend.global.exception.ResourceNotFoundException;
 import com.example.stepbackend.service.QuestionService;
 import lombok.RequiredArgsConstructor;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
-import net.minidev.json.parser.ParseException;
-import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -20,14 +17,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletResponse;
-import java.lang.reflect.Array;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/questions")
