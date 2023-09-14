@@ -79,18 +79,18 @@ class WorkbookServiceTest {
 
         WorkBook workBook = WorkBook.toEntity(memberNo, createWorkBookRequestDTO);
 
-        workBookRepository.save(workBook);
+        WorkBook foundWorkbook =  workBookRepository.save(workBook);
 
         Boolean isShared = settings;
 
         // when
-        workbookService.isSharedWorkBook(memberNo, workBookNo, isShared);
+        workbookService.isSharedWorkBook(memberNo, foundWorkbook.getWorkBookNo(), isShared);
 
         // then
         if(isShared){
-            Assertions.assertTrue(workBookRepository.findByMemberNoAndWorkBookNo(memberNo, workBookNo).getIsShared());
+            Assertions.assertTrue(workBookRepository.findByMemberNoAndWorkBookNo(memberNo, foundWorkbook.getWorkBookNo()).getIsShared());
         }else{
-            Assertions.assertFalse(workBookRepository.findByMemberNoAndWorkBookNo(memberNo, workBookNo).getIsShared());
+            Assertions.assertFalse(workBookRepository.findByMemberNoAndWorkBookNo(memberNo, foundWorkbook.getWorkBookNo()).getIsShared());
         }
     }
 
@@ -126,16 +126,16 @@ class WorkbookServiceTest {
 
         WorkBook saveWorkBook = WorkBook.toEntity(memberNo, createWorkBookRequestDTO);
 
-        workBookRepository.save(saveWorkBook);
+        WorkBook foundWorkbook =  workBookRepository.save(saveWorkBook);
 
-        WorkBook workBook = workBookRepository.findByMemberNoAndWorkBookNo(memberNo, workBookNo);
+        WorkBook workBook = workBookRepository.findByMemberNoAndWorkBookNo(memberNo, foundWorkbook.getWorkBookNo());
 
         List<Integer> questionNos = Arrays.stream(workBook.getQuestionNos().split(", "))
                 .map(Integer::valueOf)
                 .collect(Collectors.toList());
 
         // when
-        ReadWorkBookDetailDTO readWorkBookDetailDTO = workbookService.getWorkBookDetailMyPage(memberNo, workBookNo);
+        ReadWorkBookDetailDTO readWorkBookDetailDTO = workbookService.getWorkBookDetailMyPage(memberNo, foundWorkbook.getWorkBookNo());
 
         // then
         Assertions.assertEquals(readWorkBookDetailDTO.getWorkBookName(),workBook.getWorkBookName());

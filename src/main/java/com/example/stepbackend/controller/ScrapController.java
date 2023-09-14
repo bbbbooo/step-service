@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 @Controller
-@RequestMapping("/question")
+@RequestMapping("/scrap")
 @RequiredArgsConstructor
 public class ScrapController {
 
