@@ -43,9 +43,6 @@ class ScrapServiceTest {
         Scrap scrap = Scrap.toEntity(createScrapDTO, memberNo);
         Scrap createdScrap = scrapRepository.save(scrap);
 
-        Scrap scrap = Scrap.toEntity(createScrapDTO, memberNo);
-        scrapRepository.save(scrap);
-
         //then
         Assertions.assertEquals(memberNo, createdScrap.getMemberNo());
         Assertions.assertEquals(createScrapDTO.getQuestionNo(), createdScrap.getQuestionNo());
