@@ -80,6 +80,7 @@ This example requires updating your template:
 
                     <li>
                         <button id="dropdownSharingWorkbookLink" data-dropdown-toggle="dropdownSharingWorkbook" class="ml-24 w-full bg-slate-200 flex items-center justify-between w-full py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 md:w-auto">
+
                             문제집 자랑
 <!--                            <svg class="w-2.5 h-2.5 ml-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">-->
 <!--                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>-->
@@ -107,6 +108,19 @@ This example requires updating your template:
 <!--                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>-->
 <!--                            </svg>-->
                         </button>
+                        <div id="dropdownEtc" class="z-10 hidden font-normal bg-white divide-y divide-gray-100 rounded-lg shadow w-44 absolute mt-10 ml-24">
+                            <ul class="py-2 text-sm text-gray-700" aria-labelledby="dropdownEtcLink">
+                                <li>
+                                    <a href="#" class="block px-4 py-2 hover:bg-gray-100">나의 학습현황</a>
+                                </li>
+                                <li>
+                                    <a href="/scrap/myPage/myScrap" class="block px-4 py-2 hover:bg-gray-100">나의 스크랩</a>
+                                </li>
+                                <li>
+                                    <a href="#" class="block px-4 py-2 hover:bg-gray-100">나의 문제집</a>
+                                </li>
+                            </ul>
+                        </div>
 <!--                        <form action="/" method="get">-->
 <!--                        &lt;!&ndash; Dropdown menu &ndash;&gt;-->
 <!--                        <div id="dropdownMyStudy" class="z-10 hidden font-normal bg-white divide-y divide-gray-100 rounded-lg shadow w-44">-->
@@ -122,5 +136,23 @@ This example requires updating your template:
             </div>
         </div>
 </nav>
+
+<script>
+    // JavaScript 코드
+    document.addEventListener("DOMContentLoaded", function () {
+        const dropdownLink = document.getElementById("dropdownEtcLink");
+        const dropdownMenu = document.getElementById("dropdownEtc");
+
+        // 마우스 호버 시 드롭다운 메뉴를 펼치는 함수
+        dropdownLink.addEventListener("mouseenter", function () {
+            dropdownMenu.classList.remove("hidden");
+        });
+
+        // 드롭다운 메뉴 영역 밖을 마우스가 벗어나면 닫는 함수
+        dropdownMenu.addEventListener("mouseleave", function () {
+            dropdownMenu.classList.add("hidden");
+        });
+    });
+</script>
 </body>
 </html>
