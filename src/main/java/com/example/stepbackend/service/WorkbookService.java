@@ -1,6 +1,7 @@
 package com.example.stepbackend.service;
 
 import com.example.stepbackend.aggregate.dto.workbook.CreateWorkBookDTO;
+import com.example.stepbackend.aggregate.dto.workbook.CreateWorkBookRequestDTO;
 import com.example.stepbackend.aggregate.dto.workbook.ReadWorkBookDTO;
 import com.example.stepbackend.aggregate.entity.WorkBook;
 import com.example.stepbackend.repository.WorkBookRepository;
@@ -19,14 +20,10 @@ public class WorkbookService {
 
     private final WorkBookRepository workBookRepository;
 
+    /* createWorkBookRequestDTO 내부의 문제 번호 리스트를 문자열로 파싱 후 저장합니다. */
     @Transactional
-    public CreateWorkBookDTO createWorkbook(Long memberNo, List<Integer> questionNos) {
-
-        String questionNosToString = questionNos.stream()
-                .map(String::valueOf)
-                .collect(Collectors.joining(", "));
-
-        WorkBook workBook = WorkBook.toEntity(memberNo, questionNosToString);
+    public CreateWorkBookDTO createWorkbook(CreateWorkBookRequestDTO createWorkBookRequestDTO, Long memberNo) {
+        WorkBook workBook = WorkBook.toEntity(memberNo, createWorkBookRequestDTO);
         workBookRepository.save(workBook);
 
         CreateWorkBookDTO createWorkBookDTO = CreateWorkBookDTO.fromEntity(workBook);
