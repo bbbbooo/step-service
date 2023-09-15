@@ -63,4 +63,12 @@ public class WorkbookService {
 
         return readWorkBookDetailDTO;
     }
+
+    /* 문제집 제목 수정 */
+    @Transactional
+    public void updateWorkBookName(Long memberNo, Long workBookNo, String workBookName) {
+        WorkBook workBook = workBookRepository.findByMemberNoAndWorkBookNo(memberNo, workBookNo);
+
+        workBook.updateWorkBookName(workBookName);
+    }
 }

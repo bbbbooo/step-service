@@ -142,4 +142,18 @@ class WorkbookServiceTest {
         Assertions.assertEquals(readWorkBookDetailDTO.getQuestionNos(), questionNos);
     }
 
+    @DisplayName("문제집 제목 입력받아 수정")
+    @Test
+    void updateWorkBook(){
+        // given
+        Long memberNo = 1L;
+        Long workBookNo = 14L;
+        String workBookName = "룰루리랄라리";
+
+        // when
+        workbookService.updateWorkBookName(memberNo, workBookNo, workBookName);
+
+        // then
+        Assertions.assertEquals(workBookName, workBookRepository.findByMemberNoAndWorkBookNo(memberNo, workBookNo).getWorkBookName());
+    }
 }

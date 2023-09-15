@@ -11,10 +11,6 @@
             padding: 0;
         }
 
-        h1 {
-            color: #333;
-        }
-
         .flex {
             display: flex;
             flex-wrap: wrap;
@@ -47,8 +43,20 @@
             margin-bottom: 10px;
         }
 
+        /* 문서 이모티콘 추가 */
+        .question-count::before {
+            content: "\1F4DC";
+            margin-right: 5px;
+            font-size: 20px;
+        }
+
+        /* 문서 이모티콘 스타일 수정 */
+        .question-count {
+            font-size: 20px;
+        }
+
         .workbook button {
-            margin-top: auto; /* 버튼을 아래로 내림 */
+            margin-top: auto;
             background-color: #333;
             color: #fff;
             border: none;
@@ -76,8 +84,77 @@
         }
 
         .pagination a:hover {
-            background-color: #007BFF; /* 원하는 색상으로 변경하세요 */
-            color: white; /* 텍스트 색상 변경 (선택 사항) */
+            background-color: #007BFF;
+            color: white;
+        }
+
+        .question-name {
+            font-size: 25px;
+            font-weight : bold;
+        }
+
+        /* Question Type Styles */
+        .question-types {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px; /* 위쪽으로 10px 마진 추가 */
+            margin-bottom: 10px; /* 아래쪽으로 10px 마진 추가 */
+        }
+
+        .question-type-label {
+            border: 1px solid #ccc;
+            padding: 5px 10px;
+            border-radius: 20px; /* 끝이 살짝 둥근 네모난 라벨 스타일 */
+            font-weight: bold;
+        }
+
+        .title {
+            background-color: #a3cca3; /* 제목 추론 타입 배경색 */
+            color: #fff;
+        }
+
+        .blank {
+            background-color: #d5e6f5; /* 빈칸 추론 타입 배경색 */
+            color: #333;
+        }
+
+        /* 시간 이모티콘 추가 */
+        .time-updated::before {
+            content: "\1F552";
+            margin-right: 5px;
+            font-size: 20px;
+        }
+
+        .time-updated {
+            font-size: 20px;
+        }
+
+        .workbook-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center; /* 수직 가운데 정렬 */
+        }
+
+        .edit-button {
+            margin-left: 10px;
+            border: none;
+            padding: 2px 5px; /* 작은 크기의 버튼 */
+            border-radius: 20px;
+            background-color: #ccc;
+            color: white;
+            cursor: pointer;
+            font-size: 10px; /* 작은 폰트 크기 */
+            margin-top: 0; /* 버튼의 상단 마진 제거 */
+        }
+
+        .edit-button:hover {
+            background-color: #999;
+        }
+
+        .edit-button::after {
+            content: "\270E";
+            margin-right: 5px;
+            font-size: 10px; /* 작은 이모티콘 크기 */
         }
 
     </style>
@@ -88,15 +165,35 @@
     <div class="flex">
         <!-- Example workbook div (you can repeat this for each workbook) -->
         <div class="workbook" th:each="workbook : ${workbooks}">
-            <h1 th:text="${workbook.questionName}" style="color: #333;"></h1>
+            <div class="workbook-header">
+                <a class="question-name" th:text="${workbook.questionName}"></a>
+                <button class="edit-button" onclick="openModal('${workbook.questionName}', ${workbook.workbookNo})">수정</button>
+            </div>
 
-            <!-- Workbook Details -->
-            <p>문제 개수:<span th:text="${#arrays.length(workbook.questionNos)}"></span></p>
+            <!-- 모달 창 내부에 workbookNo를 저장하는 input 필드를 추가 -->
+            <div id="myModal" class="modal">
+                <div class="modal-content">
+                    <span class="close" onclick="closeModal()">&times;</span>
+                    <h2>문제집 수정</h2>
+                    <input type="text" id="workBookName" value="">
+                    <!-- workbookNo 값을 data-workbookno 속성에 저장 -->
+                    <input type="hidden" id="workBookNo" th:value="${workbook.workBookNo}">
+                    <button onclick="updateWorkbook()">확인</button>
+                </div>
+            </div>
+
+            <!-- Workbook Question Numbers -->
+            <span class="question-count" th:text="${#arrays.length(workbook.questionNos)}"></span>
 
             <!-- Question Type -->
-            <p>문제 유형:<span th:text="${workbook.questionTypes}"></span></p>
+            <div class="question-types">
+                <span th:each="type : ${workbook.questionTypes}">
+                    <span th:if="${type == 'title'}" class="question-type-label title">제목 추론</span>
+                    <span th:if="${type == 'blank'}" class="question-type-label blank">빈칸 추론</span>
+                </span>
+            </div>
 
-            <p th:text="${workbook.lastUpdatedTime}"></p>
+            <p class='time-updated' th:text="${workbook.lastUpdatedTime}"></p>
 
             <!-- Start Button -->
             <button type="button"> 문제집 풀기 </button>
@@ -122,5 +219,45 @@
 
 </div>
 <th:block th:insert="~{common/footer}" />
+
+<script>
+    // 모달 창 열기
+    function openModal(questionName, workbookNo) {
+        var modal = document.getElementById("myModal");
+        var newNameInput = document.getElementById("workBookName");
+        newNameInput.value = questionName;
+        modal.style.display = "block";
+    }
+
+    // 모달 창 닫기
+    function closeModal() {
+        var modal = document.getElementById("myModal");
+        modal.style.display = "none";
+    }
+
+    // 문제집 수정 요청 보내기
+    function updateWorkbook() {
+        var workBookName = document.getElementById("workBookName").value;
+        var workbookNo = document.getElementById("workBookNo").value;
+
+        // 서버로 수정 요청을 보내는 부분
+        fetch('/workbook/update', {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ workBookName: workBookName, workbookNo: workbookNo })
+        })
+            .then(response => {
+                if (response.ok) {
+                    closeModal();
+                } else {
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+</script>
 </body>
 </html>
