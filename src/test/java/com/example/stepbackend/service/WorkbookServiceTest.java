@@ -1,9 +1,6 @@
 package com.example.stepbackend.service;
 
-import com.example.stepbackend.aggregate.dto.workbook.CreateWorkBookDTO;
-import com.example.stepbackend.aggregate.dto.workbook.CreateWorkBookRequestDTO;
-import com.example.stepbackend.aggregate.dto.workbook.ReadWorkBookDTO;
-import com.example.stepbackend.aggregate.dto.workbook.ReadWorkBookDetailDTO;
+import com.example.stepbackend.aggregate.dto.workbook.*;
 import com.example.stepbackend.aggregate.entity.WorkBook;
 import com.example.stepbackend.repository.WorkBookRepository;
 import org.junit.jupiter.api.Assertions;
@@ -153,8 +150,13 @@ class WorkbookServiceTest {
                 .build();
         workBookRepository.save(workBook);
 
+        UpdateWorkBookNameDTO updateWorkBookNameDTO = UpdateWorkBookNameDTO.builder()
+                .workBookNo(workBook.getWorkBookNo())
+                .workBookName(workBookName)
+                .build();
+
         // when
-        workbookService.updateWorkBookName(workBook.getWorkBookNo(), workBookName);
+        workbookService.updateWorkBookName(updateWorkBookNameDTO);
 
         // then
         Assertions.assertEquals(workBookName, workBookRepository.findByWorkBookNo(workBook.getWorkBookNo()).getWorkBookName());

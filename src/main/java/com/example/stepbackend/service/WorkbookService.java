@@ -1,9 +1,6 @@
 package com.example.stepbackend.service;
 
-import com.example.stepbackend.aggregate.dto.workbook.CreateWorkBookDTO;
-import com.example.stepbackend.aggregate.dto.workbook.CreateWorkBookRequestDTO;
-import com.example.stepbackend.aggregate.dto.workbook.ReadWorkBookDTO;
-import com.example.stepbackend.aggregate.dto.workbook.ReadWorkBookDetailDTO;
+import com.example.stepbackend.aggregate.dto.workbook.*;
 import com.example.stepbackend.aggregate.entity.WorkBook;
 import com.example.stepbackend.repository.QuestionRepository;
 import com.example.stepbackend.repository.WorkBookRepository;
@@ -66,11 +63,11 @@ public class WorkbookService {
 
     /* 문제집 제목 수정 */
     @Transactional
-    public void updateWorkBookName(Long workBookNo, String workBookName) {
-        WorkBook workBook = workBookRepository.findByWorkBookNo(workBookNo);
+    public void updateWorkBookName(UpdateWorkBookNameDTO updateWorkBookNameDTO) {
+        WorkBook workBook = workBookRepository.findByWorkBookNo(updateWorkBookNameDTO.getWorkBookNo());
 
         if (workBook != null){
-            workBook.updateWorkBookName(workBookName);
+            workBook.updateWorkBookName(updateWorkBookNameDTO.getWorkBookName());
         }
     }
 }
