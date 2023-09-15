@@ -5,6 +5,9 @@ import lombok.*;
 import org.hibernate.annotations.Comment;
 
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
@@ -37,16 +40,31 @@ public class WorkBook {
     @Comment("공유 여부")
     private Boolean isShared;
 
-    public static WorkBook toEntity(Long memberNo, CreateWorkBookRequestDTO createWorkBookRequestDTO) {
+    @Column
+    @Comment("나만의 문제에 존재하는 문제 타입들")
+    private String questionTypes;
+
+    @Column
+    @Comment("최종 수정 시간")
+    private LocalDateTime lastUpdatedTime;
+
+    public static WorkBook toEntity(Long memberNo, CreateWorkBookRequestDTO createWorkBookRequestDTO, List<String> questionTypes) {
         String questionNosToString = createWorkBookRequestDTO.getQuestionNos().stream()
                 .map(String::valueOf)
                 .collect(Collectors.joining(", "));
+
+        String questionTypesToString = questionTypes.stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining(", "));
+
 
         return WorkBook.builder()
                 .memberNo(memberNo)
                 .questionNos(questionNosToString)
                 .workBookName(createWorkBookRequestDTO.getWorkBookName())
                 .isShared(false)
+                .questionTypes(questionTypesToString)
+                .lastUpdatedTime(LocalDateTime.now())
                 .build();
     }
 

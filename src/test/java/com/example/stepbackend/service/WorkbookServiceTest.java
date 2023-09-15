@@ -38,7 +38,7 @@ class WorkbookServiceTest {
     void createWorkbook(){
         // given
         Long memberNo = 1L;
-        List<Integer> questionNos = Arrays.asList(1,2,3,4);
+        List<Long> questionNos = Arrays.asList(1L,2L,3L,4L);
         String workBookName = "미미스크립트";
 
         CreateWorkBookRequestDTO createWorkBookRequest = CreateWorkBookRequestDTO.builder()
@@ -67,9 +67,9 @@ class WorkbookServiceTest {
     void isSharedWorkBook(boolean settings){
         // given
         Long memberNo = 1L;
-        Long workBookNo = 1L;
 
-        List<Integer> questionNos = Arrays.asList(1,2,3);
+        List<Long> questionNos = Arrays.asList(1L,2L,3L);
+        List<String> questionTypes = Arrays.asList("blank", "title");
         String workBookName = "미미스크립트";
 
         CreateWorkBookRequestDTO createWorkBookRequestDTO = CreateWorkBookRequestDTO.builder()
@@ -77,7 +77,7 @@ class WorkbookServiceTest {
                 .questionNos(questionNos)
                 .build();
 
-        WorkBook workBook = WorkBook.toEntity(memberNo, createWorkBookRequestDTO);
+        WorkBook workBook = WorkBook.toEntity(memberNo, createWorkBookRequestDTO, questionTypes);
 
         WorkBook foundWorkbook =  workBookRepository.save(workBook);
 
@@ -114,9 +114,9 @@ class WorkbookServiceTest {
     void getWorkBookDetail(){
         // given
         Long memberNo = 1L;
-        Long workBookNo = 1L;
 
-        List<Integer> saveQuestionNos = Arrays.asList(1,2,3);
+        List<Long> saveQuestionNos = Arrays.asList(1L,2L,3L);
+        List<String> questionTypes = Arrays.asList("blank", "title");
         String workBookName = "미미스크립트";
 
         CreateWorkBookRequestDTO createWorkBookRequestDTO = CreateWorkBookRequestDTO.builder()
@@ -124,7 +124,7 @@ class WorkbookServiceTest {
                 .questionNos(saveQuestionNos)
                 .build();
 
-        WorkBook saveWorkBook = WorkBook.toEntity(memberNo, createWorkBookRequestDTO);
+        WorkBook saveWorkBook = WorkBook.toEntity(memberNo, createWorkBookRequestDTO, questionTypes);
 
         WorkBook foundWorkbook =  workBookRepository.save(saveWorkBook);
 
