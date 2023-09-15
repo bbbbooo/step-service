@@ -56,16 +56,9 @@
         }
 
         .workbook button {
-            margin-top: auto;
-            background-color: #333;
-            color: #fff;
             border: none;
             padding: 10px 20px;
             cursor: pointer;
-        }
-
-        .workbook button:hover {
-            background-color: #555;
         }
 
         /* 페이징 스타일 */
@@ -140,7 +133,7 @@
             border: none;
             padding: 2px 5px; /* 작은 크기의 버튼 */
             border-radius: 20px;
-            background-color: #ccc;
+            background-color: #333;
             color: white;
             cursor: pointer;
             font-size: 10px; /* 작은 폰트 크기 */
@@ -226,6 +219,48 @@
             background-color: #555;
         }
 
+        /* 문제 풀이와 문제 공유 버튼 컨테이너 스타일 */
+        .button-container {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        /* 문제 풀이 버튼 스타일 */
+        .solve-button {
+            background-color: #4CAF50; /* 문제 풀이 버튼 배경색 */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            width: calc(45% - 5px);
+            border-radius: 5px;
+            font-size: 16px;
+            display: inline-block; /* 가로로 나란히 표시 */
+            margin-right: 5px; /* 버튼 사이 간격 조절 */
+        }
+
+
+        .solve-button:hover {
+            background-color: #45a049;
+        }
+
+        /* 문제 공유 버튼 스타일 */
+        .share-button {
+            background-color: #007BFF; /* 문제 공유 버튼 배경색 */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            width: calc(45% - 5px);
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+            display: inline-block; /* 가로로 나란히 표시 */
+            margin-left: 5px; /* 버튼 사이 간격 조절 */
+        }
+
+        .share-button:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 <body>
@@ -253,8 +288,11 @@
 
             <p class='time-updated' th:text="${workbook.lastUpdatedTime}"></p>
 
-            <!-- Start Button -->
-            <button type="button"> 문제집 풀기 </button>
+            <!-- Button -->
+            <div class="button-container">
+                <button class="solve-button">문제 풀이</button>
+                <button class="share-button">문제 공유</button>
+            </div>
         </div>
     </div>
 
@@ -328,8 +366,11 @@
             body: JSON.stringify({ workBookName: workBookName, workBookNo: workbookNo })
         })
             .then(response => {
+                alert("성공적으로 수정되었습니다.")
+                window.location.reload();
             })
             .catch(error => {
+                alert("수정하는데 실패하였습니다.")
             });
     }
 </script>
