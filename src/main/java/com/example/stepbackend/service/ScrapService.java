@@ -1,14 +1,18 @@
 package com.example.stepbackend.service;
 
 import com.example.stepbackend.aggregate.dto.scrap.CreateScrapDTO;
+import com.example.stepbackend.aggregate.dto.scrap.ReadScrapByMemberDTO;
 import com.example.stepbackend.aggregate.dto.scrap.ReadScrapDTO;
 import com.example.stepbackend.aggregate.entity.Question;
+import com.example.stepbackend.aggregate.entity.QuestionByMember;
 import com.example.stepbackend.aggregate.entity.Scrap;
+import com.example.stepbackend.repository.QuestionByMemberRepository;
 import com.example.stepbackend.repository.QuestionRepository;
 import com.example.stepbackend.repository.ScrapRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +23,10 @@ import java.util.List;
 public class ScrapService {
 
     private final ScrapRepository scrapRepository;
+
     private final QuestionRepository questionRepository;
+
+    private final QuestionByMemberRepository questionByMemberRepository;
 
     /* 스크랩 저장 */
     @Transactional
@@ -35,6 +42,24 @@ public class ScrapService {
 
         Page<ReadScrapDTO> pagedScraps = ReadScrapDTO.fromEntity(questions);
         return pagedScraps;
+    }
+
+    @Transactional(readOnly = true)
+    public Page<ReadScrapByMemberDTO> findAllScrapByMember(Long memberNo, Pageable pageable) {
+        Page<QuestionByMember> questionByMembers = questionByMemberRepository.findByMemberNo(memberNo, pageable);
+
+        Page<ReadScrapByMemberDTO> readScrapByMemberDTOS = ReadScrapByMemberDTO.fromEntity(questionByMembers);
+
+        return readScrapByMemberDTOS;
+    }
+
+    @Transactional(readOnly = true)
+    public ReadScrapDTO findScrap(Long questionNo) {
+        Question question = questionRepository.findByQuestionNo(questionNo);
+
+        ReadScrapDTO readScrapDTO = ReadScrapDTO.fromEntity(question);
+
+        return readScrapDTO;
     }
 
     /* 한 회원에 대한 모든 스크랩 삭제*/
