@@ -78,5 +78,6 @@ public class WorkBook {
     public void updateWorkBookName(String workBookName, String description) {
         this.workBookName = workBookName;
         this.description = description;
+        this.lastUpdatedTime = LocalDateTime.now();
     }
 }
