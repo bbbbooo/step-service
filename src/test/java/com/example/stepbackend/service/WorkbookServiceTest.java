@@ -146,14 +146,17 @@ class WorkbookServiceTest {
     @Test
     void updateWorkBook(){
         // given
-        Long memberNo = 1L;
-        Long workBookNo = 14L;
         String workBookName = "룰루리랄라리";
 
+        WorkBook workBook = WorkBook.builder()
+                .workBookName(workBookName)
+                .build();
+        workBookRepository.save(workBook);
+
         // when
-        workbookService.updateWorkBookName(memberNo, workBookNo, workBookName);
+        workbookService.updateWorkBookName(workBook.getWorkBookNo(), workBookName);
 
         // then
-        Assertions.assertEquals(workBookName, workBookRepository.findByMemberNoAndWorkBookNo(memberNo, workBookNo).getWorkBookName());
+        Assertions.assertEquals(workBookName, workBookRepository.findByWorkBookNo(workBook.getWorkBookNo()).getWorkBookName());
     }
 }

@@ -18,5 +18,7 @@ public interface WorkBookRepository extends JpaRepository<WorkBook, Long> {
 
     @Query("SELECT DISTINCT q.questionViewType FROM Question q WHERE q.questionNo IN :questionNos")
     List<String> findDistinctQuestionTypes(@Param("questionNos") List<Long> questionNos);
+
+    WorkBook findByWorkBookNo(Long workBookNo);
 }
 

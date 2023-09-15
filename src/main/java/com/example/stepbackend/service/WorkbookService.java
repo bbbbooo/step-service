@@ -66,9 +66,11 @@ public class WorkbookService {
 
     /* 문제집 제목 수정 */
     @Transactional
-    public void updateWorkBookName(Long memberNo, Long workBookNo, String workBookName) {
-        WorkBook workBook = workBookRepository.findByMemberNoAndWorkBookNo(memberNo, workBookNo);
+    public void updateWorkBookName(Long workBookNo, String workBookName) {
+        WorkBook workBook = workBookRepository.findByWorkBookNo(workBookNo);
 
-        workBook.updateWorkBookName(workBookName);
+        if (workBook != null){
+            workBook.updateWorkBookName(workBookName);
+        }
     }
 }
