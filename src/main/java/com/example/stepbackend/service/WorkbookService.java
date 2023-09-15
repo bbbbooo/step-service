@@ -63,11 +63,16 @@ public class WorkbookService {
 
     /* 문제집 제목 수정 */
     @Transactional
-    public void updateWorkBookName(UpdateWorkBookNameDTO updateWorkBookNameDTO) {
-        WorkBook workBook = workBookRepository.findByWorkBookNo(updateWorkBookNameDTO.getWorkBookNo());
+    public UpdateWorkBookResponseDTO updateWorkBookName(UpdateWorkBookDTO updateWorkBookDTO) {
+        WorkBook workBook = workBookRepository.findByWorkBookNo(updateWorkBookDTO.getWorkBookNo());
 
-        if (workBook != null){
-            workBook.updateWorkBookName(updateWorkBookNameDTO.getWorkBookName());
+        if (workBook == null){
+            return null;
         }
+        workBook.updateWorkBookName(updateWorkBookDTO.getWorkBookName(), updateWorkBookDTO.getDescription());
+
+        UpdateWorkBookResponseDTO updateWorkBookResponseDTO = UpdateWorkBookResponseDTO.toEntity(workBook);
+
+        return updateWorkBookResponseDTO;
     }
 }

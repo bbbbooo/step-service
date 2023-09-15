@@ -32,6 +32,8 @@ public class ReadWorkBookDTO {
 
     private String lastUpdatedTime;
 
+    private String description;
+
     public static Page<ReadWorkBookDTO> fromEntity(Page<WorkBook> workBooks) {
         List<ReadWorkBookDTO> readWorkBookDTOS = workBooks.getContent().stream().map(ReadWorkBookDTO::fromEntity).collect(Collectors.toList());
         return new PageImpl<>(readWorkBookDTOS, workBooks.getPageable(), workBooks.getTotalElements());
@@ -53,6 +55,7 @@ public class ReadWorkBookDTO {
                 .questionTypes(questionTypes)
                 .questionName(workBook.getWorkBookName())
                 .lastUpdatedTime(formattedLastUpdatedTime)
+                .description(workBook.getDescription())
                 .build();
     }
 }

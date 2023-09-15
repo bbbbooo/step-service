@@ -1,9 +1,6 @@
 package com.example.stepbackend.controller;
 
-import com.example.stepbackend.aggregate.dto.workbook.CreateWorkBookDTO;
-import com.example.stepbackend.aggregate.dto.workbook.CreateWorkBookRequestDTO;
-import com.example.stepbackend.aggregate.dto.workbook.ReadWorkBookDTO;
-import com.example.stepbackend.aggregate.dto.workbook.UpdateWorkBookNameDTO;
+import com.example.stepbackend.aggregate.dto.workbook.*;
 import com.example.stepbackend.service.WorkbookService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -43,8 +40,8 @@ public class WorkBookController {
 
     @PatchMapping("myPage/update")
     @ResponseBody
-    public String updateWorkBookName(@RequestBody UpdateWorkBookNameDTO updateWorkBookNameDTO){
-        workbookService.updateWorkBookName(updateWorkBookNameDTO);
+    public String updateWorkBookName(@RequestBody UpdateWorkBookDTO updateWorkBookDTO){
+        UpdateWorkBookResponseDTO updatedWorkBookName = workbookService.updateWorkBookName(updateWorkBookDTO);
 
         return "success";
     }
