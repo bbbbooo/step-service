@@ -29,14 +29,17 @@ public class QuestionController {
     private final QuestionService questionService;
 
     @GetMapping
-    public ModelAndView question(ModelAndView mv) {
+    public ModelAndView question(@RequestParam String type,  ModelAndView mv) {
         Long userId = 1L;
-        List<ResQuestionDTO> res = questionService.readQuestion(userId);
+        List<ResQuestionDTO> res = questionService.readQuestion(type, userId);
+
+        JSONObject jsonObject = new JSONObject();
 
         if(!res.isEmpty()) {
-            JSONObject jsonObject = new JSONObject();
             jsonObject.appendField("res", res);
             mv.addObject("res", jsonObject);
+        } else {
+            mv.addObject("res", null);
         }
 
         mv.setViewName("questions/question");
@@ -56,8 +59,12 @@ public class QuestionController {
 
     @PostMapping("/creation-question")
     @ResponseBody
-    public ResponseEntity readQuestion(@CurrentUser User user) throws Exception {
-        String uri = "https://73e6fc73-1c71-424e-a25b-f77760a2e6e9.mock.pstmn.io/data";
+    public ResponseEntity readQuestion(@RequestParam String type, @CurrentUser User user) throws Exception {
+        // 모델 서빙서버 url
+//        String uri = "http://192.168.0.59:5050/quiz";
+
+        // mock 서버 url
+        String uri = "https://73e6fc73-1c71-424e-a25b-f77760a2e6e9.mock.pstmn.io/data?type=" + type;
         ResponseEntity<String> responseEntity;
 
         try {
@@ -69,15 +76,28 @@ public class QuestionController {
 
         JSONParser jsonParser = new JSONParser();
         JSONObject jsonObject = (JSONObject) jsonParser.parse(responseEntity.getBody().toString());
-        JSONArray questions = (JSONArray) jsonObject.get("ques");
+
+        JSONArray questions = null;
+        String classification = null;
+
+        if(jsonObject.get("blank") != null) {
+            questions = (JSONArray) jsonObject.get("blank");
+            classification = "blank";
+        } else {
+            questions = (JSONArray) jsonObject.get("title");
+            classification = "title";
+        }
 
         List<QuestionDTO> questionDTOS = new ArrayList<>();
+        int count = 1;
 
         for(Object questionObj : questions) {
+            String questionCount = String.valueOf(count);
             JSONObject questionJSON = (JSONObject) questionObj;
-            QuestionDTO questionDTO =  questionService.convertToDto(questionJSON);
+            QuestionDTO questionDTO =  questionService.convertToDto(questionJSON, questionCount, classification);
             questionService.registQuestion(questionDTO);
             questionDTOS.add(questionDTO);
+            count++;
         }
 
         HashMap map = new HashMap<>();

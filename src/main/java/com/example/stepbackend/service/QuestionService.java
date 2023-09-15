@@ -14,6 +14,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -26,18 +27,27 @@ public class QuestionService {
     private final QuestionByMemberRepository questionByMemberRepository;
     private final ModelMapper modelMapper;
 
-    public List<ResQuestionDTO> readQuestion(Long userId) throws ResourceNotFoundException {
-        List<Long> questionsBymember = questionByMemberRepository.findQuestionByMemberByQuestionByMemberNo(userId);
-        List<Question> questions = questionRepository.findTop20ByQuestionNoNotIn(questionsBymember);
+    public List<ResQuestionDTO> readQuestion(String type, Long userId) throws ResourceNotFoundException {
+        List<Long> questionsByMember = questionByMemberRepository.findQuestionByMemberByQuestionByMemberNo(userId);
+
+        List<Question> questions;
+
+        if(questionsByMember.isEmpty()) {
+            questions = questionRepository.findTop10ByQuestionViewType(type);
+        } else {
+            questions = questionRepository.findTop10ByQuestionNoNotInAndQuestionViewType(questionsByMember, type);
+        }
+
+        List<ResQuestionDTO> results = new ArrayList<>();
 
         if(!questions.isEmpty()) {
 
-            List<ResQuestionDTO> results = questions.stream().map(question -> modelMapper.map(question, ResQuestionDTO.class)).collect(Collectors.toList());
+            results = questions.stream().map(question -> modelMapper.map(question, ResQuestionDTO.class)).collect(Collectors.toList());
 
             return results;
-        } else {
-            throw new ResourceNotFoundException("회원에게 제공할 만한 문제가 없습니다.");
         }
+
+        return results;
     }
 
     @Transactional
@@ -47,25 +57,33 @@ public class QuestionService {
 
         Question question = reqQuestionDto.toEntity();
 
-        questionRepository.save(question);
+        Question foundQuestion =  questionRepository.save(question);
     }
 
-    public QuestionDTO convertToDto(JSONObject jsonObject) {
+    public QuestionDTO convertToDto(JSONObject jsonObject, String questionCount, String classification) {
 
-        String main = (String) jsonObject.get("main");
-        String classification = (String) jsonObject.get("class");
-        Integer answer = (Integer) jsonObject.get("answer");
-        String subject = (String) jsonObject.get("subject");
-        String view1 = (String) jsonObject.get("view1");
-        String view2 = (String) jsonObject.get("view2");
-        String view3 = (String) jsonObject.get("view3");
-        String view4 = (String) jsonObject.get("view4");
-        String view5 = (String) jsonObject.get("view5");
+        JSONObject json = (JSONObject) jsonObject.get("Q"+questionCount);
+
+        String main = (String) json.get("main");
+        Integer answer = (Integer) json.get("answer");
+        String subject = null;
+        String view1 = (String) json.get("view1");
+        String view2 = (String) json.get("view2");
+        String view3 = (String) json.get("view3");
+        String view4 = (String) json.get("view4");
+        String view5 = (String) json.get("view5");
 
         QuestionDTO result = new QuestionDTO();
         result.setQuestionBody(main);
         result.setQuestionViewType(classification);
         result.setQuestionCorrectAnswer(answer);
+
+        if(classification.equals("title")) {
+            subject = "다음 글의 제목으로 가장 적절한 것은?";
+        } else {
+            subject = "다음 빈칸에 들어갈 말로 가장 적절한 것을 고르시오.";
+        }
+
         result.setQuestionSubject(subject);
         result.setView1(view1);
         result.setView2(view2);
