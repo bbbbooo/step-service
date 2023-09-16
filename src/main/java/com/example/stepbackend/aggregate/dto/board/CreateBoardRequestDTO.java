@@ -12,5 +12,5 @@ public class CreateBoardRequestDTO {
 
     private String description;
 
-    private Long workBookNo;
+    private String workBookNo;
 }

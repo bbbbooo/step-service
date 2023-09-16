@@ -343,7 +343,7 @@
             <!-- Button -->
             <div class="button-container">
                 <button class="solve-button">문제 풀이</button>
-                <button class="share-button" onclick="openShareModal()">문제 공유</button>
+                <button class="share-button" th:attr="onclick='openShareModal(' + ${workbook.workBookNo} + ')'">문제 공유</button>
             </div>
         </div>
     </div>
@@ -475,9 +475,12 @@
     }
 
     // 공유 모달 열기 함수
-    function openShareModal() {
+    function openShareModal(workbookNo) {
+        console.log(workbookNo);
         var shareModal = document.getElementById("shareModal");
         shareModal.style.display = "block";
+
+        document.getElementById('workBookName').setAttribute('data-workbook-no', workbookNo);
     }
 
     // 공유 모달 닫기 함수
@@ -491,6 +494,8 @@
         var shareWorkBookName = document.getElementById('shareWorkBookName').value;
         var shareDescription = document.getElementById('shareDescription').value;
         var workbookNo = document.getElementById('workBookName').getAttribute('data-workbook-no');
+
+        console.log(workbookNo);
 
         // 데이터를 서버로 보내고 엔드포인트로 처리
         sendDataToServerForSharing(shareWorkBookName, shareDescription, workbookNo);
