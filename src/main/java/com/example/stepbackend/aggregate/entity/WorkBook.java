@@ -72,4 +72,7 @@ public class WorkBook {
         this.isShared = isShared;
     }
 
+    public void updateWorkBookName(String workBookName) {
+        this.workBookName = workBookName;
+    }
 }

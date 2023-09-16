@@ -26,7 +26,7 @@ public class ReadWorkBookDTO {
 
     private Boolean isShared;
 
-    private String questionTypes;
+    private String[] questionTypes;
 
     private String questionName;
 
@@ -44,11 +44,13 @@ public class ReadWorkBookDTO {
             formattedLastUpdatedTime = workBook.getLastUpdatedTime().format(formatter);
         }
 
+        String[] questionTypes = workBook.getQuestionTypes().split(", "); // 여러 타입을 분리
+
         return ReadWorkBookDTO.builder()
                 .workBookNo(workBook.getWorkBookNo())
                 .questionNos(workBook.getQuestionNos().split(", "))
                 .isShared(workBook.getIsShared())
-                .questionTypes(workBook.getQuestionTypes())
+                .questionTypes(questionTypes)
                 .questionName(workBook.getWorkBookName())
                 .lastUpdatedTime(formattedLastUpdatedTime)
                 .build();

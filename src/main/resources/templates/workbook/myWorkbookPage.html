@@ -11,10 +11,6 @@
             padding: 0;
         }
 
-        h1 {
-            color: #333;
-        }
-
         .flex {
             display: flex;
             flex-wrap: wrap;
@@ -47,8 +43,20 @@
             margin-bottom: 10px;
         }
 
+        /* 문서 이모티콘 추가 */
+        .question-count::before {
+            content: "\1F4DC";
+            margin-right: 5px;
+            font-size: 20px;
+        }
+
+        /* 문서 이모티콘 스타일 수정 */
+        .question-count {
+            font-size: 20px;
+        }
+
         .workbook button {
-            margin-top: auto; /* 버튼을 아래로 내림 */
+            margin-top: auto;
             background-color: #333;
             color: #fff;
             border: none;
@@ -76,8 +84,77 @@
         }
 
         .pagination a:hover {
-            background-color: #007BFF; /* 원하는 색상으로 변경하세요 */
-            color: white; /* 텍스트 색상 변경 (선택 사항) */
+            background-color: #007BFF;
+            color: white;
+        }
+
+        .question-name {
+            font-size: 25px;
+            font-weight : bold;
+        }
+
+        /* Question Type Styles */
+        .question-types {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px; /* 위쪽으로 10px 마진 추가 */
+            margin-bottom: 10px; /* 아래쪽으로 10px 마진 추가 */
+        }
+
+        .question-type-label {
+            border: 1px solid #ccc;
+            padding: 5px 10px;
+            border-radius: 20px; /* 끝이 살짝 둥근 네모난 라벨 스타일 */
+            font-weight: bold;
+        }
+
+        .title {
+            background-color: #a3cca3; /* 제목 추론 타입 배경색 */
+            color: #fff;
+        }
+
+        .blank {
+            background-color: #d5e6f5; /* 빈칸 추론 타입 배경색 */
+            color: #333;
+        }
+
+        /* 시간 이모티콘 추가 */
+        .time-updated::before {
+            content: "\1F552";
+            margin-right: 5px;
+            font-size: 20px;
+        }
+
+        .time-updated {
+            font-size: 20px;
+        }
+
+        .workbook-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center; /* 수직 가운데 정렬 */
+        }
+
+        .edit-button {
+            margin-left: 10px;
+            border: none;
+            padding: 2px 5px; /* 작은 크기의 버튼 */
+            border-radius: 20px;
+            background-color: #ccc;
+            color: white;
+            cursor: pointer;
+            font-size: 10px; /* 작은 폰트 크기 */
+            margin-top: 0; /* 버튼의 상단 마진 제거 */
+        }
+
+        .edit-button:hover {
+            background-color: #999;
+        }
+
+        .edit-button::after {
+            content: "\270E";
+            margin-right: 5px;
+            font-size: 10px; /* 작은 이모티콘 크기 */
         }
 
     </style>
@@ -88,15 +165,23 @@
     <div class="flex">
         <!-- Example workbook div (you can repeat this for each workbook) -->
         <div class="workbook" th:each="workbook : ${workbooks}">
-            <h1 th:text="${workbook.questionName}" style="color: #333;"></h1>
+            <div class="workbook-header">
+                <a class="question-name" th:text="${workbook.questionName}"></a>
+                <button class='edit-button'>수정</button>
+            </div>
 
-            <!-- Workbook Details -->
-            <p>문제 개수:<span th:text="${#arrays.length(workbook.questionNos)}"></span></p>
+            <!-- Workbook Question Numbers -->
+            <span class="question-count" th:text="${#arrays.length(workbook.questionNos)}"></span>
 
             <!-- Question Type -->
-            <p>문제 유형:<span th:text="${workbook.questionTypes}"></span></p>
+            <div class="question-types">
+                <span th:each="type : ${workbook.questionTypes}">
+                    <span th:if="${type == 'title'}" class="question-type-label title">제목 추론</span>
+                    <span th:if="${type == 'blank'}" class="question-type-label blank">빈칸 추론</span>
+                </span>
+            </div>
 
-            <p th:text="${workbook.lastUpdatedTime}"></p>
+            <p class='time-updated' th:text="${workbook.lastUpdatedTime}"></p>
 
             <!-- Start Button -->
             <button type="button"> 문제집 풀기 </button>
