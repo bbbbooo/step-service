@@ -34,13 +34,6 @@ public class WorkbookService {
         return createWorkBookDTO;
     }
 
-    /* 문제집 공유 여부 설정 */
-    @Transactional
-    public void isSharedWorkBook(Long memberNo, Long workBookNo, Boolean isShared) {
-        WorkBook workBook = workBookRepository.findByMemberNoAndWorkBookNo(memberNo, workBookNo);
-        workBook.updateIsShared(isShared);
-    }
-
     /* 마이 페이지 내 문제집 전체 보기*/
     @Transactional(readOnly = true)
     public Page<ReadWorkBookDTO> getWorkBookMyPage(Long memberNo, Pageable pageable) {
