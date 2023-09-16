@@ -131,4 +131,27 @@ class WorkbookServiceTest {
         Assertions.assertEquals(workBookName, workBookRepository.findByWorkBookNo(workBook.getWorkBookNo()).getWorkBookName());
         Assertions.assertEquals(description, workBookRepository.findByWorkBookNo(workBook.getWorkBookNo()).getDescription());
     }
+
+    @DisplayName("문제집 삭제")
+    @Test
+    void deleteWorkBook(){
+        // given
+        WorkBook workBook = WorkBook.builder().build();
+        WorkBook workBook2 = WorkBook.builder().build();
+
+        workBookRepository.save(workBook);
+        workBookRepository.save(workBook2);
+
+        List<Long> workBookNos = Arrays.asList(workBook.getWorkBookNo(), workBook2.getWorkBookNo());
+
+        DeleteWorkBookRequestDTO deleteWorkBookRequestDTO = DeleteWorkBookRequestDTO.builder()
+                .workBookNos(workBookNos)
+                .build();
+
+        // when
+        DeleteWorkBookResponseDTO deleteWorkBookResponseDTO = workbookService.deleteWorkBook(deleteWorkBookRequestDTO);
+
+        // then
+        Assertions.assertTrue(workBookNos.equals(deleteWorkBookResponseDTO.getWorkBookNos()));
+    }
 }

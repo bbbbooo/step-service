@@ -167,7 +167,7 @@
             margin: 20% auto;
             padding: 20px;
             border: 1px solid #888;
-            width: 30%; /* 모달의 폭 조절 */
+            width: 40%; /* 모달의 폭 조절 */
             box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
             border-radius: 10px; /* 모달의 모서리를 둥글게 처리 */
         }
@@ -279,6 +279,30 @@
             border-radius: 5px;
             font-size: 16px;
         }
+
+        #delete-workbooks-button {
+            background-color: #333; /* 삭제 버튼 배경색 */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-top: 20px; /* 버튼 상단 마진 추가 */
+            display: block; /* 블록 레벨 요소로 표시 */
+            margin-left: auto; /* 가운데 정렬을 위해 왼쪽 여백을 auto로 설정 */
+            margin-right: 20px; /* 오른쪽으로 20px 이동시킵니다. */
+            margin-bottom: 10px;
+        }
+
+        #delete-workbooks-button:hover {
+            background-color: #999; /* 마우스 호버 시 배경색 변경 */
+        }
+
+        .workbook-checkbox{
+            margin-top: 10px;
+            margin-left: 360px;
+        }
     </style>
 </head>
 <body>
@@ -287,6 +311,7 @@
     <h1 style="font-size: 36px; font-weight: bold; margin: 20px 0;">나의 문제집을 모두 모아 확인해보세요.</h1>
     <p style="font-size: 18px;">이 페이지에서는 여러분의 문제집 목록을 확인하고 수정할 수 있습니다.</p>
     <p style="font-size: 18px; margin-bottom: 20px;">내가 만든 문제집 중 나만 보기 아까운 문제집은 모두에게 공유할 수 있습니다!</p>
+    <button id="delete-workbooks-button" onclick="deleteSelectedWorkbooks()">선택한 문제집 삭제</button>
     <div class="flex">
         <!-- Example workbook div (you can repeat this for each workbook) -->
         <div class="workbook" th:each="workbook : ${workbooks}">
@@ -294,6 +319,10 @@
                 <a class="question-name" th:text="${workbook.questionName}"></a>
                 <button class='edit-button' th:attr="onclick='openModal(\'' + ${workbook.questionName} + '\', \'' + ${workbook.workBookNo} + '\')'">수정</button>
             </div>
+
+            <!-- Checkbox를 수정 버튼 아래로 이동 -->
+            <input type="checkbox" class="workbook-checkbox" th:attr="data-workbook-no=${workbook.workBookNo}"/>
+
 
             <!-- Workbook Description -->
             <p th:if="${workbook.description}" th:text="${workbook.description}" style="font-style: italic;"></p>
@@ -320,7 +349,7 @@
     </div>
 
     <!-- Pagination -->
-    <<div class="pagination" th:if="${workbooks.totalPages > 1}">
+    <div class="pagination" th:if="${workbooks.totalPages > 1}">
     <span th:if="${workbooks.hasPrevious}">
         <a th:href="@{${'myWorkBook'}(page=0)}">이전</a>
     </span>
@@ -342,11 +371,17 @@
     <div class="modal-content">
         <span class="close" onclick="closeModal()">&times;</span>
         <h1 style="font-size: 36px; font-weight: bold; margin: 20px 0;">문제집 수정</h1>
-        <label for="workBookName">문제집 이름</label>
-        <input type="text" id="workBookName" name="workBookName">
+        <label for="workBookName">문제집 이름 (최대 30글자)</label>
+        <p style="font-size: 14px; margin-top: 5px; color: #777;">
+            <span id="workBookNameCharacterCount">0</span>
+        </p>
+        <input type="text" id="workBookName" name="workBookName" maxlength="30" oninput="updateCharacterCount()">
 
-        <label for="workBookDescription">문제집 설명</label>
-        <input type="text" id="workBookDescription" name="workBookDescription">
+        <label for="workBookDescription">문제집 설명 (최대 100글자)</label>
+        <p style="font-size: 14px; margin-top: 5px; color: #777;">
+            <span id="workBookDescriptionCharacterCount">0</span>
+        </p>
+        <textarea id="workBookDescription" name="workBookDescription" maxlength="100" oninput="updateCharacterCount()" style="resize: none; width: 100%; border: 1px solid #ccc;"></textarea>
 
         <button id="confirm-button" onclick="updateWorkbook()">확인</button>
     </div>
@@ -360,20 +395,26 @@
         <p style="font-size: 18px;">문제집을 공유하면 다른 사람들이 나의 시험지를 풀 수 있습니다.</p>
         <p style="font-size: 18px; margin-bottom: 20px;">나의 문제집에서 삭제해도 시험지 공유 상태는 유지됩니다.</p>
         <div class="input-container">
-        <label for="shareWorkBookName">문제집 이름 (최대 30자)</label>
-        <a><span id="workBookNameCharacterCount">0</span></a>
-        <input type="text" id="shareWorkBookName" name="shareWorkBookName" maxlength="30" oninput="updateCharacterCount()">
+            <label for="shareWorkBookName">문제집 이름 (최대 30자)</label>
+            <a style="font-size: 14px; margin-top: 5px; color: #777;">
+                <span id="shareWorkBookNameCharacterCount">0</span>
+            </a>
+            <input type="text" id="shareWorkBookName" name="shareWorkBookName" maxlength="30" oninput="updateCharacterCount()">
         </div>
 
+        <!-- 수정된 부분: textarea의 크기를 동적으로 조절 -->
         <div class="input-container">
-        <label for="shareDescription">설명 (최대 100자)</label>
-        <a><span id="descriptionCharacterCount">0</span></a>
-            <textarea id="shareDescription" name="shareDescription" maxlength="100" style="resize: none; width: 525px; border: 1px solid #ccc;" oninput="updateCharacterCount()"></textarea>
+            <label for="shareDescription">설명 (최대 100자)</label>
+            <a style="font-size: 14px; margin-top: 5px; color: #777;">
+                <span id="shareDescriptionCharacterCount">0</span>
+            </a>
+            <textarea id="shareDescription" name="shareDescription" maxlength="100" style="resize: none; width: 100%; border: 1px solid #ccc;" oninput="updateCharacterCount()"></textarea>
         </div>
 
         <button id="share-confirm-button" onclick="shareWorkbook()">공유</button>
     </div>
 </div>
+
 
 <th:block th:insert="~{common/footer}" />
 
@@ -478,31 +519,100 @@
 
 
     function updateCharacterCount() {
-        var workBookNameInput = document.getElementById("shareWorkBookName");
-        var descriptionTextarea = document.getElementById("shareDescription");
+        var workBookNameInput = document.getElementById("workBookName");
+        var workBookDescriptionTextarea = document.getElementById("workBookDescription");
         var workBookNameCharacterCount = document.getElementById("workBookNameCharacterCount");
-        var descriptionCharacterCount = document.getElementById("descriptionCharacterCount");
-        var workBookNameMaxLength = 30; // 문제집 이름 최대 글자 수
-        var descriptionMaxLength = 100; // 설명 최대 글자 수
+        var workBookDescriptionCharacterCount = document.getElementById("workBookDescriptionCharacterCount");
+        var maxWorkBookNameLength = 30;
+        var maxWorkBookDescriptionLength = 100;
 
         var currentWorkBookNameLength = workBookNameInput.value.length;
-        var currentDescriptionLength = descriptionTextarea.value.length;
+        var currentWorkBookDescriptionLength = workBookDescriptionTextarea.value.length;
 
-        workBookNameCharacterCount.textContent = currentWorkBookNameLength + "/" + workBookNameMaxLength + " 글자";
-        descriptionCharacterCount.textContent = currentDescriptionLength + "/" + descriptionMaxLength + " 글자";
+        workBookNameCharacterCount.textContent = currentWorkBookNameLength + "/" + maxWorkBookNameLength + " 글자";
+        workBookDescriptionCharacterCount.textContent = currentWorkBookDescriptionLength + "/" + maxWorkBookDescriptionLength + " 글자";
 
         // 문제집 이름 글자 수 제한
-        if (currentWorkBookNameLength > workBookNameMaxLength) {
-            workBookNameInput.value = workBookNameInput.value.substring(0, workBookNameMaxLength);
-            workBookNameCharacterCount.textContent = workBookNameMaxLength + "/" + workBookNameMaxLength + " 글자";
+        if (currentWorkBookNameLength > maxWorkBookNameLength) {
+            workBookNameInput.value = workBookNameInput.value.substring(0, maxWorkBookNameLength);
+            workBookNameCharacterCount.textContent = maxWorkBookNameLength + "/" + maxWorkBookNameLength + " 글자";
         }
 
-        // 설명 글자 수 제한
-        if (currentDescriptionLength > descriptionMaxLength) {
-            descriptionTextarea.value = descriptionTextarea.value.substring(0, descriptionMaxLength);
-            descriptionCharacterCount.textContent = descriptionMaxLength + "/" + descriptionMaxLength + " 글자";
+        // 문제집 설명 글자 수 제한
+        if (currentWorkBookDescriptionLength > maxWorkBookDescriptionLength) {
+            workBookDescriptionTextarea.value = workBookDescriptionTextarea.value.substring(0, maxWorkBookDescriptionLength);
+            workBookDescriptionCharacterCount.textContent = maxWorkBookDescriptionLength + "/" + maxWorkBookDescriptionLength + " 글자";
+        }
+
+        var shareWorkBookNameInput = document.getElementById("shareWorkBookName");
+        var shareDescriptionTextarea = document.getElementById("shareDescription");
+        var shareWorkBookNameCharacterCount = document.getElementById("shareWorkBookNameCharacterCount");
+        var shareDescriptionCharacterCount = document.getElementById("shareDescriptionCharacterCount");
+        var maxShareWorkBookNameLength = 30;
+        var maxShareDescriptionLength = 100;
+
+        var currentShareWorkBookNameLength = shareWorkBookNameInput.value.length;
+        var currentShareDescriptionLength = shareDescriptionTextarea.value.length;
+
+        shareWorkBookNameCharacterCount.textContent = currentShareWorkBookNameLength + "/" + maxShareWorkBookNameLength + " 글자";
+        shareDescriptionCharacterCount.textContent = currentShareDescriptionLength + "/" + maxShareDescriptionLength + " 글자";
+
+        // 문제집 이름 글자 수 제한
+        if (currentShareWorkBookNameLength > maxShareWorkBookNameLength) {
+            shareWorkBookNameInput.value = shareWorkBookNameInput.value.substring(0, maxShareWorkBookNameLength);
+            shareWorkBookNameCharacterCount.textContent = maxShareWorkBookNameLength + "/" + maxShareWorkBookNameLength + " 글자";
+        }
+
+        // 문제집 설명 글자 수 제한
+        if (currentShareDescriptionLength > maxShareDescriptionLength) {
+            shareDescriptionTextarea.value = shareDescriptionTextarea.value.substring(0, maxShareDescriptionLength);
+            shareDescriptionCharacterCount.textContent = maxShareDescriptionLength + "/" + maxShareDescriptionLength + " 글자";
         }
     }
+
+    // 선택한 문제집 삭제 함수
+    function deleteSelectedWorkbooks() {
+        var selectedWorkbooks = [];
+        var checkboxes = document.querySelectorAll('.workbook-checkbox:checked');
+
+        // 체크된 체크 박스에서 workbookNo를 추출하여 배열에 추가
+        checkboxes.forEach(function (checkbox) {
+            selectedWorkbooks.push(parseInt(checkbox.getAttribute('data-workbook-no')));
+        });
+
+        if (selectedWorkbooks.length === 0) {
+            alert('삭제할 문제집을 선택하세요.');
+            return;
+        }
+
+        var confirmDelete = confirm('정말로 선택한 문제집을 삭제하시겠습니까?');
+
+        if (confirmDelete) {
+            // 사용자가 확인을 눌렀을 때만 삭제 작업을 수행
+            sendSelectedWorkbooksToDelete(selectedWorkbooks);
+        }
+    }
+
+    // 서버로 선택한 문제집 삭제 요청 보내기
+    function sendSelectedWorkbooksToDelete(selectedWorkbooks) {
+
+        fetch('/workbook/myPage/delete', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ workBookNos: selectedWorkbooks })
+        })
+            .then(response => {
+                alert('선택한 문제집이 성공적으로 삭제되었습니다.');
+                window.location.reload();
+            })
+            .catch(error => {
+                alert('문제집 삭제 중 오류가 발생했습니다.');
+            });
+    }
+
+
 </script>
 </body>
 </html>

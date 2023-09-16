@@ -5,6 +5,7 @@ import com.example.stepbackend.service.WorkbookService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -28,7 +29,7 @@ public class WorkBookController {
     }
 
     @GetMapping("myPage/myWorkBook")
-    public String findAll(@PageableDefault(size = 15) Pageable pageable, Model model){
+    public String findAll(@PageableDefault(size = 15, sort = "workBookNo", direction = Sort.Direction.DESC) Pageable pageable, Model model){
         Long memberNo = 1L;
 
         Page<ReadWorkBookDTO> readWorkBookDTOS = workbookService.getWorkBookMyPage(memberNo, pageable);
@@ -44,5 +45,12 @@ public class WorkBookController {
         UpdateWorkBookResponseDTO updatedWorkBookName = workbookService.updateWorkBookName(updateWorkBookDTO);
 
         return "success";
+    }
+
+    @DeleteMapping("myPage/delete")
+    @ResponseBody
+    public ResponseEntity<DeleteWorkBookResponseDTO> deleteWorkBook(@RequestBody DeleteWorkBookRequestDTO deleteWorkBookRequestDTO){
+        DeleteWorkBookResponseDTO deleteWorkBookResponseDTO = workbookService.deleteWorkBook(deleteWorkBookRequestDTO);
+        return ResponseEntity.ok(deleteWorkBookResponseDTO);
     }
 }
