@@ -3,30 +3,189 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <style>
+        /* 테이블 스타일 */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+            white-space: nowrap; /* 긴 문장을 한 줄에 표시 */
+            overflow: hidden; /* 넘친 내용을 숨김 */
+            text-overflow: ellipsis; /* 넘친 내용을 ...으로 표시 */
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        /* 페이징 스타일 */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .pagination a {
+            color: #333;
+            padding: 5px 10px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+            margin: 0 2px;
+        }
+
+        .pagination a:hover {
+            background-color: #f2f2f2;
+        }
+
+        .truncate-text {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 45ch;
+        }
+
+        .center-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding-top: 20px;
+            width :80% ;
+            margin:auto ;
+        }
+
+        #createWorkbook {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin-top: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        #createWorkbook:hover {
+            background-color: #0056b3;
+        }
+
+        /* 버튼 위치 설정 스타일 추가 */
+        .button-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 10px;
+        }
+    </style>
 </head>
 <body>
-<div th:if="${allScrap.totalPages > 0}">
-    <div th:each="scraps : ${allScrap.content}">
-        <a th:text="${scraps.questionNo}"></a>
-        <a th:text="${scraps.questionBody}"></a>
-        <a th:text="${scraps.questionCorrectAnswer}"></a>
-        <a th:text="${scraps.questionLargeClassification}"></a>
-        <a th:text="${scraps.questionMiddleClassification}"></a>
-        <a th:text="${scraps.questionSmallClassification}"></a>
+<th:block th:insert="~{common/header}" />
+<div class="center-content">
+    <div class="basis">
+        <div th:if="${allScrap.totalPages > 0}">
+            <table>
+                <thead>
+                <tr>
+                    <th>문제 번호</th>
+                    <th>문제 제목</th>
+                    <th>문제 본문</th>
+                    <th>정답</th>
+                    <th>정답 여부</th>
+                    <th>내가 표시한 답</th>
+                    <th>대분류</th>
+                    <th>중분류</th>
+                    <th>소분류</th>
+                    <th>나만의 문제집</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="scrap : ${scraps}">
+                    <td th:text="${scrap.readScrapDTO.questionNo}"></td>
+                    <td th:text="${scrap.readScrapDTO.questionSubject}"></td>
+                    <td class="truncate-text">
+                        <a th:text="${scrap.readScrapDTO.questionBody}" th:href="@{/scrap/detail/{questionNo}(questionNo=${scrap.readScrapDTO.questionNo})}"></a>
+                    </td>
+                    <td th:text="${scrap.readScrapDTO.questionCorrectAnswer}"></td>
+                    <td th:text="${scrap.readScrapByMemberDTO.correctedMarkingStatus}"></td>
+                    <td th:text="${scrap.readScrapByMemberDTO.markedNo}"></td>
+                    <td th:text="${scrap.readScrapDTO.questionLargeClassification}"></td>
+                    <td th:text="${scrap.readScrapDTO.questionMiddleClassification}"></td>
+                    <td th:text="${scrap.readScrapDTO.questionSmallClassification}"></td>
+                    <td class="checkbox">
+                        <input type="checkbox" th:id="${'questionNos' + scrap.readScrapDTO.questionNo}">
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div class="button-container">
+                <button id="createWorkbook">문제집 생성</button>
+            </div>
+
+            <div class="pagination">
+                <!-- 이전 버튼 -->
+                <span th:if="${allScrap.hasPrevious}" >
+                    <a th:href="@{${'myScrap'}(page=0)}">이전</a>
+                </span>
+                <!-- 페이지 번호 -->
+                <span th:each="i : ${#numbers.sequence(0, allScrap.totalPages - 1)}">
+                    <a th:if="${allScrap.number == i}" th:text="${i + 1}"></a>
+                    <a th:if="${allScrap.number != i}" th:href="@{${'myScrap'}(page=${i})}" th:text="${i + 1}"></a>
+                </span>
+
+                <!-- 다음 버튼 -->
+                <span th:if="${allScrap.hasNext}" >
+                    <a th:href="@{${'myScrap'}(page=${allScrap.totalPages - 1})}">다음</a>
+                </span>
+            </div>
+        </div>
     </div>
-    <div>
-        <!-- 이전 버튼 -->
-        <a th:if="${allScrap.hasPrevious}" th:href="@{${'myScrap'}(page=0)}">이전</a>
+    <div class="basis-4/12 justify-items-center">
 
-        <!-- 페이지 번호 -->
-        <span th:each="i : ${#numbers.sequence(0, allScrap.totalPages - 1)}">
-            <a th:if="${allScrap.number == i}" th:text="${i + 1}"></a>
-            <a th:if="${allScrap.number != i}" th:href="@{${'myScrap'}(page=${i})}" th:text="${i + 1}"></a>
-        </span>
-
-        <!-- 다음 버튼 -->
-        <a th:if="${allScrap.hasNext}" th:href="@{${'myScrap'}(page=${allScrap.totalPages - 1})}">다음</a>
     </div>
 </div>
+<th:block th:insert="~{common/footer}" />
+
+<script>
+    // 문제집 생성 버튼 클릭 이벤트 핸들러
+    document.getElementById("createWorkbook").addEventListener("click", function () {
+        // 선택된 체크박스 및 문제집 이름 수집
+        const selectedQuestionNos = [];
+        const workbookName = prompt("문제집 이름을 입력하세요:");
+
+        if (workbookName) {
+            document.querySelectorAll('input[type="checkbox"]:checked').forEach(function (checkbox) {
+                const questionNo = checkbox.id.replace("questionNos", "");
+                selectedQuestionNos.push(questionNo);
+            });
+
+
+            const jsonData = {
+                workBookName: workbookName,
+                questionNos: selectedQuestionNos
+            };
+
+
+            fetch('/workbook/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(jsonData)
+            })
+                .then(response => {
+                    if (response.ok) {
+                        alert('문제집이 성공적으로 생성되었습니다.');
+                    } else {
+                        alert('문제집 생성에 실패하였습니다.');
+                    }
+                })
+                .catch(error => {
+                    console.error('문제집 생성 중 오류 발생:', error);
+                });
+        }
+    });
+</script>
 </body>
 </html>

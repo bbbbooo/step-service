@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>My Workbooks</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        .flex {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .workbook {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: calc(33.33% - 20px); /* 3 columns with 20px gap */
+            display: flex;
+            flex-direction: column;
+        }
+
+        .workbook h2 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .workbook p {
+            margin: 0;
+            margin-bottom: 10px;
+        }
+
+        /* 문서 이모티콘 추가 */
+        .question-count::before {
+            content: "\1F4DC";
+            margin-right: 5px;
+            font-size: 20px;
+        }
+
+        /* 문서 이모티콘 스타일 수정 */
+        .question-count {
+            font-size: 20px;
+        }
+
+        .workbook button {
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        /* 페이징 스타일 */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .pagination a {
+            color: #333;
+            padding: 5px 10px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+            margin: 0 2px;
+        }
+
+        .pagination a:hover {
+            background-color: #007BFF;
+            color: white;
+        }
+
+        .question-name {
+            font-size: 25px;
+            font-weight : bold;
+        }
+
+        /* Question Type Styles */
+        .question-types {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px; /* 위쪽으로 10px 마진 추가 */
+            margin-bottom: 10px; /* 아래쪽으로 10px 마진 추가 */
+        }
+
+        .question-type-label {
+            border: 1px solid #ccc;
+            padding: 5px 10px;
+            border-radius: 20px; /* 끝이 살짝 둥근 네모난 라벨 스타일 */
+            font-weight: bold;
+        }
+
+        .title {
+            background-color: #a3cca3; /* 제목 추론 타입 배경색 */
+            color: #fff;
+        }
+
+        .blank {
+            background-color: #d5e6f5; /* 빈칸 추론 타입 배경색 */
+            color: #333;
+        }
+
+        /* 시간 이모티콘 추가 */
+        .time-updated::before {
+            content: "\1F552";
+            margin-right: 5px;
+            font-size: 20px;
+        }
+
+        .time-updated {
+            font-size: 20px;
+        }
+
+        .workbook-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center; /* 수직 가운데 정렬 */
+        }
+
+        .edit-button {
+            margin-left: 10px;
+            border: none;
+            padding: 2px 5px; /* 작은 크기의 버튼 */
+            border-radius: 20px;
+            background-color: #333;
+            color: white;
+            cursor: pointer;
+            font-size: 10px; /* 작은 폰트 크기 */
+            margin-top: 0; /* 버튼의 상단 마진 제거 */
+        }
+
+        .edit-button:hover {
+            background-color: #999;
+        }
+
+        .edit-button::after {
+            content: "\270E";
+            margin-right: 5px;
+            font-size: 10px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1;
+            overflow: auto;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 20% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 30%; /* 모달의 폭 조절 */
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+            border-radius: 10px; /* 모달의 모서리를 둥글게 처리 */
+        }
+
+        .close {
+            color: #aaaaaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+        }
+
+        /* 모달 내용 스타일 */
+        .modal-content h2 {
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+
+        .modal-content label {
+            font-weight: bold;
+        }
+
+        .modal-content input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .modal-content button {
+            background-color: #333;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .modal-content button:hover {
+            background-color: #555;
+        }
+
+        /* 문제 풀이와 문제 공유 버튼 컨테이너 스타일 */
+        .button-container {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        /* 문제 풀이 버튼 스타일 */
+        .solve-button {
+            background-color: #4CAF50; /* 문제 풀이 버튼 배경색 */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            width: calc(45% - 5px);
+            border-radius: 5px;
+            font-size: 16px;
+            display: inline-block; /* 가로로 나란히 표시 */
+            margin-right: 5px; /* 버튼 사이 간격 조절 */
+        }
+
+
+        .solve-button:hover {
+            background-color: #45a049;
+        }
+
+        /* 문제 공유 버튼 스타일 */
+        .share-button {
+            background-color: #007BFF; /* 문제 공유 버튼 배경색 */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            width: calc(45% - 5px);
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+            display: inline-block; /* 가로로 나란히 표시 */
+            margin-left: 5px; /* 버튼 사이 간격 조절 */
+        }
+
+        .share-button:hover {
+            background-color: #0056b3;
+        }
+
+        .input-container {
+            margin-bottom: 20px;
+        }
+
+        .input-container label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .input-container input,
+        .input-container textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+<th:block th:insert="~{common/header}" />
+<div class="container">
+    <h1 style="font-size: 36px; font-weight: bold; margin: 20px 0;">나의 문제집을 모두 모아 확인해보세요.</h1>
+    <p style="font-size: 18px;">이 페이지에서는 여러분의 문제집 목록을 확인하고 수정할 수 있습니다.</p>
+    <p style="font-size: 18px; margin-bottom: 20px;">내가 만든 문제집 중 나만 보기 아까운 문제집은 모두에게 공유할 수 있습니다!</p>
+    <div class="flex">
+        <!-- Example workbook div (you can repeat this for each workbook) -->
+        <div class="workbook" th:each="workbook : ${workbooks}">
+            <div class="workbook-header">
+                <a class="question-name" th:text="${workbook.questionName}"></a>
+                <button class='edit-button' th:attr="onclick='openModal(\'' + ${workbook.questionName} + '\', \'' + ${workbook.workBookNo} + '\')'">수정</button>
+            </div>
+
+            <!-- Workbook Description -->
+            <p th:if="${workbook.description}" th:text="${workbook.description}" style="font-style: italic;"></p>
+
+            <!-- Workbook Question Numbers -->
+            <span class="question-count" th:text="${#arrays.length(workbook.questionNos)}"></span>
+
+            <!-- Question Type -->
+            <div class="question-types">
+                <span th:each="type : ${workbook.questionTypes}">
+                    <span th:if="${type == 'title'}" class="question-type-label title">제목 추론</span>
+                    <span th:if="${type == 'blank'}" class="question-type-label blank">빈칸 추론</span>
+                </span>
+            </div>
+
+            <p class='time-updated' th:text="${workbook.lastUpdatedTime}"></p>
+
+            <!-- Button -->
+            <div class="button-container">
+                <button class="solve-button">문제 풀이</button>
+                <button class="share-button" onclick="openShareModal()">문제 공유</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <<div class="pagination" th:if="${workbooks.totalPages > 1}">
+    <span th:if="${workbooks.hasPrevious}">
+        <a th:href="@{${'myWorkBook'}(page=0)}">이전</a>
+    </span>
+
+    <!-- 페이지 번호 -->
+    <span th:each="i : ${#numbers.sequence(0, workbooks.totalPages - 1)}">
+        <a th:if="${workbooks.number == i}" th:text="${i + 1}"></a>
+        <a th:if="${workbooks.number != i}" th:href="@{${'myWorkBook'}(page=${i})}" th:text="${i + 1}"></a>
+    </span>
+
+    <span th:if="${workbooks.hasNext}">
+        <a th:href="@{${'myWorkBook'}(page=${workbooks.totalPages - 1})}">다음</a>
+    </span>
+</div>
+</div>
+
+<!-- 수정 모달 -->
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h1 style="font-size: 36px; font-weight: bold; margin: 20px 0;">문제집 수정</h1>
+        <label for="workBookName">문제집 이름</label>
+        <input type="text" id="workBookName" name="workBookName">
+
+        <label for="workBookDescription">문제집 설명</label>
+        <input type="text" id="workBookDescription" name="workBookDescription">
+
+        <button id="confirm-button" onclick="updateWorkbook()">확인</button>
+    </div>
+</div>
+
+<!-- 공유 모달 -->
+<div id="shareModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeShareModal()">&times;</span>
+        <h1 style="font-size: 36px; font-weight: bold; margin: 20px 0;">문제집 공유</h1>
+        <p style="font-size: 18px;">문제집을 공유하면 다른 사람들이 나의 시험지를 풀 수 있습니다.</p>
+        <p style="font-size: 18px; margin-bottom: 20px;">나의 문제집에서 삭제해도 시험지 공유 상태는 유지됩니다.</p>
+        <div class="input-container">
+        <label for="shareWorkBookName">문제집 이름 (최대 30자)</label>
+        <a><span id="workBookNameCharacterCount">0</span></a>
+        <input type="text" id="shareWorkBookName" name="shareWorkBookName" maxlength="30" oninput="updateCharacterCount()">
+        </div>
+
+        <div class="input-container">
+        <label for="shareDescription">설명 (최대 100자)</label>
+        <a><span id="descriptionCharacterCount">0</span></a>
+            <textarea id="shareDescription" name="shareDescription" maxlength="100" style="resize: none; width: 525px; border: 1px solid #ccc;" oninput="updateCharacterCount()"></textarea>
+        </div>
+
+        <button id="share-confirm-button" onclick="shareWorkbook()">공유</button>
+    </div>
+</div>
+
+<th:block th:insert="~{common/footer}" />
+
+<script>
+    function openModal(workBookName, workbookNo, description) {
+        var modal = document.getElementById("myModal");
+        modal.style.display = "block";
+
+        // 기존 문제집 이름과 설명 입력 필드에 설정
+        document.getElementById('workBookName').value = workBookName;
+        document.getElementById('workBookDescription').value = description || '';
+
+        // 데이터 저장을 위한 데이터 속성 설정
+        document.getElementById('workBookName').setAttribute('data-workbook-no', workbookNo);
+    }
+
+    // 모달 닫기 함수
+    function closeModal() {
+        var modal = document.getElementById("myModal");
+        modal.style.display = "none";
+    }
+
+    // 문제집 수정 함수
+    function updateWorkbook() {
+        var workBookName = document.getElementById('workBookName').value;
+        var workBookDescription = document.getElementById('workBookDescription').value;
+        var workbookNo = document.getElementById('workBookName').getAttribute('data-workbook-no');
+
+        // 데이터를 서버로 보내고 엔드포인트로 처리
+        sendDataToServer(workBookName, workBookDescription, workbookNo);
+
+        // 모달 창 닫기
+        closeModal();
+    }
+
+    // 서버로 데이터 전송
+    function sendDataToServer(workBookName, workBookDescription, workbookNo) {
+        var data = {
+            workBookName: workBookName,
+            description: workBookDescription, // 추가된 문제집 설명
+            workBookNo: workbookNo
+        };
+
+        fetch('/workbook/myPage/update', {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => {
+                alert("성공적으로 수정되었습니다.")
+                window.location.reload();
+            })
+            .catch(error => {
+                alert("수정하는데 실패하였습니다.")
+            });
+    }
+
+    // 공유 모달 열기 함수
+    function openShareModal() {
+        var shareModal = document.getElementById("shareModal");
+        shareModal.style.display = "block";
+    }
+
+    // 공유 모달 닫기 함수
+    function closeShareModal() {
+        var shareModal = document.getElementById("shareModal");
+        shareModal.style.display = "none";
+    }
+
+    // 문제집 공유 함수
+    function shareWorkbook() {
+        var shareWorkBookName = document.getElementById('shareWorkBookName').value;
+        var shareDescription = document.getElementById('shareDescription').value;
+        var workbookNo = document.getElementById('workBookName').getAttribute('data-workbook-no');
+
+        // 데이터를 서버로 보내고 엔드포인트로 처리
+        sendDataToServerForSharing(shareWorkBookName, shareDescription, workbookNo);
+
+        // 모달 창 닫기
+        closeShareModal();
+    }
+
+    // 서버로 데이터 전송 (문제집 공유)
+    function sendDataToServerForSharing(shareWorkBookName, shareDescription, workbookNo) {
+        fetch('/board/create', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ workBookName: shareWorkBookName, description: shareDescription, workBookNo : workbookNo })
+        })
+            .then(response => {
+                alert("성공적으로 공유되었습니다.")
+                window.location.reload();
+            })
+            .catch(error => {
+                alert("공유하는데 실패하였습니다.")
+            });
+    }
+
+
+    function updateCharacterCount() {
+        var workBookNameInput = document.getElementById("shareWorkBookName");
+        var descriptionTextarea = document.getElementById("shareDescription");
+        var workBookNameCharacterCount = document.getElementById("workBookNameCharacterCount");
+        var descriptionCharacterCount = document.getElementById("descriptionCharacterCount");
+        var workBookNameMaxLength = 30; // 문제집 이름 최대 글자 수
+        var descriptionMaxLength = 100; // 설명 최대 글자 수
+
+        var currentWorkBookNameLength = workBookNameInput.value.length;
+        var currentDescriptionLength = descriptionTextarea.value.length;
+
+        workBookNameCharacterCount.textContent = currentWorkBookNameLength + "/" + workBookNameMaxLength + " 글자";
+        descriptionCharacterCount.textContent = currentDescriptionLength + "/" + descriptionMaxLength + " 글자";
+
+        // 문제집 이름 글자 수 제한
+        if (currentWorkBookNameLength > workBookNameMaxLength) {
+            workBookNameInput.value = workBookNameInput.value.substring(0, workBookNameMaxLength);
+            workBookNameCharacterCount.textContent = workBookNameMaxLength + "/" + workBookNameMaxLength + " 글자";
+        }
+
+        // 설명 글자 수 제한
+        if (currentDescriptionLength > descriptionMaxLength) {
+            descriptionTextarea.value = descriptionTextarea.value.substring(0, descriptionMaxLength);
+            descriptionCharacterCount.textContent = descriptionMaxLength + "/" + descriptionMaxLength + " 글자";
+        }
+    }
+</script>
+</body>
+</html>

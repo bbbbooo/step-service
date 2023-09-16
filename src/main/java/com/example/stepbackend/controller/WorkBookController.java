@@ -1,17 +1,15 @@
 package com.example.stepbackend.controller;
 
-import com.example.stepbackend.aggregate.dto.workbook.CreateWorkBookDTO;
-import com.example.stepbackend.aggregate.dto.workbook.CreateWorkBookRequestDTO;
+import com.example.stepbackend.aggregate.dto.workbook.*;
 import com.example.stepbackend.service.WorkbookService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import java.util.List;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -27,5 +25,24 @@ public class WorkBookController {
         CreateWorkBookDTO createWorkBookDTO = workbookService.createWorkbook(createWorkBookRequestDTO, memberNo);
 
         return ResponseEntity.ok(createWorkBookDTO);
+    }
+
+    @GetMapping("myPage/myWorkBook")
+    public String findAll(@PageableDefault(size = 15) Pageable pageable, Model model){
+        Long memberNo = 1L;
+
+        Page<ReadWorkBookDTO> readWorkBookDTOS = workbookService.getWorkBookMyPage(memberNo, pageable);
+
+        model.addAttribute("workbooks", readWorkBookDTOS);
+
+        return "workbook/myWorkbookPage";
+    }
+
+    @PatchMapping("myPage/update")
+    @ResponseBody
+    public String updateWorkBookName(@RequestBody UpdateWorkBookDTO updateWorkBookDTO){
+        UpdateWorkBookResponseDTO updatedWorkBookName = workbookService.updateWorkBookName(updateWorkBookDTO);
+
+        return "success";
     }
 }

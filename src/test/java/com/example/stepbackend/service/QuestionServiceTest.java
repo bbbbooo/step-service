@@ -1,6 +1,8 @@
 package com.example.stepbackend.service;
 
 import com.example.stepbackend.aggregate.entity.Question;
+import com.example.stepbackend.aggregate.entity.QuestionByMember;
+import com.example.stepbackend.repository.QuestionByMemberRepository;
 import com.example.stepbackend.repository.QuestionRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -44,8 +46,23 @@ class QuestionServiceTest {
         );
     }
 
+    @DisplayName("QuestionByMember")
+    private static Stream<Arguments> getQuestionByMemberInfo() {
+        return Stream.of(
+                Arguments.of(
+                        1L,
+                        1L,
+                        3,
+                        false
+                )
+        );
+    }
+
     @Autowired
     private QuestionRepository questionRepository;
+
+    @Autowired
+    private QuestionByMemberRepository questionByMemberRepository;
 
     @ParameterizedTest
     @MethodSource("getQuestionInfo")
@@ -108,6 +125,24 @@ class QuestionServiceTest {
 
         //then
         assertNotNull(foundQuestion.get());
+    }
+
+    @ParameterizedTest
+    @MethodSource("getQuestionByMemberInfo")
+    @DisplayName("문제 풀이")
+    void testRegistQuestionByMember(long memberNo, long questionNo, int markedNo, boolean correctStatus) {
+        //given
+        QuestionByMember questionByMember = new QuestionByMember();
+        questionByMember.setMemberNo(memberNo);
+        questionByMember.setQuestionNo(questionNo);
+        questionByMember.setMarkedNo(markedNo);
+        questionByMember.setCorrectedMarkingStatus(correctStatus);
+
+        //when
+        QuestionByMember foundMemberHistory = questionByMemberRepository.save(questionByMember);
+
+        //then
+        assertEquals(questionByMember.getQuestionNo(), foundMemberHistory.getQuestionNo());
     }
 
 

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <section class="modal modal_notie_type modal_result_type" style="display: none;">
+        <div class="modal_head no_line" style="background:none;">
+            <!-- default:선있음(선이 없을 경우:no_line 클래스 추가) -->
+            <h4 class="modal_tit2">
+                <strong class="point">AI </strong>문제추천 풀이 결과
+            </h4>
+        </div>
+        <!-- modal_container -->
+        <div class="modal_container">
+            <!-- modal_content -->
+            <div class="modal_content">
+                <div class="contain-result-anwser">
+                    <div class="contain-head-table">
+                        <div class="box-inner">
+                            <p class="text-infor"><strong>정답 문항수</strong> <em>0/</em>1</p>
+                        </div>
+                        <div class="box-inner">
+                            <label class="form-radio on"><input type="radio" name="answer" id="resultAll" checked=""> 전체</label>
+                            <label class="form-radio"><input type="radio" name="answer" id="resultWrong"> 오답</label>
+                        </div>
+                    </div>
+                    <div class="table-type1 popup-full">
+                        <table>
+                            <tbody>
+                            <tr>
+                                <th>문제</th>
+                                <th>채점</th>
+                            </tr>
+                            <tr class="resultListN">
+                                <td>
+                                    <span>1</span>
+                                </td>
+                                <td>
+                                    <span id="ans-wrong"></span>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- //modal_content -->
+            </div>
+        </div>
+        <!--// modal_container -->
+        <button type="button" onclick="closeModal();" class="modal_top_close modal_close result_close">
+            <!--            <svg class="font-icons">-->
+            <!--                <use xlink:href="#svg-round-close"></use>-->
+            <!--            </svg>-->
+            <span>닫기</span>
+        </button>
+    </section>
+</body>
+</html>

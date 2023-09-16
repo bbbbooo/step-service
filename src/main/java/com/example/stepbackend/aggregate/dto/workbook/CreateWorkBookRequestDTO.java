@@ -9,6 +9,6 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class CreateWorkBookRequestDTO {
-    private List<Integer> questionNos;
+    private List<Long> questionNos;
     private String workBookName;
 }

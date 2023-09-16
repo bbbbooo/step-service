@@ -5,6 +5,8 @@ import lombok.*;
 import org.hibernate.annotations.Comment;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
@@ -34,24 +36,39 @@ public class WorkBook {
     private String questionNos;
 
     @Column
-    @Comment("공유 여부")
-    private Boolean isShared;
+    @Comment("나만의 문제에 존재하는 문제 타입들")
+    private String questionTypes;
 
-    public static WorkBook toEntity(Long memberNo, CreateWorkBookRequestDTO createWorkBookRequestDTO) {
+    @Column
+    @Comment("문제집 설명")
+    private String description;
+
+    @Column
+    @Comment("최종 수정 시간")
+    private LocalDateTime lastUpdatedTime;
+
+    public static WorkBook toEntity(Long memberNo, CreateWorkBookRequestDTO createWorkBookRequestDTO, List<String> questionTypes) {
         String questionNosToString = createWorkBookRequestDTO.getQuestionNos().stream()
                 .map(String::valueOf)
                 .collect(Collectors.joining(", "));
+
+        String questionTypesToString = questionTypes.stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining(", "));
+
 
         return WorkBook.builder()
                 .memberNo(memberNo)
                 .questionNos(questionNosToString)
                 .workBookName(createWorkBookRequestDTO.getWorkBookName())
-                .isShared(false)
+                .questionTypes(questionTypesToString)
+                .lastUpdatedTime(LocalDateTime.now())
                 .build();
     }
 
-    public void updateIsShared(Boolean isShared) {
-        this.isShared = isShared;
+    public void updateWorkBookName(String workBookName, String description) {
+        this.workBookName = workBookName;
+        this.description = description;
+        this.lastUpdatedTime = LocalDateTime.now();
     }
-
 }
