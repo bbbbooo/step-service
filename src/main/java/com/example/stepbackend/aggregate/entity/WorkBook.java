@@ -5,7 +5,6 @@ import lombok.*;
 import org.hibernate.annotations.Comment;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -76,7 +75,9 @@ public class WorkBook {
         this.isShared = isShared;
     }
 
-    public void updateWorkBookName(String workBookName) {
+    public void updateWorkBookName(String workBookName, String description) {
         this.workBookName = workBookName;
+        this.description = description;
+        this.lastUpdatedTime = LocalDateTime.now();
     }
 }

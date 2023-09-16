@@ -144,21 +144,25 @@ class WorkbookServiceTest {
     void updateWorkBook(){
         // given
         String workBookName = "룰루리랄라리";
+        String description = "설명입니드아앙";
 
         WorkBook workBook = WorkBook.builder()
                 .workBookName(workBookName)
+                .description(description)
                 .build();
         workBookRepository.save(workBook);
 
-        UpdateWorkBookNameDTO updateWorkBookNameDTO = UpdateWorkBookNameDTO.builder()
+        UpdateWorkBookDTO updateWorkBookDTO = UpdateWorkBookDTO.builder()
                 .workBookNo(workBook.getWorkBookNo())
                 .workBookName(workBookName)
+                .description(workBook.getDescription())
                 .build();
 
         // when
-        workbookService.updateWorkBookName(updateWorkBookNameDTO);
+        workbookService.updateWorkBookName(updateWorkBookDTO);
 
         // then
         Assertions.assertEquals(workBookName, workBookRepository.findByWorkBookNo(workBook.getWorkBookNo()).getWorkBookName());
+        Assertions.assertEquals(description, workBookRepository.findByWorkBookNo(workBook.getWorkBookNo()).getDescription());
     }
 }

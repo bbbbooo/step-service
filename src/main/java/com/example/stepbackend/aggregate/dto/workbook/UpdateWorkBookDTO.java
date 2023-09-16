@@ -7,7 +7,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class UpdateWorkBookNameDTO {
+public class UpdateWorkBookDTO {
     private String workBookName;
+    private String description;
     private Long workBookNo;
 }
