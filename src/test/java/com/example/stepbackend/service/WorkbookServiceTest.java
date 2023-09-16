@@ -1,9 +1,6 @@
 package com.example.stepbackend.service;
 
-import com.example.stepbackend.aggregate.dto.workbook.CreateWorkBookDTO;
-import com.example.stepbackend.aggregate.dto.workbook.CreateWorkBookRequestDTO;
-import com.example.stepbackend.aggregate.dto.workbook.ReadWorkBookDTO;
-import com.example.stepbackend.aggregate.dto.workbook.ReadWorkBookDetailDTO;
+import com.example.stepbackend.aggregate.dto.workbook.*;
 import com.example.stepbackend.aggregate.entity.WorkBook;
 import com.example.stepbackend.repository.WorkBookRepository;
 import org.junit.jupiter.api.Assertions;
@@ -38,7 +35,7 @@ class WorkbookServiceTest {
     void createWorkbook(){
         // given
         Long memberNo = 1L;
-        List<Integer> questionNos = Arrays.asList(1,2,3,4);
+        List<Long> questionNos = Arrays.asList(1L,2L,3L,4L);
         String workBookName = "미미스크립트";
 
         CreateWorkBookRequestDTO createWorkBookRequest = CreateWorkBookRequestDTO.builder()
@@ -61,40 +58,6 @@ class WorkbookServiceTest {
     }
 
 
-    @DisplayName("나만의 문제집 공유 설정")
-    @ParameterizedTest
-    @ValueSource(booleans = {false, true})
-    void isSharedWorkBook(boolean settings){
-        // given
-        Long memberNo = 1L;
-        Long workBookNo = 1L;
-
-        List<Integer> questionNos = Arrays.asList(1,2,3);
-        String workBookName = "미미스크립트";
-
-        CreateWorkBookRequestDTO createWorkBookRequestDTO = CreateWorkBookRequestDTO.builder()
-                .workBookName(workBookName)
-                .questionNos(questionNos)
-                .build();
-
-        WorkBook workBook = WorkBook.toEntity(memberNo, createWorkBookRequestDTO);
-
-        workBookRepository.save(workBook);
-
-        Boolean isShared = settings;
-
-        // when
-        workbookService.isSharedWorkBook(memberNo, workBookNo, isShared);
-
-        // then
-        if(isShared){
-            Assertions.assertTrue(workBookRepository.findByMemberNoAndWorkBookNo(memberNo, workBookNo).getIsShared());
-        }else{
-            Assertions.assertFalse(workBookRepository.findByMemberNoAndWorkBookNo(memberNo, workBookNo).getIsShared());
-        }
-    }
-
-
     @DisplayName("나만의 문제집 마이 페이지 조회")
     @Test
     void getWorkBook(){
@@ -114,9 +77,9 @@ class WorkbookServiceTest {
     void getWorkBookDetail(){
         // given
         Long memberNo = 1L;
-        Long workBookNo = 1L;
 
-        List<Integer> saveQuestionNos = Arrays.asList(1,2,3);
+        List<Long> saveQuestionNos = Arrays.asList(1L,2L,3L);
+        List<String> questionTypes = Arrays.asList("blank", "title");
         String workBookName = "미미스크립트";
 
         CreateWorkBookRequestDTO createWorkBookRequestDTO = CreateWorkBookRequestDTO.builder()
@@ -124,22 +87,48 @@ class WorkbookServiceTest {
                 .questionNos(saveQuestionNos)
                 .build();
 
-        WorkBook saveWorkBook = WorkBook.toEntity(memberNo, createWorkBookRequestDTO);
+        WorkBook saveWorkBook = WorkBook.toEntity(memberNo, createWorkBookRequestDTO, questionTypes);
 
-        workBookRepository.save(saveWorkBook);
+        WorkBook foundWorkbook =  workBookRepository.save(saveWorkBook);
 
-        WorkBook workBook = workBookRepository.findByMemberNoAndWorkBookNo(memberNo, workBookNo);
+        WorkBook workBook = workBookRepository.findByMemberNoAndWorkBookNo(memberNo, foundWorkbook.getWorkBookNo());
 
         List<Integer> questionNos = Arrays.stream(workBook.getQuestionNos().split(", "))
                 .map(Integer::valueOf)
                 .collect(Collectors.toList());
 
         // when
-        ReadWorkBookDetailDTO readWorkBookDetailDTO = workbookService.getWorkBookDetailMyPage(memberNo, workBookNo);
+        ReadWorkBookDetailDTO readWorkBookDetailDTO = workbookService.getWorkBookDetailMyPage(memberNo, foundWorkbook.getWorkBookNo());
 
         // then
         Assertions.assertEquals(readWorkBookDetailDTO.getWorkBookName(),workBook.getWorkBookName());
         Assertions.assertEquals(readWorkBookDetailDTO.getQuestionNos(), questionNos);
     }
 
+    @DisplayName("문제집 제목 입력받아 수정")
+    @Test
+    void updateWorkBook(){
+        // given
+        String workBookName = "룰루리랄라리";
+        String description = "설명입니드아앙";
+
+        WorkBook workBook = WorkBook.builder()
+                .workBookName(workBookName)
+                .description(description)
+                .build();
+        workBookRepository.save(workBook);
+
+        UpdateWorkBookDTO updateWorkBookDTO = UpdateWorkBookDTO.builder()
+                .workBookNo(workBook.getWorkBookNo())
+                .workBookName(workBookName)
+                .description(workBook.getDescription())
+                .build();
+
+        // when
+        workbookService.updateWorkBookName(updateWorkBookDTO);
+
+        // then
+        Assertions.assertEquals(workBookName, workBookRepository.findByWorkBookNo(workBook.getWorkBookNo()).getWorkBookName());
+        Assertions.assertEquals(description, workBookRepository.findByWorkBookNo(workBook.getWorkBookNo()).getDescription());
+    }
 }
