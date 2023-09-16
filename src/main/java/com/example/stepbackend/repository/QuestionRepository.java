@@ -7,11 +7,9 @@ import java.util.List;
 
 public interface QuestionRepository extends JpaRepository<Question, Long> {
 
+    List<Question> findTop10ByQuestionNoNotInAndQuestionViewType(List<Long> questions, String type);
 
-    List<Question> findByQuestionNoNotIn(List<Long> questions);
+    List<Question> findTop10ByQuestionViewType(String type);
 
     Question findByQuestionNo(Long questionNo);
-
-    List<Question> findTop20ByQuestionNoNotIn(List<Long> questions);
-
 }

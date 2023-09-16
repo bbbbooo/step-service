@@ -37,21 +37,40 @@ This example requires updating your template:
         </header>
     </div>
 
-<nav class="bg-slate-200">
-    <div class="max-w-screen-xl items-center justify-between mx-auto p-4">
-        <div class="bg-slate-200 hidden w-full md:block md:w-auto" id="navbar-dropdown">
-            <ul class="bg-slate-200 flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:border-0 md:bg-slate-200">
-                <li>
-                    <button id="dropdownQuestionLink" onClick="location.href='/question'" data-dropdown-toggle="dropdownQuestion" class="ml-8 bg-slate-200 flex items-center justify-between w-full py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 md:w-auto">
-                        AI문제추천
-                    </button>
-                </li>
-
-                <li>
-                    <button id="dropdownSharingWorkbookLink" data-dropdown-toggle="dropdownSharingWorkbook" class="ml-24 w-full bg-slate-200 flex items-center justify-between w-full py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 md:w-auto">
-                        문제집 자랑
-                    </button>
-                </li>
+    <nav class="bg-slate-200">
+        <div class="max-w-screen-xl items-center justify-between mx-auto p-4">
+            <div class="bg-slate-200 hidden w-full md:block md:w-auto" id="navbar-dropdown">
+                <ul class="bg-slate-200 flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:border-0 md:bg-slate-200">
+                    <li>
+                        <button id="dropdownQuestionLink" data-dropdown-toggle="dropdownQuestion" class="ml-8 bg-slate-200 flex items-center justify-between w-full py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 md:w-auto">
+                            AI 영어문제추천
+                            <svg class="w-2.5 h-2.5 ml-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+                            </svg>
+                        </button>
+                        <div id="dropdownQuestion" class="z-10 hidden font-normal bg-white divide-y divide-gray-100 rounded-lg shadow w-44">
+                            <ul class="py-2 text-sm text-gray-700 " aria-labelledby="dropdownLargeButton">
+                                <li>
+                                    <a href="/questions?type=blank" class="block px-4 py-2 hover:bg-gray-100">빈칸추론</a>
+                                </li>
+                                <li>
+                                    <a href="/questions?type=title" class="block px-4 py-2 hover:bg-gray-100">제목추론</a>
+                                </li>
+                            </ul>
+                        </div>
+<!--                        <form action="/" method="get">-->
+<!--                        <div id="dropdownSharingWorkbookLink" class="z-10 hidden font-normal bg-white divide-y divide-gray-100 rounded-lg shadow w-44">-->
+<!--                            <ul class="py-2 text-sm text-gray-700 " aria-labelledby="dropdownLargeButton">-->
+<!--                                <li>-->
+<!--                                    <a href="/questions?type=blank" class="block px-4 py-2 hover:bg-gray-100">빈칸추론</a>-->
+<!--                                </li>-->
+<!--                                <li>-->
+<!--                                    <a href="/questions?type=title" class="block px-4 py-2 hover:bg-gray-100">제목추론</a>-->
+<!--                                </li>-->
+<!--                            </ul>-->
+<!--                        </div>-->
+<!--                        </form>-->
+                    </li>
 
                 <li>
                     <button id="dropdownMyStudyLink" data-dropdown-toggle="dropdownEtc" class="ml-24 w-full bg-slate-200 flex items-center justify-between w-full py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 md:w-auto">

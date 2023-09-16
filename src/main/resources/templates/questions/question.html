@@ -6,6 +6,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://kit.fontawesome.com/ba60aefbce.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body>
 <th:block th:insert="~{common/header}" />
@@ -14,12 +15,21 @@
 
     </div>
     <div class="basis-8/12">
+        <!-- 로딩 화면 -->
+        <div id="loading-screen" class="py-20" style="display: block;">
+            <div class="relative flex justify-center items-center">
+                <div class="absolute animate-spin rounded-full h-32 w-32 border-t-4 border-b-4 border-purple-500"></div>
+                <img src="https://www.svgrepo.com/show/509001/avatar-thinking-9.svg"  class="rounded-full h-28 w-28">
+            </div>
+            <h2 class="font-bold text-2xl pt-6 text-center">문제를 생성중입니다. 새로고침 해주세요.</h2>
+        </div>
 
-        <div class="contain-exam-body">
+        <!-- style="display: none;" -->
+        <div id="question-content" class="box-exam-body" style="display: none;">
             <div class="box-exam py-7 px-4 bg-slate-100">
                 <div style="text-align:Justify;line-height:130%; font-family: 돋움; font-size: 14px;" name="divParagraph">
                     <span style="font-weight:bold;font-size:15px;font-style:italic"></span>
-                    <span id="questionSubject" style="white-space:pre-wrap;font-size:12px;line-height:130%; font-family: 돋움; font-size: 14px;">(A), (B), (C)의 각 네모 안에서 어법에 맞는 표현으로 가장 적절한 것은?</span>
+                    <span id="questionSubject" style="white-space:pre-wrap;font-size:12px;line-height:130%; font-family: 돋움; font-size: 14px;"></span>
                 </div>
                 <table style="margin:6px 0px 6px 0px; line-height:130%; font-size: 14px;border-spacing:0px;border-collapse:collapse;width:100%;"
                        name="divTable"
@@ -89,120 +99,127 @@
                 </ul>
             </div>
             <div class="box-skip text-right">
-                <button type="button" class="btn-skip-exam text-right">문제 건너뛰기</button>
+                <button type="button" onclick="next()" class="btn-skip-exam text-right">문제 건너뛰기</button>
             </div>
         </div>
         <div>
-            <div class="btn_wrap btn_center_wrap">
-                <button type="button" onclick="openModal();" class="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">
+            <div id="checkAnswerDIV" class="btn_wrap btn_center_wrap" style="display: none;">
+                <button type="button" onclick="isAnswer();" class="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">
                     <span>채점 후 결과 확인</span>
                 </button>
-                <button type="button" class="text-white bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-green-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">
+                <button type="button" onclick="isCorrectAnswer()" class="text-white bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-green-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">
                     <span>정답 확인하기</span>
                 </button>
             </div>
         </div>
     </div>
+    <th:block th:include="/questions/result-modal.html"></th:block>
 
     <div class="basis-2/12 justify-items-center">
 
     </div>
 </div>
-
-<section class="modal modal_notie_type modal_result_type" style="display: none;">
-    <div class="modal_head no_line" style="background:none;">
-        <!-- default:선있음(선이 없을 경우:no_line 클래스 추가) -->
-        <h4 class="modal_tit2">
-            <strong class="point">AI </strong>문제추천 풀이 결과
-        </h4>
-    </div>
-    <!-- modal_container -->
-    <div class="modal_container">
-        <!-- modal_content -->
-        <div class="modal_content">
-            <div class="contain-result-anwser">
-                <div class="contain-head-table">
-                    <div class="box-inner">
-                        <p class="text-infor"><strong>정답 문항수</strong> <em>0/</em>1</p>
-                    </div>
-                    <div class="box-inner">
-                        <label class="form-radio on"><input type="radio" name="answer" id="resultAll" checked=""> 전체</label>
-                        <label class="form-radio"><input type="radio" name="answer" id="resultWrong"> 오답</label>
-                    </div>
-                </div>
-                <div class="table-type1 popup-full">
-                    <table>
-                        <tbody>
-                        <tr>
-                            <th>문제</th>
-                            <th>채점</th>
-                        </tr>
-                        <tr class="resultListN">
-                            <td>
-                                <span>1</span>
-                            </td>
-                            <td>
-                                <span id="ans-wrong"></span>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <!-- //modal_content -->
-        </div>
-    </div>
-    <!--// modal_container -->
-    <button type="button" onclick="closeModal();" class="modal_top_close modal_close result_close">
-        <!--            <svg class="font-icons">-->
-        <!--                <use xlink:href="#svg-round-close"></use>-->
-        <!--            </svg>-->
-        <span>닫기</span>
-    </button>
-</section>
 <th:block th:insert="~{common/footer}" />
 <script th:inline="javascript">
-    let res = /*[[${res}]]*/ null;
+    // localStorage.clear();
+    let result = /*[[${res}]]*/ null;
+    let item = null;
+    let questionCount = 0;
+    let imageMap = false;
+    let answer = null;
+    let correctedMarkingStatus = null;
 
-    for (let i = 0; i < res.res.length; i++) {
-        let item = res.res[i];
-        let key = 'question_' + i; // 각 항목에 고유한 키 생성
-        localStorage.setItem(key, JSON.stringify(item));
+    function updateHTML() {
+        let loadingScreen = document.getElementById('loading-screen');
+        let questionContent = document.getElementById('question-content');
+        let checkAnswerContent = document.getElementById('checkAnswerDIV');
+
+        if (result === null || loadingScreen === null || questionContent === null) {
+            return; // 필요한 요소가 없으면 종료
+        }
+
+        // 로딩 화면 감추고 문제 내용 표시
+        loadingScreen.style.display = 'none';
+        questionContent.style.display = 'block';
+        checkAnswerContent.style.display = 'block';
+
+        localStorage.setItem('questionCount', questionCount.toString());
+        getData();
+        window.onload;
+    }
+
+    if(result === null) {
+        const param = new URLSearchParams(location.search);
+        const name = param.get('type');
+
+        axios.post('/questions/creation-question?type=' + name)
+            .then((res) => {
+                localStorage.clear();
+                const data = res.data.ques;
+
+                for (let i = 0; i < data.length; i++) {
+                    const newItem = data[i];
+                    const newKey = 'question_' + i; // 각 항목에 고유한 키 생성
+                    localStorage.setItem(newKey, JSON.stringify(newItem));
+                }
+
+                localStorage.setItem('questionCount', questionCount.toString());
+                getData();
+            })
+            .catch((err) => {
+                console.log('',err);
+            })
+    } else {
+        for (let i = 0; i < result.res.length; i++) {
+            let item = result.res[i];
+            let key = 'question_' + i; // 각 항목에 고유한 키 생성
+            localStorage.setItem(key, JSON.stringify(item));
+        }
+
+        updateHTML();
+    }
+
+    // 문제 건너뛰기
+    function next() {
+        questionCount++
+        localStorage.setItem('questionCount', questionCount.toString());
+        getData();
+
+        removeImage();
     }
 
     // localStorage에서 데이터를 추출하여 요소에 넣기
-    let storedData = localStorage.getItem('question_0');
-    let spanParagraph = document.getElementById('spanParagraph');
-    let questionSubject = document.getElementById('questionSubject');
-    let view1 = document.getElementById('view1');
-    let view2 = document.getElementById('view2');
-    let view3 = document.getElementById('view3');
-    let view4 = document.getElementById('view4');
-    let view5 = document.getElementById('view5');
+    function getData() {
+        let storedData = localStorage.getItem(`question_${localStorage.getItem('questionCount')}`);
+        let spanParagraph = document.getElementById('spanParagraph');
+        let questionSubject = document.getElementById('questionSubject');
+        let view1 = document.getElementById('view1');
+        let view2 = document.getElementById('view2');
+        let view3 = document.getElementById('view3');
+        let view4 = document.getElementById('view4');
+        let view5 = document.getElementById('view5');
 
-    if (spanParagraph && storedData) {
-        // let item = storedData;
-        let item = JSON.parse(storedData);
+        if (spanParagraph && storedData) {
+            // let item = storedData;
+            item = JSON.parse(storedData);
 
-        console.log(storedData);
-
-        // 원하는 속성 또는 데이터로 요소 업데이트
-        spanParagraph.innerText = item.questionBody;
-        questionSubject.innerText = item.questionSubject;
-        view1.innerText = item.view1;
-        view2.innerText = item.view2;
-        view3.innerText = item.view3;
-        view4.innerText = item.view4;
-        view5.innerText = item.view5;
+            // 원하는 속성 또는 데이터로 요소 업데이트
+            spanParagraph.innerText = item.questionBody;
+            questionSubject.innerText = (questionCount+1) + '.' + ' ' + item.questionSubject;
+            view1.innerText = item.view1;
+            view2.innerText = item.view2;
+            view3.innerText = item.view3;
+            view4.innerText = item.view4;
+            view5.innerText = item.view5;
+        }
     }
-
-    let imageMap = false;
 
     function addImageBefore(number) {
 
         if (imageMap) {
             // 이미지가 이미 생성되었다면 제거
             removeImage();
+            getData();
         }
 
         if (imageMap === false) {
@@ -221,10 +238,12 @@
 
                 // 이미지가 이미 추가되었음을 표시
                 imageMap = true;
+                answer = number;
             }
         }
     }
 
+    // 마킹 이미지 지우기
     function removeImage() {
         let existingImage = document.querySelector('.mychecking');
         if (existingImage) {
@@ -234,28 +253,85 @@
     }
 
     // 클릭 이벤트 리스너 등록
-    var imageList = document.getElementById('imageList');
+    let imageList = document.getElementById('imageList');
     imageList.addEventListener('click', function (event) {
-        var target = event.target;
+        let target = event.target;
         if (target.tagName === 'DIV' && target.hasAttribute('data-number')) {
-            var number = target.getAttribute('data-number');
+            let number = target.getAttribute('data-number');
             addImageBefore(number);
         }
     });
 
-    function openModal(num) {
+    function isAnswer() {
+        if(answer === null) {
+            alert('문제를 선택하지 않았습니다.');
+        } else {
+            questionCount++
+            localStorage.setItem('questionCount', questionCount.toString());
+            openModal();
+            removeImage();
+        }
+    }
+
+    function isCorrectAnswer() {
+        if(answer === null) {
+            alert('문제를 선택하지 않았습니다.');
+        } else {
+            if(questionCount >= 10) {
+                alert('문제를 다 풀었습니다.');
+            }
+            questionCount++
+            localStorage.setItem('questionCount', questionCount.toString());
+
+            // 회원별 문제 풀이 데이터 저장
+            const data = {
+                questionNo : item.questionNo,
+                markedNo: answer,
+                correctedMarkingStatus : correctedMarkingStatus
+            }
+
+            axios.post('/questions', data)
+                .then((res) => {
+                    console.log(res);
+                })
+
+            getData();
+            removeImage();
+        }
+    }
+
+    function openModal() {
+
+        // 다음 문제 전환 하기 위해 필요 값
+        questionCount++;
+        localStorage.setItem('questionCount', questionCount.toString());
+
         // 모달 열기
         document.querySelector('.modal').style.display = 'block';
 
         // 정답 표시
-        if(num == storedData.questionCorrectAnswer) {
+        if(answer == item.questionCorrectAnswer) {
             document.getElementById('ans-wrong').innerText = '정답';
+            correctedMarkingStatus = true;
         }
 
         // 오답 표시
-        if(num != storedData.questionCorrectAnswer) {
+        if(answer != item.questionCorrectAnswer) {
             document.getElementById('ans-wrong').innerText = '오답';
+            correctedMarkingStatus = false;
         }
+
+        const data = {
+            questionNo : item.questionNo,
+            markedNo: answer,
+            correctedMarkingStatus : correctedMarkingStatus
+        }
+
+        // 회원별 문제 풀이 데이터 저장
+        axios.post('/questions', data)
+            .then((res) => {
+                console.log(res);
+            })
     }
 
     function closeModal() {
