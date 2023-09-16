@@ -68,15 +68,4 @@ public class WorkbookService {
 
         return updateWorkBookResponseDTO;
     }
-
-    /* 문제집 삭제 */
-    @Transactional
-    public DeleteWorkBookResponseDTO deleteWorkBook(DeleteWorkBookRequestDTO deleteWorkBookRequestDTO) {
-        for (Long workBookNo : deleteWorkBookRequestDTO.getWorkBookNos()){
-            workBookRepository.deleteById(workBookNo);
-        }
-
-        DeleteWorkBookResponseDTO deleteWorkBookResponseDTO = DeleteWorkBookResponseDTO.toRequest(deleteWorkBookRequestDTO);
-        return deleteWorkBookResponseDTO;
-    }
 }
