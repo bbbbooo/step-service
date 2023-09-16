@@ -26,4 +26,11 @@ public class ReadScrapAndMemberDTO {
 
         return combinedList;
     }
+
+    public static ReadScrapAndMemberDTO combine(ReadScrapDTO readScrapDTO, ReadScrapByMemberDTO readScrapByMemberDTO) {
+        return ReadScrapAndMemberDTO.builder()
+                .readScrapDTO(readScrapDTO)
+                .readScrapByMemberDTO(readScrapByMemberDTO)
+                .build();
+    }
 }

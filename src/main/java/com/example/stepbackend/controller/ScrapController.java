@@ -39,9 +39,12 @@ public class ScrapController {
 
     @GetMapping("detail/{questionNo}")
     public String getScrap(@PathVariable Long questionNo, Model model){
-        ReadScrapDTO readScrapDTO = scrapService.findScrap(questionNo);
+        Long memberNo = 1L;
 
-        model.addAttribute("scrap", readScrapDTO);
+        ReadScrapDTO readScrapDTO = scrapService.findScrap(memberNo, questionNo);
+        ReadScrapByMemberDTO readScrapByMemberDTO = scrapService.findScrapByMember(memberNo, questionNo);
+
+        model.addAttribute("scrap", ReadScrapAndMemberDTO.combine(readScrapDTO, readScrapByMemberDTO));
 
         return "scrap/scrapDetail";
     }

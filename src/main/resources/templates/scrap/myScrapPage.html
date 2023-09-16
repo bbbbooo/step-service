@@ -125,8 +125,9 @@
 
             <div class="pagination">
                 <!-- 이전 버튼 -->
-                <a th:if="${allScrap.hasPrevious}" th:href="@{${'myScrap'}(page=0)}">이전</a>
-
+                <span th:if="${allScrap.hasPrevious}" >
+                    <a th:href="@{${'myScrap'}(page=0)}">이전</a>
+                </span>
                 <!-- 페이지 번호 -->
                 <span th:each="i : ${#numbers.sequence(0, allScrap.totalPages - 1)}">
                     <a th:if="${allScrap.number == i}" th:text="${i + 1}"></a>
@@ -134,8 +135,9 @@
                 </span>
 
                 <!-- 다음 버튼 -->
-                <a th:if="${allScrap.hasNext}" th:href="@{${'myScrap'}(page=${allScrap.totalPages - 1})}">다음</a>
-
+                <span th:if="${allScrap.hasNext}" >
+                    <a th:href="@{${'myScrap'}(page=${allScrap.totalPages - 1})}">다음</a>
+                </span>
             </div>
         </div>
     </div>

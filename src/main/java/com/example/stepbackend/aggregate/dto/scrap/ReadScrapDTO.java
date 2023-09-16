@@ -32,6 +32,8 @@ public class ReadScrapDTO {
 
     private String questionSource;
 
+    private String[] view;
+
     public static Page<ReadScrapDTO> fromEntity(Page<Question> questions) {
         List<ReadScrapDTO> dtoList = questions.getContent().stream().map(ReadScrapDTO::fromEntity).collect(Collectors.toList());
         return new PageImpl<>(dtoList, questions.getPageable(), questions.getTotalElements());
@@ -48,6 +50,7 @@ public class ReadScrapDTO {
                 .questionSmallClassification(question.getQuestionSmallClassification())
                 .questionCorrectAnswer(question.getQuestionCorrectAnswer())
                 .questionSource(question.getQuestionSource())
+                .view(new String[]{question.getView1(), question.getView2(), question.getView3(), question.getView4(), question.getView5()})
                 .build();
     }
 }

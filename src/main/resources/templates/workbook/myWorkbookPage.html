@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>My Workbooks</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        .flex {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .workbook {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: calc(33.33% - 20px); /* 3 columns with 20px gap */
+            display: flex;
+            flex-direction: column;
+        }
+
+        .workbook h2 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .workbook p {
+            margin: 0;
+            margin-bottom: 10px;
+        }
+
+        .workbook button {
+            margin-top: auto; /* 버튼을 아래로 내림 */
+            background-color: #333;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        .workbook button:hover {
+            background-color: #555;
+        }
+
+        /* 페이징 스타일 */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .pagination a {
+            color: #333;
+            padding: 5px 10px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+            margin: 0 2px;
+        }
+
+        .pagination a:hover {
+            background-color: #007BFF; /* 원하는 색상으로 변경하세요 */
+            color: white; /* 텍스트 색상 변경 (선택 사항) */
+        }
+
+    </style>
+</head>
+<body>
+<th:block th:insert="~{common/header}" />
+<div class="container">
+    <div class="flex">
+        <!-- Example workbook div (you can repeat this for each workbook) -->
+        <div class="workbook" th:each="workbook : ${workbooks}">
+            <h1 th:text="${workbook.questionName}" style="color: #333;"></h1>
+
+            <!-- Workbook Details -->
+            <p>문제 개수:<span th:text="${#arrays.length(workbook.questionNos)}"></span></p>
+
+            <!-- Question Type -->
+            <p>문제 유형:<span th:text="${workbook.questionTypes}"></span></p>
+
+            <p th:text="${workbook.lastUpdatedTime}"></p>
+
+            <!-- Start Button -->
+            <button type="button"> 문제집 풀기 </button>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <<div class="pagination" th:if="${workbooks.totalPages > 1}">
+    <span th:if="${workbooks.hasPrevious}">
+        <a th:href="@{${'myWorkBook'}(page=0)}">이전</a>
+    </span>
+
+    <!-- 페이지 번호 -->
+    <span th:each="i : ${#numbers.sequence(0, workbooks.totalPages - 1)}">
+        <a th:if="${workbooks.number == i}" th:text="${i + 1}"></a>
+        <a th:if="${workbooks.number != i}" th:href="@{${'myWorkBook'}(page=${i})}" th:text="${i + 1}"></a>
+    </span>
+
+    <span th:if="${workbooks.hasNext}">
+        <a th:href="@{${'myWorkBook'}(page=${workbooks.totalPages - 1})}">다음</a>
+    </span>
+</div>
+
+</div>
+<th:block th:insert="~{common/footer}" />
+</body>
+</html>
