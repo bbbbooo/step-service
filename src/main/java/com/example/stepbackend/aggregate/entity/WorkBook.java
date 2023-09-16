@@ -45,6 +45,10 @@ public class WorkBook {
     private String questionTypes;
 
     @Column
+    @Comment("문제집 설명")
+    private String description;
+
+    @Column
     @Comment("최종 수정 시간")
     private LocalDateTime lastUpdatedTime;
 

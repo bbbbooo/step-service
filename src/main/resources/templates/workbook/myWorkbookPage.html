@@ -56,16 +56,9 @@
         }
 
         .workbook button {
-            margin-top: auto;
-            background-color: #333;
-            color: #fff;
             border: none;
             padding: 10px 20px;
             cursor: pointer;
-        }
-
-        .workbook button:hover {
-            background-color: #555;
         }
 
         /* 페이징 스타일 */
@@ -140,7 +133,7 @@
             border: none;
             padding: 2px 5px; /* 작은 크기의 버튼 */
             border-radius: 20px;
-            background-color: #ccc;
+            background-color: #333;
             color: white;
             cursor: pointer;
             font-size: 10px; /* 작은 폰트 크기 */
@@ -154,9 +147,120 @@
         .edit-button::after {
             content: "\270E";
             margin-right: 5px;
-            font-size: 10px; /* 작은 이모티콘 크기 */
+            font-size: 10px;
         }
 
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1;
+            overflow: auto;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 20% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 20%; /* 모달의 폭 조절 */
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+            border-radius: 10px; /* 모달의 모서리를 둥글게 처리 */
+        }
+
+        .close {
+            color: #aaaaaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+        }
+
+        /* 모달 내용 스타일 */
+        .modal-content h2 {
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+
+        .modal-content label {
+            font-weight: bold;
+        }
+
+        .modal-content input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .modal-content button {
+            background-color: #333;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .modal-content button:hover {
+            background-color: #555;
+        }
+
+        /* 문제 풀이와 문제 공유 버튼 컨테이너 스타일 */
+        .button-container {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        /* 문제 풀이 버튼 스타일 */
+        .solve-button {
+            background-color: #4CAF50; /* 문제 풀이 버튼 배경색 */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            width: calc(45% - 5px);
+            border-radius: 5px;
+            font-size: 16px;
+            display: inline-block; /* 가로로 나란히 표시 */
+            margin-right: 5px; /* 버튼 사이 간격 조절 */
+        }
+
+
+        .solve-button:hover {
+            background-color: #45a049;
+        }
+
+        /* 문제 공유 버튼 스타일 */
+        .share-button {
+            background-color: #007BFF; /* 문제 공유 버튼 배경색 */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            width: calc(45% - 5px);
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+            display: inline-block; /* 가로로 나란히 표시 */
+            margin-left: 5px; /* 버튼 사이 간격 조절 */
+        }
+
+        .share-button:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 <body>
@@ -167,7 +271,8 @@
         <div class="workbook" th:each="workbook : ${workbooks}">
             <div class="workbook-header">
                 <a class="question-name" th:text="${workbook.questionName}"></a>
-                <button class='edit-button'>수정</button>
+                <button class='edit-button' th:attr="onclick='openModal(\'' + ${workbook.questionName} + '\', \'' + ${workbook.workBookNo} + '\')'">수정</button>
+
             </div>
 
             <!-- Workbook Question Numbers -->
@@ -183,8 +288,11 @@
 
             <p class='time-updated' th:text="${workbook.lastUpdatedTime}"></p>
 
-            <!-- Start Button -->
-            <button type="button"> 문제집 풀기 </button>
+            <!-- Button -->
+            <div class="button-container">
+                <button class="solve-button">문제 풀이</button>
+                <button class="share-button">문제 공유</button>
+            </div>
         </div>
     </div>
 
@@ -204,8 +312,67 @@
         <a th:href="@{${'myWorkBook'}(page=${workbooks.totalPages - 1})}">다음</a>
     </span>
 </div>
-
 </div>
+
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h2>문제집 수정</h2>
+        <label for="workBookName">문제집 이름</label>
+        <input type="text" id="workBookName" name="workBookName">
+        <button id="confirm-button" onclick="updateWorkbook()">확인</button>
+    </div>
+</div>
+
 <th:block th:insert="~{common/footer}" />
+
+<script>
+    function openModal(workBookName, workbookNo) {
+        var modal = document.getElementById("myModal");
+        modal.style.display = "block";
+
+        // 기존 문제집 이름 입력 필드에 설정
+        document.getElementById('workBookName').value = workBookName;
+
+        // 데이터 저장을 위한 데이터 속성 설정
+        document.getElementById('workBookName').setAttribute('data-workbook-no', workbookNo);
+    }
+
+    // 모달 닫기 함수
+    function closeModal() {
+        var modal = document.getElementById("myModal");
+        modal.style.display = "none";
+    }
+
+    // 문제집 수정 함수
+    function updateWorkbook() {
+        var workBookName = document.getElementById('workBookName').value;
+        var workbookNo = document.getElementById('workBookName').getAttribute('data-workbook-no');
+
+        // 데이터를 서버로 보내고 엔드포인트로 처리
+        sendDataToServer(workBookName, workbookNo);
+
+        // 모달 창 닫기
+        closeModal();
+    }
+
+    // 서버로 데이터 전송
+    function sendDataToServer(workBookName, workbookNo) {
+        fetch('/workbook/myPage/update', {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ workBookName: workBookName, workBookNo: workbookNo })
+        })
+            .then(response => {
+                alert("성공적으로 수정되었습니다.")
+                window.location.reload();
+            })
+            .catch(error => {
+                alert("수정하는데 실패하였습니다.")
+            });
+    }
+</script>
 </body>
 </html>
