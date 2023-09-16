@@ -502,6 +502,43 @@
             descriptionTextarea.value = descriptionTextarea.value.substring(0, descriptionMaxLength);
             descriptionCharacterCount.textContent = descriptionMaxLength + "/" + descriptionMaxLength + " 글자";
         }
+
+        // 선택한 문제집 삭제 함수
+        function deleteSelectedWorkbooks() {
+            var selectedWorkbooks = [];
+            var checkboxes = document.querySelectorAll('.workbook-checkbox:checked');
+
+            // 체크된 체크 박스에서 workbookNo를 추출하여 배열에 추가
+            checkboxes.forEach(function (checkbox) {
+                selectedWorkbooks.push(checkbox.getAttribute('data-workbook-no'));
+            });
+
+            // 선택한 문제집을 서버로 보내고 엔드포인트로 처리
+            sendSelectedWorkbooksToDelete(selectedWorkbooks);
+        }
+
+        // 서버로 선택한 문제집 삭제 요청 보내기
+        function sendSelectedWorkbooksToDelete(selectedWorkbooks) {
+            if (selectedWorkbooks.length === 0) {
+                alert('삭제할 문제집을 선택하세요.');
+                return;
+            }
+
+            fetch('/workbook/myPage/delete', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ workBookNos: selectedWorkbooks })
+            })
+                .then(response => {
+                    alert('선택한 문제집이 성공적으로 삭제되었습니다.');
+                    window.location.reload();
+                })
+                .catch(error => {
+                    alert('문제집 삭제 중 오류가 발생했습니다.');
+                });
+        }
     }
 </script>
 </body>
