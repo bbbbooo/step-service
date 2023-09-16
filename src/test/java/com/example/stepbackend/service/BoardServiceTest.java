@@ -36,7 +36,7 @@ class BoardServiceTest {
         CreateBoardRequestDTO createBoardRequestDTO = CreateBoardRequestDTO.builder()
                 .description("무무무무")
                 .workBookName("미미미미")
-                .workBookNo(14L)
+                .workBookNo("14")
                 .build();
 
         WorkBook testWorkBook = WorkBook.builder()
