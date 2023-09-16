@@ -12,6 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
+import java.util.List;
+
 @SpringBootTest
 @Transactional
 class BoardServiceTest {
@@ -36,8 +39,13 @@ class BoardServiceTest {
                 .workBookNo(14L)
                 .build();
 
+        WorkBook testWorkBook = WorkBook.builder()
+                .questionTypes("title")
+                .questionNos("1,2,3")
+                .build();
 
-        WorkBook workBook = workBookRepository.findByMemberNoAndWorkBookNo(memberNo, createBoardRequestDTO.getWorkBookNo());
+        WorkBook workBook = workBookRepository.save(testWorkBook);
+
         Board board = Board.toEntity(memberNo, workBook, createBoardRequestDTO);
 
         // when
@@ -52,5 +60,4 @@ class BoardServiceTest {
                         memberNo.equals(createdBoard.getMemberNo())
                 );
     }
-
 }
