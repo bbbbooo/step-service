@@ -5,6 +5,7 @@ import com.example.stepbackend.aggregate.entity.User;
 import com.example.stepbackend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CreateUserService {
@@ -16,6 +17,7 @@ public class CreateUserService {
         this.userRepository = userRepository;
     }
 
+    @Transactional
     public User create(CreateUserDTO createUserDTO) {
         User createUser = new User(
                 createUserDTO.getNickname(),

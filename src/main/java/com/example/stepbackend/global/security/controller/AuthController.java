@@ -1,19 +1,20 @@
 package com.example.stepbackend.global.security.controller;
 
+import com.example.stepbackend.global.common.annotation.CurrentUser;
 import com.example.stepbackend.global.common.response.api.ApiResponse;
 import com.example.stepbackend.global.security.dto.AuthResponse;
 import com.example.stepbackend.global.security.dto.AuthResponseBody;
 import com.example.stepbackend.global.security.service.IssueTokenService;
+import com.example.stepbackend.global.security.token.UserPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
@@ -45,6 +46,16 @@ public class AuthController {
                 .setBody(authResponseBody);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(authResponse);
+    }
+
+    @GetMapping("name")
+    public ResponseEntity<?> issueToken(@CurrentUser UserPrincipal userPrincipal) {
+        System.out.println("userPrincipal = " + userPrincipal);
+        System.out.println("userPrincipal.getNickname() = " + userPrincipal.getNickname());
+
+        Map<String , String> responseBody = new HashMap<>();
+        responseBody.put("nickname", userPrincipal.getNickname());
+        return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 
 }
