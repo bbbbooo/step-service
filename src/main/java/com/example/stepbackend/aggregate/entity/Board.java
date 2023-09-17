@@ -1,11 +1,11 @@
 package com.example.stepbackend.aggregate.entity;
 
+import com.example.stepbackend.aggregate.dto.board.CreateBoardRequestDTO;
 import lombok.*;
 import org.hibernate.annotations.Comment;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -44,4 +44,15 @@ public class Board {
     @Column
     @Comment("만들어진 날짜")
     private LocalDate createdAt;
+
+    public static Board toEntity(Long memberNo, WorkBook workBook, CreateBoardRequestDTO createBoardRequestDTO) {
+        return Board.builder()
+                .memberNo(memberNo)
+                .boardName(createBoardRequestDTO.getWorkBookName())
+                .description(createBoardRequestDTO.getDescription())
+                .questionNos(workBook.getQuestionNos())
+                .questionTypes(workBook.getQuestionTypes())
+                .createdAt(LocalDate.now())
+                .build();
+    }
 }

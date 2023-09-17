@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Board Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .board {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin: 20px 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .board h2 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .board p {
+            margin: 0;
+            margin-bottom: 10px;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .board-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .created-at {
+            font-size: 14px;
+            color: #777;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .pagination a {
+            color: #333;
+            padding: 5px 10px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+            margin: 0 2px;
+        }
+
+        .pagination a:hover {
+            background-color: #007BFF;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<th:block th:insert="~{common/header}" />
+<div class="container">
+    <h1 style="font-size: 36px; font-weight: bold; margin: 20px 0;">사람들이 만든 문제집을 함께 풀어보세요.</h1>
+    <p style="color: #444;">다른 사람들이 만든 문제집을 풀어보고 내 실력을 점검해 보세요.</p>
+    <p th:utext="'문제집 리그에서 풀어본 문제집은 <strong style=\'color: #444;\'>내 학습현황>나의 문제집</strong>에서 확인 가능합니다.'"></p>
+
+
+    <!-- 게시물 목록 -->
+    <th:block th:each="board : ${boards.content}">
+        <div class="board">
+            <h2 th:text="${board.questionName}">게시물 제목</h2>
+            <p th:text="${board.description}">게시물 설명</p>
+            <div class="board-info">
+                <p class="created-at" th:text="${board.createdAt}">게시일자</p>
+            </div>
+        </div>
+    </th:block>
+
+    <!-- 페이징 -->
+    <div class="pagination" th:if="${boards.totalPages > 1}">
+        <span th:if="${boards.hasPrevious}">
+            <a th:href="@{${'board'}(page=0)}">이전</a>
+        </span>
+
+        <span th:each="i : ${#numbers.sequence(0, boards.totalPages - 1)}">
+            <a th:if="${boards.number == i}" th:text="${i + 1}"></a>
+            <a th:if="${boards.number != i}" th:href="@{${'board'}(page=${i})}" th:text="${i + 1}"></a>
+        </span>
+
+        <span th:if="${boards.hasNext}">
+            <a th:href="@{${'board'}(page=${boards.totalPages - 1})}">다음</a>
+        </span>
+    </div>
+</div>
+<th:block th:insert="~{common/footer}" />
+</body>
+</html>
