@@ -3,6 +3,7 @@ package com.example.stepbackend.service;
 import com.example.stepbackend.aggregate.dto.user.UpdateUserDTO;
 import com.example.stepbackend.aggregate.entity.User;
 import com.example.stepbackend.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +15,7 @@ public class UpdateUserService {
 
     private final UserRepository userRepository;
 
+    @Autowired
     public UpdateUserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
