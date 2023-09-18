@@ -61,7 +61,8 @@ public class QuestionController {
     @ResponseBody
     public ResponseEntity readQuestion(@RequestParam String type, @CurrentUser User user) throws Exception {
         // 모델 서빙서버 url
-//        String uri = "http://192.168.0.59:5050/quiz";
+//        String uri = "http://192.168.0.59:5050/quiz/blank"; // 빈칸추론
+//        String uri = "http://192.168.0.59:5050/quiz/title"; // 제목추론
 
         // mock 서버 url
         String uri = "https://73e6fc73-1c71-424e-a25b-f77760a2e6e9.mock.pstmn.io/data?type=" + type;

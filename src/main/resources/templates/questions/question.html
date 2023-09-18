@@ -99,7 +99,7 @@
                 </ul>
             </div>
             <div class="box-skip text-right">
-                <button type="button" onclick="next()" class="btn-skip-exam text-right">문제 건너뛰기</button>
+                <button type="button" onclick="pass()" class="btn-skip-exam text-right">문제 건너뛰기</button>
             </div>
         </div>
         <div>
@@ -121,14 +121,22 @@
 </div>
 <th:block th:insert="~{common/footer}" />
 <script th:inline="javascript">
-    // localStorage.clear();
+    // 호출한 문제 목록
     let result = /*[[${res}]]*/ null;
+    // 문제
     let item = null;
+    // 문제 번호(1~10)
     let questionCount = 0;
+    // 마킹 이미지 생성 여부
     let imageMap = false;
+    // 사용자가 몇번 찍었는지
     let answer = null;
+    // 정답여부 true : 정답 / false : 오답
     let correctedMarkingStatus = null;
+    // 문제 수정 여부
+    let retryStatus = false;
 
+    // AI 서빙 서버 요청 전 문제 대기상태 띄우기
     function updateHTML() {
         let loadingScreen = document.getElementById('loading-screen');
         let questionContent = document.getElementById('question-content');
@@ -148,6 +156,7 @@
         window.onload;
     }
 
+    // AI 서버에 문제 요청
     if(result === null) {
         const param = new URLSearchParams(location.search);
         const name = param.get('type');
@@ -179,12 +188,63 @@
         updateHTML();
     }
 
-    // 문제 건너뛰기
+    // 다음 문제
     function next() {
+        questionCount++;
+        localStorage.setItem('questionCount', questionCount.toString());
+        getData();
+
+        // 회원별 문제 풀이 데이터 저장
+        const data = {
+            questionNo : item.questionNo,
+            markedNo: answer,
+            correctedMarkingStatus : correctedMarkingStatus
+        }
+
+        axios.post('/questions', data)
+            .then((res) => {
+                console.log('회원이 문제를 풀었습니다.', res);
+            })
+
+    }
+
+    // 문제 건너뛰기
+    function pass() {
         questionCount++
         localStorage.setItem('questionCount', questionCount.toString());
         getData();
 
+        removeImage();
+    }
+
+    // 다시 풀기
+    function retry() {
+        let storedData = localStorage.getItem(`question_${localStorage.getItem('questionCount')}`);
+        let spanParagraph = document.getElementById('spanParagraph');
+        let questionSubject = document.getElementById('questionSubject');
+        let view1 = document.getElementById('view1');
+        let view2 = document.getElementById('view2');
+        let view3 = document.getElementById('view3');
+        let view4 = document.getElementById('view4');
+        let view5 = document.getElementById('view5');
+
+        if (spanParagraph && storedData) {
+            item = JSON.parse(storedData);
+
+            // 문제 다시 품
+            retryStatus = true;
+
+            // 원하는 속성 또는 데이터로 요소 업데이트
+            spanParagraph.innerText = item.questionBody;
+            questionSubject.innerText = (questionCount + 1) + '.' + ' ' + item.questionSubject;
+            view1.innerText = item.view1;
+            view2.innerText = item.view2;
+            view3.innerText = item.view3;
+            view4.innerText = item.view4;
+            view5.innerText = item.view5;
+        }
+
+        // 기존 마킹 이미지 지우기
         removeImage();
     }
 
@@ -214,6 +274,7 @@
         }
     }
 
+    // 마킹 이미지 띄우기
     function addImageBefore(number) {
 
         if (imageMap) {
@@ -262,12 +323,11 @@
         }
     });
 
+    // 문제 확인
     function isAnswer() {
         if(answer === null) {
             alert('문제를 선택하지 않았습니다.');
         } else {
-            questionCount++
-            localStorage.setItem('questionCount', questionCount.toString());
             openModal();
             removeImage();
         }
@@ -292,7 +352,7 @@
 
             axios.post('/questions', data)
                 .then((res) => {
-                    console.log(res);
+                    console.log('회원이 문제를 풀었습니다.', res);
                 })
 
             getData();
@@ -300,13 +360,10 @@
         }
     }
 
+    // 모달 창 띄우기 / 정오답 확인
     function openModal() {
+
         // 다음 문제 전환 하기 위해 필요 값
-        questionCount++;
-        localStorage.setItem('questionCount', questionCount.toString());
-
-        console.log(document.querySelector('.answer-image'));
-
         if(document.querySelector('.answer-image') != null) {
             document.querySelector('.answer-image').remove();
         }
@@ -317,7 +374,7 @@
             correctedMarkingStatus = true;
 
             let img = document.createElement('img');
-            img.setAttribute('class', 'answer-image px-10');
+            img.setAttribute('class', 'answer-image');
             img.setAttribute('src', '/assets/img/o.png');
 
             let numberingDiv = document.querySelector('.contain-result-anwser');
@@ -332,7 +389,7 @@
             correctedMarkingStatus = false;
 
             let img = document.createElement('img');
-            img.setAttribute('class', 'answer');
+            img.setAttribute('class', 'answer-image');
             img.setAttribute('src', '/assets/img/x.png');
 
             let numberingDiv = document.querySelector('.contain-result-anwser');
@@ -347,19 +404,13 @@
             correctedMarkingStatus : correctedMarkingStatus
         }
 
-        // 회원별 문제 풀이 데이터 저장
+        // 회원 별 문제 풀이 데이터 저장
         axios.post('/questions', data)
             .then((res) => {
-                console.log(res);
+                console.log('회원이 문제를 풀었습니다.', res);
             })
     }
 
-    // function closeModal() {
-    //     // 모달 닫기
-    //     document.querySelector('.modal').style.display = 'none';
-    // }
-
 </script>
-<!--    <script th:src="@{/assets/js/question.js}"></script>-->
 </body>
 </html>
