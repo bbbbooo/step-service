@@ -1,8 +1,6 @@
 package com.example.stepbackend.service;
 
-import com.example.stepbackend.aggregate.dto.board.CreateBoardRequestDTO;
-import com.example.stepbackend.aggregate.dto.board.CreateBoardResponseDTO;
-import com.example.stepbackend.aggregate.dto.board.ReadBoardPageDTO;
+import com.example.stepbackend.aggregate.dto.board.*;
 import com.example.stepbackend.aggregate.entity.Board;
 import com.example.stepbackend.aggregate.entity.WorkBook;
 import com.example.stepbackend.repository.BoardRepository;
@@ -42,5 +40,17 @@ public class BoardService {
         Page<ReadBoardPageDTO> readBoardPageDTOPage = ReadBoardPageDTO.toEntity(boards);
 
         return readBoardPageDTOPage;
+    }
+
+    /* 공유한 문제집 수정 */
+    @Transactional
+    public UpdateBoardResponseDTO updateBoard(UpdateBoardRequestDTO updateBoardRequestDTO) {
+        Board board = boardRepository.findByBoardNo(updateBoardRequestDTO.getBoardNo());
+
+        board.update(updateBoardRequestDTO.getTitle(), updateBoardRequestDTO.getDescription());
+
+        UpdateBoardResponseDTO updateBoardResponseDTO = UpdateBoardResponseDTO.toEntity(board);
+
+        return updateBoardResponseDTO;
     }
 }

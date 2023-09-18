@@ -1,8 +1,6 @@
 package com.example.stepbackend.controller;
 
-import com.example.stepbackend.aggregate.dto.board.CreateBoardRequestDTO;
-import com.example.stepbackend.aggregate.dto.board.CreateBoardResponseDTO;
-import com.example.stepbackend.aggregate.dto.board.ReadBoardPageDTO;
+import com.example.stepbackend.aggregate.dto.board.*;
 import com.example.stepbackend.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -38,5 +36,13 @@ public class BoardController {
         CreateBoardResponseDTO createBoardResponseDTO = boardService.createBoard(createBoardRequestDTO, memberNo);
 
         return ResponseEntity.ok(createBoardResponseDTO);
+    }
+
+    @PatchMapping("/update")
+    @ResponseBody
+    public ResponseEntity<UpdateBoardResponseDTO> update(@RequestBody UpdateBoardRequestDTO updateBoardRequestDTO){
+        UpdateBoardResponseDTO updateBoardResponseDTO = boardService.updateBoard(updateBoardRequestDTO);
+
+        return ResponseEntity.ok(updateBoardResponseDTO);
     }
 }

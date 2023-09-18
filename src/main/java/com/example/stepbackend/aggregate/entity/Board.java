@@ -55,4 +55,9 @@ public class Board {
                 .createdAt(LocalDate.now())
                 .build();
     }
+
+    public void update(String title, String description) {
+        this.boardName = title;
+        this.description = description;
+    }
 }
