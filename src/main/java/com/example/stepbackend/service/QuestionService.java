@@ -14,6 +14,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -102,6 +103,7 @@ public class QuestionService {
         questionByMember.setMemberNo(memberNo);
         questionByMember.setMarkedNo(req.getMarkedNo());
         questionByMember.setCorrectedMarkingStatus(req.getCorrectedMarkingStatus());
+        questionByMember.setCreatedTime(LocalDateTime.now());
 
         QuestionByMember foundMemberHistory = questionByMemberRepository.save(questionByMember);
 
