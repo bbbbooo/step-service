@@ -1,6 +1,7 @@
 package com.example.stepbackend.service;
 
 import com.example.stepbackend.aggregate.dto.board.CreateBoardRequestDTO;
+import com.example.stepbackend.aggregate.dto.board.UpdateBoardRequestDTO;
 import com.example.stepbackend.aggregate.entity.Board;
 import com.example.stepbackend.aggregate.entity.WorkBook;
 import com.example.stepbackend.repository.BoardRepository;
@@ -11,9 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Arrays;
-import java.util.List;
 
 @SpringBootTest
 @Transactional
@@ -59,5 +57,44 @@ class BoardServiceTest {
                         workBook.getQuestionNos().equals(createdBoard.getQuestionNos()) &&
                         memberNo.equals(createdBoard.getMemberNo())
                 );
+    }
+
+    @DisplayName("제목과 설명 입력받아 수정")
+    @Test
+    void updateTitleAndDescription(){
+        // given
+        Long memberNo = 1L;
+        String title = "테스트";
+        String description = "설명";
+
+        CreateBoardRequestDTO createBoardRequestDTO = CreateBoardRequestDTO.builder()
+                .description("무무무무")
+                .workBookName("미미미미")
+                .workBookNo("14")
+                .build();
+
+        WorkBook testWorkBook = WorkBook.builder()
+                .questionTypes("title")
+                .questionNos("1,2,3")
+                .build();
+
+        WorkBook workBook = workBookRepository.save(testWorkBook);
+
+        Board board = Board.toEntity(memberNo, workBook, createBoardRequestDTO);
+        boardRepository.save(board);
+
+        UpdateBoardRequestDTO updateBoardRequestDTO = UpdateBoardRequestDTO.builder()
+                .title(title)
+                .description(description)
+                .boardNo(board.getBoardNo())
+                .build();
+
+        // when
+        Board updateBoard = boardRepository.findByBoardNo(updateBoardRequestDTO.getBoardNo());
+        updateBoard.update(updateBoardRequestDTO.getTitle(), updateBoardRequestDTO.getDescription());
+
+        // then
+        Assertions.assertTrue(updateBoard.getBoardName().equals(title) &&
+                updateBoard.getDescription().equals(description));
     }
 }
