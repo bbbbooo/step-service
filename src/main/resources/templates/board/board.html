@@ -262,6 +262,7 @@
                     <button class="like-button fa"
                             th:classappend="${board.isClicked == null or board.isClicked == false} ? 'fa-heart-o' : 'fa-heart'"
                             th:attr="onclick='toggleHeart(this, ' + ${board.boardNo} + ')'"></button>
+                    <a th:id="'likeCount_' + ${board.boardNo}" th:text="${board.heartCount}" style="margin-left: 10px; margin-bottom: 5px"></a>
                 </div>
                 <div>
                     <a href="#" class="edit-button" th:attr="onclick='openModal(' + ${board.boardNo} + ')'">수정</a>
@@ -419,9 +420,15 @@
         })
             .then(response => {
                 if (response.ok) {
-                    console.log(boardNo);
+                    return response.json();
                 } else {
                     console.error('에러 발생');
+                }
+            })
+            .then(data => {
+                const likeCountElement = document.getElementById('likeCount_' + boardNo);
+                if (likeCountElement) {
+                    likeCountElement.textContent = data.heartCount;
                 }
             })
             .catch(error => {
