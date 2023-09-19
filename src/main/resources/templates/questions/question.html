@@ -99,21 +99,22 @@
                 </ul>
             </div>
             <div class="box-skip text-right">
-                <button type="button" onclick="next()" class="btn-skip-exam text-right">문제 건너뛰기</button>
+                <button type="button" onclick="pass()" class="btn-skip-exam text-right">문제 건너뛰기</button>
             </div>
         </div>
         <div>
             <div id="checkAnswerDIV" class="btn_wrap btn_center_wrap" style="display: none;">
-                <button type="button" onclick="isAnswer();" class="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">
-                    <span>채점 후 결과 확인</span>
-                </button>
-                <button type="button" onclick="isCorrectAnswer()" class="text-white bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-green-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">
+                <button type="button" data-modal-target="defaultModal" data-modal-toggle="defaultModal" onclick="isAnswer();" class="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">
                     <span>정답 확인하기</span>
                 </button>
+<!--                <button type="button" data-modal-target="gradingModal" data-modal-toggle="gradingModal" onclick="afterGradingResult()" class="text-white bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-green-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">-->
+<!--                    <span>채점 후 결과 확인</span>-->
+<!--                </button>-->
             </div>
         </div>
     </div>
     <th:block th:include="/questions/result-modal.html"></th:block>
+    <th:block th:include="/questions/grading-modal.html"></th:block>
 
     <div class="basis-2/12 justify-items-center">
 
@@ -121,14 +122,23 @@
 </div>
 <th:block th:insert="~{common/footer}" />
 <script th:inline="javascript">
-    // localStorage.clear();
+    // 호출한 문제 목록
     let result = /*[[${res}]]*/ null;
+    console.log('result',result);
+    // 문제
     let item = null;
+    // 문제 번호(1~10)
     let questionCount = 0;
+    // 마킹 이미지 생성 여부
     let imageMap = false;
+    // 사용자가 몇번 찍었는지
     let answer = null;
+    // 정답여부 true : 정답 / false : 오답
     let correctedMarkingStatus = null;
+    // 문제 수정 여부
+    let retryStatus = false;
 
+    // AI 서빙 서버 요청 전 문제 대기상태 띄우기
     function updateHTML() {
         let loadingScreen = document.getElementById('loading-screen');
         let questionContent = document.getElementById('question-content');
@@ -148,6 +158,7 @@
         window.onload;
     }
 
+    // AI 서버에 문제 요청
     if(result === null) {
         const param = new URLSearchParams(location.search);
         const name = param.get('type');
@@ -170,8 +181,8 @@
                 console.log('',err);
             })
     } else {
-        for (let i = 0; i < result.res.length; i++) {
-            let item = result.res[i];
+        for (let i = 0; i < result.length; i++) {
+            let item = result[i];
             let key = 'question_' + i; // 각 항목에 고유한 키 생성
             localStorage.setItem(key, JSON.stringify(item));
         }
@@ -179,13 +190,73 @@
         updateHTML();
     }
 
-    // 문제 건너뛰기
+    // 다음 문제
     function next() {
-        questionCount++
+        // 기존 마킹 이미지 지우기
+        removeImage();
+
+        questionCount++;
         localStorage.setItem('questionCount', questionCount.toString());
         getData();
 
+        // 회원별 문제 풀이 데이터 저장
+        const data = {
+            questionNo : item.questionNo,
+            markedNo: answer,
+            correctedMarkingStatus : correctedMarkingStatus
+        }
+
+        axios.post('/questions', data)
+            .then((res) => {
+                console.log('회원이 문제를 풀었습니다.', res);
+            })
+
+        // 10문제 다 풀었으면 메인으로 이동
+        if(localStorage.getItem('questionCount') >= 10) {
+            alert('문제를 다 풀었습니다.');
+            window.location.replace('/');
+        }
+    }
+
+    // 문제 건너뛰기
+    function pass() {
+        // 기존 마킹 이미지 지우기
         removeImage();
+
+        questionCount++
+        localStorage.setItem('questionCount', questionCount.toString());
+        getData();
+    }
+
+    // 다시 풀기
+    function retry() {
+        // 기존 마킹 이미지 지우기
+        removeImage();
+
+        let storedData = localStorage.getItem(`question_${localStorage.getItem('questionCount')}`);
+        let spanParagraph = document.getElementById('spanParagraph');
+        let questionSubject = document.getElementById('questionSubject');
+        let view1 = document.getElementById('view1');
+        let view2 = document.getElementById('view2');
+        let view3 = document.getElementById('view3');
+        let view4 = document.getElementById('view4');
+        let view5 = document.getElementById('view5');
+
+        if (spanParagraph && storedData) {
+            item = JSON.parse(storedData);
+
+            // 문제 다시 품
+            retryStatus = true;
+
+            // 원하는 속성 또는 데이터로 요소 업데이트
+            spanParagraph.innerText = item.questionBody;
+            questionSubject.innerText = (questionCount + 1) + '.' + ' ' + item.questionSubject;
+            view1.innerText = item.view1;
+            view2.innerText = item.view2;
+            view3.innerText = item.view3;
+            view4.innerText = item.view4;
+            view5.innerText = item.view5;
+        }
     }
 
     // localStorage에서 데이터를 추출하여 요소에 넣기
@@ -214,6 +285,7 @@
         }
     }
 
+    // 마킹 이미지 띄우기
     function addImageBefore(number) {
 
         if (imageMap) {
@@ -262,63 +334,81 @@
         }
     });
 
+    // 문제 확인
     function isAnswer() {
         if(answer === null) {
             alert('문제를 선택하지 않았습니다.');
         } else {
-            questionCount++
-            localStorage.setItem('questionCount', questionCount.toString());
             openModal();
-            removeImage();
+            // removeImage();
         }
     }
 
-    function isCorrectAnswer() {
-        if(answer === null) {
-            alert('문제를 선택하지 않았습니다.');
-        } else {
-            if(questionCount >= 10) {
-                alert('문제를 다 풀었습니다.');
-            }
-            questionCount++
-            localStorage.setItem('questionCount', questionCount.toString());
+    function afterGradingResult() {
+        // if(answer === null) {
+        //     alert('문제를 선택하지 않았습니다.');
+        // } else {
+        //     if(questionCount >= 10) {
+        //         alert('문제를 다 풀었습니다.');
+        //     }
+        //     questionCount++
+        //     localStorage.setItem('questionCount', questionCount.toString());
+        //
+        //     // 회원별 문제 풀이 데이터 저장
+        //     const data = {
+        //         questionNo : item.questionNo,
+        //         markedNo: answer,
+        //         correctedMarkingStatus : correctedMarkingStatus
+        //     }
+        //
+        //     axios.post('/questions', data)
+        //         .then((res) => {
+        //             console.log('회원이 문제를 풀었습니다.', res);
+        //         })
+        //
+        //     getData();
+        //     removeImage();
+        // }
 
-            // 회원별 문제 풀이 데이터 저장
-            const data = {
-                questionNo : item.questionNo,
-                markedNo: answer,
-                correctedMarkingStatus : correctedMarkingStatus
-            }
 
-            axios.post('/questions', data)
-                .then((res) => {
-                    console.log(res);
-                })
-
-            getData();
-            removeImage();
-        }
     }
 
+    // 모달 창 띄우기 / 정오답 확인
     function openModal() {
 
         // 다음 문제 전환 하기 위해 필요 값
-        questionCount++;
-        localStorage.setItem('questionCount', questionCount.toString());
-
-        // 모달 열기
-        document.querySelector('.modal').style.display = 'block';
+        if(document.querySelector('.answer-image') != null) {
+            document.querySelector('.answer-image').remove();
+        }
 
         // 정답 표시
         if(answer == item.questionCorrectAnswer) {
-            document.getElementById('ans-wrong').innerText = '정답';
+            document.getElementById('ans-wrong').innerText = '정답 입니다.';
             correctedMarkingStatus = true;
+
+            let img = document.createElement('img');
+            img.setAttribute('class', 'answer-image');
+            img.setAttribute('src', '/assets/img/o.png');
+
+            let numberingDiv = document.querySelector('.contain-result-anwser');
+
+            // 이미지를 특정 요소(numberingDiv) 앞에 추가
+            numberingDiv.parentNode.insertBefore(img, numberingDiv);
         }
 
         // 오답 표시
         if(answer != item.questionCorrectAnswer) {
-            document.getElementById('ans-wrong').innerText = '오답';
+            document.getElementById('ans-wrong').innerText = '오답 입니다.';
             correctedMarkingStatus = false;
+
+            let img = document.createElement('img');
+            img.setAttribute('class', 'answer-image');
+            img.setAttribute('src', '/assets/img/x.png');
+
+            let numberingDiv = document.querySelector('.contain-result-anwser');
+
+            // 이미지를 특정 요소(numberingDiv) 앞에 추가
+            numberingDiv.parentNode.insertBefore(img, numberingDiv);
         }
 
         const data = {
@@ -327,19 +417,12 @@
             correctedMarkingStatus : correctedMarkingStatus
         }
 
-        // 회원별 문제 풀이 데이터 저장
+        // 회원 별 문제 풀이 데이터 저장
         axios.post('/questions', data)
             .then((res) => {
-                console.log(res);
+                console.log('회원이 문제를 풀었습니다.', res);
             })
     }
-
-    function closeModal() {
-        // 모달 닫기
-        document.querySelector('.modal').style.display = 'none';
-    }
-
 </script>
-<!--    <script th:src="@{/assets/js/question.js}"></script>-->
 </body>
 </html>
