@@ -97,4 +97,29 @@ class BoardServiceTest {
         Assertions.assertTrue(updateBoard.getBoardName().equals(title) &&
                 updateBoard.getDescription().equals(description));
     }
+
+    @DisplayName("게시글 삭제")
+    @Test
+    void delete(){
+        // given
+        Long memberNo = 1L;
+
+        CreateBoardRequestDTO createBoardRequestDTO = CreateBoardRequestDTO.builder()
+                .build();
+
+        WorkBook testWorkBook = WorkBook.builder()
+                .build();
+
+        WorkBook workBook = workBookRepository.save(testWorkBook);
+
+        Board board = Board.toEntity(memberNo, workBook, createBoardRequestDTO);
+        boardRepository.save(board);
+
+        // when
+        Long boardNo = boardService.deleteBoard(board.getBoardNo());
+
+        // then
+        Assertions.assertTrue(board.getBoardNo().equals(boardNo));
+
+    }
 }

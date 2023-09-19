@@ -45,4 +45,12 @@ public class BoardController {
 
         return ResponseEntity.ok(updateBoardResponseDTO);
     }
+
+    @DeleteMapping("/delete")
+    @ResponseBody
+    public ResponseEntity<Void> delete(@RequestBody DeleteBoardDTO deleteBoardDTO){
+        boardService.deleteBoard(deleteBoardDTO.getBoardNo());
+
+        return ResponseEntity.noContent().build();
+    }
 }

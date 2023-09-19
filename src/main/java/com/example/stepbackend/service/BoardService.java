@@ -53,4 +53,11 @@ public class BoardService {
 
         return updateBoardResponseDTO;
     }
+
+    @Transactional
+    public Long deleteBoard(Long boardNo) {
+        boardRepository.deleteById(boardNo);
+
+        return boardNo;
+    }
 }
