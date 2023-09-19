@@ -1,9 +1,13 @@
 package com.example.stepbackend.service;
 
+import com.example.stepbackend.aggregate.dto.Heart.PostHeartRequestDTO;
+import com.example.stepbackend.aggregate.dto.Heart.PostHeartResponseDTO;
 import com.example.stepbackend.aggregate.dto.board.*;
 import com.example.stepbackend.aggregate.entity.Board;
+import com.example.stepbackend.aggregate.entity.Heart;
 import com.example.stepbackend.aggregate.entity.WorkBook;
 import com.example.stepbackend.repository.BoardRepository;
+import com.example.stepbackend.repository.HeartRepository;
 import com.example.stepbackend.repository.WorkBookRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -18,6 +22,8 @@ public class BoardService {
     private final BoardRepository boardRepository;
 
     private final WorkBookRepository workBookRepository;
+
+    private final HeartRepository heartRepository;
 
     /* 공유한 문제집 저장 */
     @Transactional
@@ -59,5 +65,26 @@ public class BoardService {
         boardRepository.deleteById(boardNo);
 
         return boardNo;
+    }
+
+    @Transactional
+    public PostHeartResponseDTO postHeart(PostHeartRequestDTO postHeartRequestDTO, Long memberNo) {
+        Heart heart = heartRepository.findByBoardNoAndMemberNo(postHeartRequestDTO.getBoardNo(), memberNo);
+        Board board = boardRepository.findByBoardNo(postHeartRequestDTO.getBoardNo());
+
+        if (heart == null){
+            Heart saveHeart = Heart.toEntity(postHeartRequestDTO, memberNo);
+            heartRepository.save(saveHeart);
+
+            board.increaseHeartCount();
+            PostHeartResponseDTO postHeartResponseDTO = PostHeartResponseDTO.fromEntity(saveHeart, board);
+
+            return postHeartResponseDTO;
+        }
+
+        board.decreaseHeartCount();
+        PostHeartResponseDTO postHeartResponseDTO = PostHeartResponseDTO.fromEntity(heart, board);
+
+        return postHeartResponseDTO;
     }
 }
