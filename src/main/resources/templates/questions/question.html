@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <title>ONESTEP</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://kit.fontawesome.com/ba60aefbce.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/assets/css/font.css">
 </head>
 <body>
 <th:block th:insert="~{common/header}" />
@@ -25,9 +27,9 @@
         </div>
 
         <!-- style="display: none;" -->
-        <div id="question-content" class="box-exam-body" style="display: none;">
+        <div id="question-content" class="box-exam-body" style="font-family: CustomFont; display: none;">
             <div class="box-exam py-7 px-4 bg-slate-100">
-                <div style="text-align:Justify;line-height:130%; font-family: 돋움; font-size: 14px;" name="divParagraph">
+                <div style="text-align:Justify; line-height:130%; font-family: 돋움; font-size: 14px;" name="divParagraph">
                     <span style="font-weight:bold;font-size:15px;font-style:italic"></span>
                     <span id="questionSubject" style="white-space:pre-wrap;font-size:12px;line-height:130%; font-family: 돋움; font-size: 14px;"></span>
                 </div>
@@ -48,7 +50,7 @@
                     </div>
                     <li class="dontsplit odd" iscorrectanswer="False">
                         <div style="width:20px; display:table-cell;" class="numbering" data-number="1">
-                            ①
+                            &#x2460;
                         </div>
                         <div style="display:table-cell;min-height:20px;padding-left:20px;height:22px;">
                             <div style="text-align:Justify;line-height:130%; font-family: 돋움; font-size: 14px;" name="divParagraph">
@@ -58,7 +60,7 @@
                     </li>
                     <li class="dontsplit" iscorrectanswer="False">
                         <div style="width:20px; display:table-cell;" class="numbering" data-number="2">
-                            ②
+                            &#x2461;
                         </div>
                         <div style="display:table-cell;min-height:20px;padding-left:20px;height:22px;">
                             <div style="text-align:Justify;line-height:130%; font-family: 돋움; font-size: 14px;" name="divParagraph">
@@ -68,7 +70,7 @@
                     </li>
                     <li class="dontsplit odd" iscorrectanswer="False">
                         <div style="width:20px; display:table-cell;" class="numbering" data-number="3">
-                            ③
+                            &#x2462;
                         </div>
                         <div style="display:table-cell;min-height:20px;padding-left:20px;height:22px;">
                             <div style="text-align:Justify;line-height:130%; font-family: 돋움; font-size: 14px;" name="divParagraph">
@@ -78,7 +80,7 @@
                     </li>
                     <li class="dontsplit" iscorrectanswer="False">
                         <div style="width:20px; display:table-cell;" class="numbering" data-number="4">
-                            ④
+                            &#x2463;
                         </div>
                         <div style="display:table-cell;min-height:20px;padding-left:20px;height:22px;">
                             <div style="text-align:Justify;line-height:130%; font-family: 돋움; font-size: 14px;" name="divParagraph">
@@ -88,7 +90,7 @@
                     </li>
                     <li class="dontsplit odd" iscorrectanswer="False">
                         <div style="width:20px; display:table-cell;" class="numbering" data-number="5">
-                            ⑤
+                            &#x2464;
                         </div>
                         <div style="display:table-cell;min-height:20px;padding-left:20px;height:22px;">
                             <div style="text-align:Justify;line-height:130%; font-family: 돋움; font-size: 14px;" name="divParagraph">
@@ -110,17 +112,83 @@
 <!--                <button type="button" data-modal-target="gradingModal" data-modal-toggle="gradingModal" onclick="afterGradingResult()" class="text-white bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-green-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">-->
 <!--                    <span>채점 후 결과 확인</span>-->
 <!--                </button>-->
+                <button type="button" onclick="generatePDF()" class="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">
+                    <span>PDF 다운로드</span>
+                </button>
             </div>
         </div>
     </div>
     <th:block th:include="/questions/result-modal.html"></th:block>
-    <th:block th:include="/questions/grading-modal.html"></th:block>
+<!--    <th:block th:include="/questions/grading-modal.html"></th:block>-->
 
     <div class="basis-2/12 justify-items-center">
 
     </div>
 </div>
 <th:block th:insert="~{common/footer}" />
+<script>
+    window.jsPDF = window.jspdf.jsPDF
+    window.canvas = window.html2canvas
+    function generatePDF() {
+
+        // const content = document.getElementById('questionSubject');
+        const content = document.getElementById('question-content');
+        const srcwidth = document.getElementById('question-content').scrollWidth;
+        const customFontFamily = '/assets/font/incheon.ttf';
+        const pdf = new jsPDF('p', 'mm', 'a4');
+
+        // 한글 폰트를 추가합니다.
+        pdf.addFileToVFS('/assets/font/incheon.ttf');
+        pdf.addFont('/assets/font/incheon.ttf', customFontFamily, 'normal');
+        pdf.setFont(customFontFamily);
+
+        const fontFaces = [
+            {
+                family: 'CustomFont', // 폰트 패밀리 이름
+                src: [
+                    {
+                        url: '/assets/font/incheon.ttf', // 폰트 파일 경로
+                        format: 'truetype', // 폰트 포맷
+                    },
+                ],
+            },
+        ];
+
+        // HTML 요소를 PDF로 변환
+        pdf.html(content, {
+            fontFaces: fontFaces,
+            html2canvas: {
+                scale: 200 / srcwidth
+                //600 is the width of a4 page. 'a4': [595.28, 841.89]
+            },
+            callback: function (pdf) {
+
+                pdf.addFileToVFS('/assets/font/incheon.ttf');
+                pdf.addFont('/assets/font/incheon.ttf', customFontFamily, 'normal');
+                pdf.setFont(customFontFamily);
+
+                // PDF를 저장할 때 사용할 파일 이름 및 형식 설정
+                pdf.save('question.pdf');
+            },
+        });
+
+        // html2canvas로 HTML을 이미지로 변환합니다.
+        // html2canvas(content).then((canvas) => {
+        //     // 이미지 데이터를 가져옵니다.
+        //     const imgData = canvas.toDataURL('image/jpeg');
+        //
+        //     // jsPDF를 사용하여 PDF를 생성합니다.
+        //     const pdf = new jsPDF('p', 'mm', 'a4');
+        //
+        //     // 이미지를 PDF에 추가합니다.
+        //     pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297); // A4 페이지 크기에 맞게 조절
+        //
+        //     // PDF를 저장할 때 사용할 파일 이름 및 형식 설정
+        //     pdf.save('question.pdf');
+        // });
+    }
+</script>
+
 <script th:inline="javascript">
     // 호출한 문제 목록
     let result = /*[[${res}]]*/ null;
@@ -369,7 +437,6 @@
         //     getData();
         //     removeImage();
         // }
-
 
     }
 
