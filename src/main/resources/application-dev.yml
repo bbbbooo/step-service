@@ -42,7 +42,7 @@ spring:
           kakao:
             client-id: 21f04815fbbdc192e201be195418d4c7
             client-secret: rxVNheALkzqkNgiyA62OeNsKlJWHcBtj
-            redirect-uri: http://localhost:8888/oauth2/callback/kakao
+            redirect-uri: http://localhost:8888/auth/signin
             client-authentication-method: post
             authorization-grant-type: authorization_code
             scope:
@@ -55,7 +55,7 @@ spring:
             authorization-uri: https://kauth.kakao.com/oauth/authorize
             token-uri: https://kauth.kakao.com/oauth/token
             user-info-uri: https://kapi.kakao.com/v2/user/me
-            user-name-attribute: response
+            user-name-attribute: id
 
 logging:
   level:

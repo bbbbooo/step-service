@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ONESTEP</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://kit.fontawesome.com/ba60aefbce.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+  <th:block th:insert="~{common/header}" />
+  <div>
+      <a href="https://kauth.kakao.com/oauth/authorize?client_id=21f04815fbbdc192e201be195418d4c7&redirect_uri=http://localhost:8888/auth/signup&response_type=code">
+          <img th:src="@{/assets/img/kakao_login_large_narrow.png}">
+      </a>
+  </div>
+  <th:block th:insert="~{common/footer}" />
+</body>
+</html>
