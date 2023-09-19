@@ -1,5 +1,7 @@
 package com.example.stepbackend.controller;
 
+import com.example.stepbackend.aggregate.dto.Heart.PostHeartRequestDTO;
+import com.example.stepbackend.aggregate.dto.Heart.PostHeartResponseDTO;
 import com.example.stepbackend.aggregate.dto.board.*;
 import com.example.stepbackend.service.BoardService;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +23,9 @@ public class BoardController {
 
     @GetMapping
     public String getBoardPage(@PageableDefault(sort = "boardNo", direction = Sort.Direction.DESC)Pageable pageable, Model model){
-        Page<ReadBoardPageDTO> readBoardPageDTOPage = boardService.findAll(pageable);
+        Long memberNo = 1L;
+
+        Page<ReadBoardPageDTO> readBoardPageDTOPage = boardService.findAll(pageable, memberNo);
 
         model.addAttribute("boards", readBoardPageDTOPage);
 
@@ -52,5 +56,15 @@ public class BoardController {
         boardService.deleteBoard(deleteBoardDTO.getBoardNo());
 
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/heart")
+    @ResponseBody
+    public ResponseEntity<PostHeartResponseDTO> post(@RequestBody PostHeartRequestDTO postHeartRequestDTO){
+        Long memberNo = 1L;
+
+        PostHeartResponseDTO postHeartResponseDTO = boardService.postHeart(postHeartRequestDTO, memberNo);
+
+        return ResponseEntity.ok(postHeartResponseDTO);
     }
 }

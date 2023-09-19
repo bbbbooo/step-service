@@ -27,11 +27,24 @@ public class Heart {
     @Column
     private Long boardNo;
 
+    @Comment("좋아요 여부")
+    @Column
+    private Boolean isClicked;
+
     public static Heart toEntity(PostHeartRequestDTO postHeartRequestDTO, Long memberNo) {
         return Heart.builder()
                 .boardNo(postHeartRequestDTO.getBoardNo())
                 .heartNo(postHeartRequestDTO.getBoardNo())
                 .memberNo(memberNo)
+                .isClicked(true)
                 .build();
+    }
+
+    public void isClickedTrue() {
+        this.isClicked = true;
+    }
+
+    public void isClickedFalse() {
+        this.isClicked = false;
     }
 }

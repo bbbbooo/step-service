@@ -16,8 +16,6 @@ public class PostHeartResponseDTO {
 
     private Long boardNo;
 
-    private String message;
-
     private Long heartCount;
 
     public static PostHeartResponseDTO fromEntity(Heart saveHeart, Board board) {

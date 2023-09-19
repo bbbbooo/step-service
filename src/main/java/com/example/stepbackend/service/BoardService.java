@@ -40,10 +40,11 @@ public class BoardService {
 
     /* 공유한 문제집 전체 출력 */
     @Transactional(readOnly = true)
-    public Page<ReadBoardPageDTO> findAll(Pageable pageable) {
+    public Page<ReadBoardPageDTO> findAll(Pageable pageable, Long memberNo) {
         Page<Board> boards = boardRepository.findAll(pageable);
+        Page<Heart> hearts = heartRepository.findAllByMemberNo(memberNo, pageable);
 
-        Page<ReadBoardPageDTO> readBoardPageDTOPage = ReadBoardPageDTO.toEntity(boards);
+        Page<ReadBoardPageDTO> readBoardPageDTOPage = ReadBoardPageDTO.toEntity(boards, hearts);
 
         return readBoardPageDTOPage;
     }
@@ -77,14 +78,25 @@ public class BoardService {
             heartRepository.save(saveHeart);
 
             board.increaseHeartCount();
+            saveHeart.isClickedTrue();
             PostHeartResponseDTO postHeartResponseDTO = PostHeartResponseDTO.fromEntity(saveHeart, board);
 
             return postHeartResponseDTO;
         }
 
-        board.decreaseHeartCount();
+        if (heart.getIsClicked() == true){
+            board.decreaseHeartCount();
+            heart.isClickedFalse();
+            PostHeartResponseDTO postHeartResponseDTO = PostHeartResponseDTO.fromEntity(heart, board);
+
+            return postHeartResponseDTO;
+        }
+
+        board.increaseHeartCount();
+        heart.isClickedTrue();
         PostHeartResponseDTO postHeartResponseDTO = PostHeartResponseDTO.fromEntity(heart, board);
 
         return postHeartResponseDTO;
+
     }
 }

@@ -223,8 +223,21 @@
             background-color: #0056b3;
         }
 
+        .like-button {
+            border: none;
+            background-color: transparent;
+            color: red;
+            margin-left: 10px;
+            margin-bottom: 10px;
+            font-size: 40px;
+        }
 
+        .like-button:hover {
+            background-color: white;
+        }
     </style>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
 <th:block th:insert="~{common/header}" />
@@ -241,11 +254,14 @@
                 <div style="display: flex; align-items: center;">
                     <h2 th:text="${board.questionName}" style="margin-right: 10px;">게시물 제목</h2>
                     <span class="question-types">
-                    <span th:each="type : ${board.questionTypes}">
-                        <span th:if="${type == 'title'}" class="question-type-label title">제목 추론</span>
-                        <span th:if="${type == 'blank'}" class="question-type-label blank">빈칸 추론</span>
-                    </span>
+                        <span th:each="type : ${board.questionTypes}">
+                            <span th:if="${type == 'title'}" class="question-type-label title">제목 추론</span>
+                            <span th:if="${type == 'blank'}" class="question-type-label blank">빈칸 추론</span>
+                        </span>
                 </span>
+                    <button class="like-button fa"
+                            th:classappend="${board.isClicked == null or board.isClicked == false} ? 'fa-heart-o' : 'fa-heart'"
+                            th:attr="onclick='toggleHeart(this, ' + ${board.boardNo} + ')'"></button>
                 </div>
                 <div>
                     <a href="#" class="edit-button" th:attr="onclick='openModal(' + ${board.boardNo} + ')'">수정</a>
@@ -379,13 +395,40 @@
         }
     }
 
-
     function solveBoard(boardNo) {
         console.log(boardNo);
     }
 
-</script>
+    function toggleHeart(element, boardNo) {
+        if (element.classList.contains('fa-heart-o')) {
+            element.classList.remove('fa-heart-o');
+            element.classList.add('fa-heart');
+        } else {
+            element.classList.remove('fa-heart');
+            element.classList.add('fa-heart-o');
+        }
 
+        fetch('/board/heart', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                boardNo: boardNo
+            })
+        })
+            .then(response => {
+                if (response.ok) {
+                    console.log(boardNo);
+                } else {
+                    console.error('에러 발생');
+                }
+            })
+            .catch(error => {
+                console.error('Network error:', error);
+            });
+    }
+</script>
 <th:block th:insert="~{common/footer}" />
 </body>
 </html>
