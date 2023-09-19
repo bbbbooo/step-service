@@ -4,44 +4,171 @@
     <meta charset="UTF-8">
     <title>Scrap Detail</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet">
-</head>
-<body class="bg-gray-100 text-gray-900">
-<th:block th:insert="~{common/header}" />
-<div class="flex flex-col md:flex-row justify-center items-start md:items-center p-4 gap-4 max-w-screen-lg mx-auto my-8 bg-white rounded shadow-lg">
-    <!-- Main Section -->
-    <div class="w-full md:w-1/2 space-y-4 border-r md:border-r border-gray-200 pr-md:4">
+    <style>
+        /* CSS 스타일을 추가하여 화면을 나눕니다. */
+        .flex-container {
+            display: flex;
+            justify-content: space-between;
+            max-width: 100%;
+        }
+        .left-content {
+            width: 66.66%; /* 화면의 2/3를 차지합니다. */
+            padding-right: 1rem;
+        }
+        .right-content {
+            width: 33.33%; /* 화면의 1/3을 차지합니다. */
+        }
 
+        /* 전체 페이지 스타일 */
+        body {
+            font-family: 'Roboto', sans-serif; /* 폰트 변경 */
+            background-color: #f3f4f6;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* 메인 섹션 스타일 */
+        .main-section {
+            background-color: #fff;
+            border-radius: 15px; /* 둥근 모서리 크기 증가 */
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); /* 그림자 효과 강화 */
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        /* 제목 스타일 */
+        .title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color:#4a5568;   /* 제목색 변경*/
+            margin-bottom: 1rem;
+        }
+
+        /* 내용 스타일 */
+        .content {
+            font-size: 1.2rem;
+            line-height: 1.5;
+            margin-bottom: 1.5rem;
+        }
+
+        /* 목록 스타일 */
+        .list {
+            list-style-type: decimal;
+            padding-left: 1rem;
+        }
+
+        /* 사이드 섹션 스타일 */
+        .side-section {
+            background-color: #f3f4f6;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 1rem;
+        }
+
+        /* 사이드 섹션 제목 스타일 */
+        .side-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        /* 사이드 섹션 내용 스타일 */
+        .side-content {
+            font-size: 1.2rem;
+        }
+
+        /* 화면 하단 네비게이션 스타일 */
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem;
+            background-color: #fff;
+            border-radius: 10px;
+            width: 50%;
+            margin-left: auto;
+            margin-right: auto;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .navigation a {
+            text-decoration: none;
+            color: #4a90e2;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<th:block th:insert="~{common/header}" />
+<!-- 화면 상단 '>나의 스크랩' 페이지로 이동 버튼 -->
+<div class="flex justify-start p-4">
+    <a href="/scrap/myPage/myScrap" class="text-blue-500 font-bold hover:underline" style="margin-left: 23%; margin-top: 10px">> 나의 스크랩</a>
+</div>
+
+<div class="flex flex-col md:flex-row justify-center items-start md:items-center p-4 gap-4 max-w-screen-lg mx-auto my-8 flex-container">
+    <!-- Main Section -->
+    <div class="left-content main-section">
         <!-- Question Information -->
-        <h2 class="text-xl font-bold">Q.</h2>
-        <a th:text="${scrap.readScrapDTO.questionSubject}"></a>
+        <h2 class="title">Q.</h2>
+        <p class="content" th:text="${scrap.readScrapDTO.questionSubject}"></p>
 
         <!-- Question Body -->
-        <p th:text="${scrap.readScrapDTO.questionBody}"></p>
+        <p class="content" th:text="${scrap.readScrapDTO.questionBody}"></p>
 
         <!-- View Information -->
-        <div class="">
-            <ul th:each="view, viewIndex : ${scrap.readScrapDTO.view}">
+        <div>
+            <ul th:each="view, viewIndex : ${scrap.readScrapDTO.view}" th:start="1">
                 <li th:text="${viewIndex.index + 1 + '. ' + view}"></li>
             </ul>
         </div>
+    </div>
 
+    <!-- Side Section for View and MarkedNo -->
+    <div class="right-content side-section" style="background-color: #ffffff;">
+        <!-- Member Information -->
+        <div class="mb-4">
+            <h2 class="side-title text-lg font-semibold text-gray-700">내가 입력한 번호</h2>
+            <span class="side-content text-gray-600" th:text="${scrap.readScrapByMemberDTO.markedNo}"></span>
+        </div>
+
+        <div>
+            <h2 class="side-title text-lg font-semibold text-gray-700">정답</h2>
+            <span class="side-content text-gray-600" th:text="${scrap.readScrapDTO.questionCorrectAnswer}"></span>
+        </div>
+    </div>
+
+
+
+</div>
+
+<!-- 화면 하단 다음 글, 이전 글 네비게이션 -->
+<div class="navigation flex justify-center space-x-4">
+    <div class="prev-post">
+        <a id="prev-post-link" class="text-blue-500 font-bold hover:underline">이전 글</a>
+    </div>
+    <div class="next-post">
+        <a id="next-post-link" class="text-blue-500 font-bold hover:underline">다음 글</a>
     </div>
 </div>
 
-<!-- Side Section for View and MarkedNo -->
-<div class="w-full md:w-1/3 space-y-4 pl-md:4">
-    <!-- Member Information -->
-    <div>
-        <h2 class="text-xl font-semibold">내가 입력한 번호</h2>
-        <span th:text="${scrap.readScrapByMemberDTO.markedNo}"></span>
-    </div>
 
-    <!-- Correct Marking Status -->
-    <div>
-        <h2 class="text-xl font-semibold">정답 유무</h2>
-        <span th:text="${scrap.readScrapByMemberDTO.correctedMarkingStatus ? '정답!' : '오답!!'}"></span>
-    </div>
-</div>
+
+<!-- 푸터 유지 -->
 <th:block th:insert="~{common/footer}" />
+
+<script>
+    // 현재 URL 가져오기
+    let url = window.location.href;
+
+    // 마지막 '/' 이후의 문자열(현재 페이지 번호) 가져오기
+    let currentPage = url.substring(url.lastIndexOf('/') + 1);
+
+    // 숫자로 변환하기
+    currentPage = parseInt(currentPage);
+
+    // 화면 하단 다음 글, 이전 글 네비게이션
+    document.querySelector(".prev-post a").href = "/scrap/detail/" + (currentPage - 1);
+    document.querySelector(".next-post a").href = "/scrap/detail/" + (currentPage + 1);
+</script>
+
 </body>
 </html>

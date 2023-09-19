@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Board Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .board {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin: 20px 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .board h2 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .board p {
+            margin: 0;
+            margin-bottom: 10px;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .board-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .created-at {
+            font-size: 14px;
+            color: #777;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .pagination a {
+            color: #333;
+            padding: 5px 10px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+            margin: 0 2px;
+        }
+
+        .pagination a:hover {
+            background-color: #007BFF;
+            color: white;
+        }
+
+        /* Question Type Styles */
+        .question-types {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .question-type-label {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        /* 빈칸 추론 라벨 스타일 */
+        .question-type-label.blank {
+            background-color: #d5e6f5;
+            color: #333;
+        }
+
+        /* 제목 추론 라벨 스타일 */
+        .question-type-label.title {
+            background-color: #a3cca3;
+            color: #fff;
+        }
+
+        /* 제목추론, 빈칸추론 라벨 위치 조정 */
+        .board h2 + .question-types {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        /* 수정과 삭제 버튼 스타일 */
+        .edit-button,
+        .delete-button {
+            padding: 5px 10px;
+            margin-left: 10px;
+            text-decoration: none;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            color: #333;
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        .edit-button:hover,
+        .delete-button:hover {
+            background-color: #007BFF;
+            color: white;
+            border-color: #007BFF;
+        }
+
+        /* 게시물 정보 및 수정, 삭제 버튼 레이아웃 */
+        .board-info {
+            display: flex;
+            align-items: center;
+        }
+
+        /* 버튼 오른쪽 끝으로 이동 */
+        .edit-button:last-child,
+        .delete-button:last-child {
+            margin-left: auto;
+        }
+
+        /* 모달 창 스타일 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 50%;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        .close {
+            float: right;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* 폼 요소 스타일 */
+        form {
+            margin-top: 20px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #editForm button[type="button"] {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        #editForm button[type="button"]:hover {
+            background-color: #0056b3;
+        }
+
+
+
+    </style>
+</head>
+<body>
+<th:block th:insert="~{common/header}" />
+<div class="container">
+    <h1 style="font-size: 36px; font-weight: bold; margin: 20px 0;">사람들이 만든 문제집을 함께 풀어보세요.</h1>
+    <p style="color: #444;">다른 사람들이 만든 문제집을 풀어보고 내 실력을 점검해 보세요.</p>
+    <p th:utext="'문제집 리그에서 풀어본 문제집은 <strong style=\'color: #444;\'>내 학습현황>나의 문제집</strong>에서 확인 가능합니다.'"></p>
+
+
+    <!-- 게시물 목록 -->
+    <th:block th:each="board : ${boards.content}">
+        <div class="board">
+            <div style="display: flex; justify-content: space-between;">
+                <div style="display: flex; align-items: center;">
+                    <h2 th:text="${board.questionName}" style="margin-right: 10px;">게시물 제목</h2>
+                    <span class="question-types">
+                    <span th:each="type : ${board.questionTypes}">
+                        <span th:if="${type == 'title'}" class="question-type-label title">제목 추론</span>
+                        <span th:if="${type == 'blank'}" class="question-type-label blank">빈칸 추론</span>
+                    </span>
+                </span>
+                </div>
+                <div>
+                    <a href="#" class="edit-button" th:attr="onclick='openModal(' + ${board.boardNo} + ')'">수정</a>
+                    <a href="#" class="delete-button">삭제</a>
+                </div>
+            </div>
+
+            <!-- 게시글 설명 -->
+            <p th:text="${board.description}">게시물 설명</p>
+
+            <!-- 문제 수 표시 -->
+            <span class="question-count" th:text="${'전체 ' + #lists.size(board.questionNos) + '문제'}"></span>
+
+            <!-- 게시일자 정보 -->
+            <div class="board-info">
+                <p class="created-at" th:text="${board.createdAt}">게시일자</p>
+            </div>
+        </div>
+    </th:block>
+
+    <!-- 페이징 -->
+    <div class="pagination" th:if="${boards.totalPages > 1}">
+        <span th:if="${boards.hasPrevious}">
+            <a th:href="@{${'board'}(page=0)}">이전</a>
+        </span>
+
+        <span th:each="i : ${#numbers.sequence(0, boards.totalPages - 1)}">
+            <a th:if="${boards.number == i}" th:text="${i + 1}"></a>
+            <a th:if="${boards.number != i}" th:href="@{${'board'}(page=${i})}" th:text="${i + 1}"></a>
+        </span>
+
+        <span th:if="${boards.hasNext}">
+            <a th:href="@{${'board'}(page=${boards.totalPages - 1})}">다음</a>
+        </span>
+    </div>
+</div>
+
+<!-- 모달 창 -->
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h2>게시물 수정</h2>
+        <form id="editForm">
+            <label for="title">제목:</label>
+            <input type="text" id="title" name="title" required>
+            <label for="description">설명:</label>
+            <textarea id="description" name="description" rows="4" required></textarea>
+            <button type="button" onclick="saveChanges()">확인</button>
+        </form>
+    </div>
+</div>
+
+
+<script>
+    // JavaScript 함수로 모달 창 열기
+    function openModal(boardNo) {
+        var modal = document.getElementById("myModal");
+        modal.style.display = "block";
+
+        document.getElementById("editForm").setAttribute("data-boardNo", boardNo);
+    }
+
+    // JavaScript 함수로 모달 창 닫기
+    function closeModal() {
+        var modal = document.getElementById("myModal");
+        modal.style.display = "none";
+    }
+
+    // 모달 바깥을 클릭하면 모달을 닫도록 설정 (선택 사항)
+    window.onclick = function(event) {
+        var modal = document.getElementById("myModal");
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
+
+    function saveChanges() {
+        var modal = document.getElementById("myModal");
+        var boardNo = document.getElementById("editForm").getAttribute("data-boardNo");
+        var title = document.getElementById("title").value;
+        var description = document.getElementById("description").value;
+
+        fetch('/board/update', {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                boardNo: boardNo,
+                title: title,
+                description: description
+            })
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert('성공적으로 수정 되었습니다.');
+                    window.location.reload();
+                    closeModal();
+                } else {
+                    // Handle any errors that occur during the request
+                    console.error('Error updating board');
+                }
+            })
+            .catch(error => {
+                console.error('Network error:', error);
+            });
+    }
+</script>
+
+<th:block th:insert="~{common/footer}" />
+</body>
+</html>

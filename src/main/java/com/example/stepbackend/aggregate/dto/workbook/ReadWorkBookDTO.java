@@ -51,7 +51,6 @@ public class ReadWorkBookDTO {
         return ReadWorkBookDTO.builder()
                 .workBookNo(workBook.getWorkBookNo())
                 .questionNos(workBook.getQuestionNos().split(", "))
-                .isShared(workBook.getIsShared())
                 .questionTypes(questionTypes)
                 .questionName(workBook.getWorkBookName())
                 .lastUpdatedTime(formattedLastUpdatedTime)

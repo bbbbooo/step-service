@@ -36,10 +36,6 @@ public class WorkBook {
     private String questionNos;
 
     @Column
-    @Comment("공유 여부")
-    private Boolean isShared;
-
-    @Column
     @Comment("나만의 문제에 존재하는 문제 타입들")
     private String questionTypes;
 
@@ -65,14 +61,9 @@ public class WorkBook {
                 .memberNo(memberNo)
                 .questionNos(questionNosToString)
                 .workBookName(createWorkBookRequestDTO.getWorkBookName())
-                .isShared(false)
                 .questionTypes(questionTypesToString)
                 .lastUpdatedTime(LocalDateTime.now())
                 .build();
-    }
-
-    public void updateIsShared(Boolean isShared) {
-        this.isShared = isShared;
     }
 
     public void updateWorkBookName(String workBookName, String description) {

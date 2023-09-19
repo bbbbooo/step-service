@@ -107,7 +107,10 @@
                         <a th:text="${scrap.readScrapDTO.questionBody}" th:href="@{/scrap/detail/{questionNo}(questionNo=${scrap.readScrapDTO.questionNo})}"></a>
                     </td>
                     <td th:text="${scrap.readScrapDTO.questionCorrectAnswer}"></td>
-                    <td th:text="${scrap.readScrapByMemberDTO.correctedMarkingStatus}"></td>
+                    <td>
+                        <span th:if="${scrap.readScrapByMemberDTO.correctedMarkingStatus}">정답</span>
+                        <span th:unless="${scrap.readScrapByMemberDTO.correctedMarkingStatus}">오답</span>
+                    </td>
                     <td th:text="${scrap.readScrapByMemberDTO.markedNo}"></td>
                     <td th:text="${scrap.readScrapDTO.questionLargeClassification}"></td>
                     <td th:text="${scrap.readScrapDTO.questionMiddleClassification}"></td>
@@ -140,9 +143,6 @@
                 </span>
             </div>
         </div>
-    </div>
-    <div class="basis-4/12 justify-items-center">
-
     </div>
 </div>
 <th:block th:insert="~{common/footer}" />

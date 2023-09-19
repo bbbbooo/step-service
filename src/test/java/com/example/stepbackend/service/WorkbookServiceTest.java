@@ -58,40 +58,6 @@ class WorkbookServiceTest {
     }
 
 
-    @DisplayName("나만의 문제집 공유 설정")
-    @ParameterizedTest
-    @ValueSource(booleans = {false, true})
-    void isSharedWorkBook(boolean settings){
-        // given
-        Long memberNo = 1L;
-
-        List<Long> questionNos = Arrays.asList(1L,2L,3L);
-        List<String> questionTypes = Arrays.asList("blank", "title");
-        String workBookName = "미미스크립트";
-
-        CreateWorkBookRequestDTO createWorkBookRequestDTO = CreateWorkBookRequestDTO.builder()
-                .workBookName(workBookName)
-                .questionNos(questionNos)
-                .build();
-
-        WorkBook workBook = WorkBook.toEntity(memberNo, createWorkBookRequestDTO, questionTypes);
-
-        WorkBook foundWorkbook =  workBookRepository.save(workBook);
-
-        Boolean isShared = settings;
-
-        // when
-        workbookService.isSharedWorkBook(memberNo, foundWorkbook.getWorkBookNo(), isShared);
-
-        // then
-        if(isShared){
-            Assertions.assertTrue(workBookRepository.findByMemberNoAndWorkBookNo(memberNo, foundWorkbook.getWorkBookNo()).getIsShared());
-        }else{
-            Assertions.assertFalse(workBookRepository.findByMemberNoAndWorkBookNo(memberNo, foundWorkbook.getWorkBookNo()).getIsShared());
-        }
-    }
-
-
     @DisplayName("나만의 문제집 마이 페이지 조회")
     @Test
     void getWorkBook(){
@@ -164,5 +130,28 @@ class WorkbookServiceTest {
         // then
         Assertions.assertEquals(workBookName, workBookRepository.findByWorkBookNo(workBook.getWorkBookNo()).getWorkBookName());
         Assertions.assertEquals(description, workBookRepository.findByWorkBookNo(workBook.getWorkBookNo()).getDescription());
+    }
+
+    @DisplayName("문제집 삭제")
+    @Test
+    void deleteWorkBook(){
+        // given
+        WorkBook workBook = WorkBook.builder().build();
+        WorkBook workBook2 = WorkBook.builder().build();
+
+        workBookRepository.save(workBook);
+        workBookRepository.save(workBook2);
+
+        List<Long> workBookNos = Arrays.asList(workBook.getWorkBookNo(), workBook2.getWorkBookNo());
+
+        DeleteWorkBookRequestDTO deleteWorkBookRequestDTO = DeleteWorkBookRequestDTO.builder()
+                .workBookNos(workBookNos)
+                .build();
+
+        // when
+        DeleteWorkBookResponseDTO deleteWorkBookResponseDTO = workbookService.deleteWorkBook(deleteWorkBookRequestDTO);
+
+        // then
+        Assertions.assertTrue(workBookNos.equals(deleteWorkBookResponseDTO.getWorkBookNos()));
     }
 }

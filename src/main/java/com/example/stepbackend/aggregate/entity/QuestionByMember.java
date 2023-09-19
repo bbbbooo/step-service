@@ -6,6 +6,8 @@ import org.hibernate.annotations.Comment;
 import javax.persistence.*;
 import org.hibernate.annotations.Table;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -36,4 +38,8 @@ public class QuestionByMember {
     @Column
     @Comment("정답 여부")
     private Boolean correctedMarkingStatus;
+
+    @Column
+    @Comment("등록 시간")
+    private LocalDateTime createdTime;
 }
