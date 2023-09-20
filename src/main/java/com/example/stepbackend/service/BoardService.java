@@ -3,17 +3,17 @@ package com.example.stepbackend.service;
 import com.example.stepbackend.aggregate.dto.Heart.PostHeartRequestDTO;
 import com.example.stepbackend.aggregate.dto.Heart.PostHeartResponseDTO;
 import com.example.stepbackend.aggregate.dto.board.*;
-import com.example.stepbackend.aggregate.entity.Board;
-import com.example.stepbackend.aggregate.entity.Heart;
-import com.example.stepbackend.aggregate.entity.WorkBook;
-import com.example.stepbackend.repository.BoardRepository;
-import com.example.stepbackend.repository.HeartRepository;
-import com.example.stepbackend.repository.WorkBookRepository;
+import com.example.stepbackend.aggregate.entity.*;
+import com.example.stepbackend.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +24,10 @@ public class BoardService {
     private final WorkBookRepository workBookRepository;
 
     private final HeartRepository heartRepository;
+
+    private final QuestionRepository questionRepository;
+
+    private final QuestionByMemberRepository questionByMemberRepository;
 
     /* 공유한 문제집 저장 */
     @Transactional
@@ -61,6 +65,7 @@ public class BoardService {
         return updateBoardResponseDTO;
     }
 
+    /* 게시판 삭제*/
     @Transactional
     public Long deleteBoard(Long boardNo) {
         boardRepository.deleteById(boardNo);
@@ -68,6 +73,7 @@ public class BoardService {
         return boardNo;
     }
 
+    /* 좋아요 증감 */
     @Transactional
     public PostHeartResponseDTO postHeart(PostHeartRequestDTO postHeartRequestDTO, Long memberNo) {
         Heart heart = heartRepository.findByBoardNoAndMemberNo(postHeartRequestDTO.getBoardNo(), memberNo);
@@ -98,5 +104,39 @@ public class BoardService {
 
         return postHeartResponseDTO;
 
+    }
+
+    /* 문제집 내 문제 불러오기 */
+    @Transactional(readOnly = true)
+    public List<ReadBoardQuestionResponseDTO> findAllBoardQuestion(Long boardNo) {
+        String questionNosString = boardRepository.findQuestionNos(boardNo);
+        List<Long> questionNos = Arrays.stream(questionNosString.split(", "))
+                .map(Long::parseLong)
+                .collect(Collectors.toList());
+
+        List<Question> questions = questionRepository.findByQuestionNoIn(questionNos);
+
+        List<ReadBoardQuestionResponseDTO> responseDTOList = ReadBoardQuestionResponseDTO.fromEntity(questions);
+
+        return responseDTOList;
+    }
+
+    /* 문제 풀때마다 기록 */
+    @Transactional
+    public SolveQuestionResponseDTO saveHistory(SolveQuestionRequestDTO solveQuestionRequestDTO, Long memberNo) {
+        QuestionByMember questionByMember = questionByMemberRepository.findByMemberNoAndQuestionNo(memberNo,
+                solveQuestionRequestDTO.getQuestionNo());
+
+        if (questionByMember == null){
+            QuestionByMember history = QuestionByMember.toEntity(solveQuestionRequestDTO, memberNo);
+            questionByMemberRepository.save(history);
+
+            SolveQuestionResponseDTO solveQuestionResponseDTO = SolveQuestionResponseDTO.fromEntity(history);
+
+            return solveQuestionResponseDTO;
+        }
+
+        SolveQuestionResponseDTO solveQuestionResponseDTO = SolveQuestionResponseDTO.fromEntity(questionByMember);
+        return solveQuestionResponseDTO;
     }
 }

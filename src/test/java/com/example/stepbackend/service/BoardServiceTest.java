@@ -2,8 +2,7 @@ package com.example.stepbackend.service;
 
 import com.example.stepbackend.aggregate.dto.Heart.PostHeartRequestDTO;
 import com.example.stepbackend.aggregate.dto.Heart.PostHeartResponseDTO;
-import com.example.stepbackend.aggregate.dto.board.CreateBoardRequestDTO;
-import com.example.stepbackend.aggregate.dto.board.UpdateBoardRequestDTO;
+import com.example.stepbackend.aggregate.dto.board.*;
 import com.example.stepbackend.aggregate.entity.Board;
 import com.example.stepbackend.aggregate.entity.WorkBook;
 import com.example.stepbackend.repository.BoardRepository;
@@ -11,13 +10,13 @@ import com.example.stepbackend.repository.WorkBookRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @Transactional
@@ -149,7 +148,36 @@ class BoardServiceTest {
         // then
         assertThat(increaseHeart.getHeartCount()).isEqualTo(1);
         assertThat(decreaseHeart.getHeartCount()).isEqualTo(0);
+    }
 
+    @DisplayName("문제 풀기 페이지 불러오기")
+    @Test
+    void getQuestionPage(){
+        // given
+        Long boardNo = 1L;
 
+        // when
+        List<ReadBoardQuestionResponseDTO> responseDTOList = boardService.findAllBoardQuestion(boardNo);
+
+        // then
+        Assertions.assertFalse(responseDTOList.isEmpty(), "문제 목록이 비어있지 않아야 합니다.");
+    }
+
+    @DisplayName("문제 풀었을 때 기록 저장")
+    @Test
+    void saveSolveHistory(){
+        // given
+        Long memberNo = 1L;
+        SolveQuestionRequestDTO solveQuestionRequestDTO = SolveQuestionRequestDTO.builder()
+                .questionNo(1L)
+                .correctedMarkingStatus(true)
+                .markedNo(4)
+                .build();
+
+        // when
+        SolveQuestionResponseDTO solveQuestionResponseDTO = boardService.saveHistory(solveQuestionRequestDTO, memberNo);
+
+        // then
+        Assertions.assertNotNull(solveQuestionResponseDTO);
     }
 }

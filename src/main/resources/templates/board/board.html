@@ -237,7 +237,6 @@
             max-width: 15%;
             height: auto;
             margin-bottom: 10px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         /* 이미지를 왼쪽으로 띄우고 나머지 태그를 오른쪽으로 정렬 */
@@ -256,7 +255,6 @@
             max-width: 15%;
             height: auto;
             margin-right: 10px; /* 이미지와 나머지 태그 사이의 간격을 설정 */
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .question-count{
@@ -303,7 +301,7 @@
                                 <a th:id="'likeCount_' + ${board.boardNo}" th:text="${board.heartCount}" style="margin-left: 10px; margin-bottom: 5px"></a>
                             </div>
                             <span style="display: flex; justify-content: flex-end; align-items: center; margin-left: 960px;">
-                                <button class="solve-button" th:href="'solveBoard(' + ${board.boardNo} + ')'">문제 풀이</button>
+                                <button class="solve-button" th:attr="onclick='solveBoard(' + ${board.boardNo} + ')'" >문제 풀이</button>
                             </span>
                         </div>
                     </div>
@@ -429,7 +427,26 @@
 
     function solveBoard(boardNo) {
         console.log(boardNo);
+        var confirmSolve = window.confirm('문제를 푸시겠습니까?');
+
+        if (confirmSolve) {
+            var url = '/board/question?boardNo=' + boardNo;
+            fetch(url, {
+                method: "GET",
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => {
+                    var url = '/board/question?boardNo=' + boardNo;
+                    window.location.href = url;
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        }
     }
+
 
     function toggleHeart(element, boardNo) {
         if (element.classList.contains('fa-heart-o')) {

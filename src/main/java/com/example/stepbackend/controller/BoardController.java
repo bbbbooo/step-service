@@ -14,6 +14,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/board")
@@ -66,5 +68,14 @@ public class BoardController {
         PostHeartResponseDTO postHeartResponseDTO = boardService.postHeart(postHeartRequestDTO, memberNo);
 
         return ResponseEntity.ok(postHeartResponseDTO);
+    }
+
+    @GetMapping("/question")
+    public String question(@RequestParam("boardNo")Long boardNo , Model model){
+        List<ReadBoardQuestionResponseDTO> responseDTOList = boardService.findAllBoardQuestion(boardNo);
+
+        model.addAttribute("questions", responseDTOList);
+
+        return "board/question";
     }
 }
