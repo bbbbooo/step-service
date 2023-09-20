@@ -154,10 +154,26 @@ class BoardServiceTest {
     @Test
     void getQuestionPage(){
         // given
-        Long boardNo = 1L;
+        Long memberNo = 1L;
+
+        CreateBoardRequestDTO createBoardRequestDTO = CreateBoardRequestDTO.builder()
+                .description("무무무무")
+                .workBookName("미미미미")
+                .workBookNo("14")
+                .build();
+
+        WorkBook testWorkBook = WorkBook.builder()
+                .questionTypes("title")
+                .questionNos("1, 2, 3")
+                .build();
+
+        WorkBook workBook = workBookRepository.save(testWorkBook);
+
+        Board board = Board.toEntity(memberNo, workBook, createBoardRequestDTO);
+        Board createdBoard = boardRepository.save(board);
 
         // when
-        List<ReadBoardQuestionResponseDTO> responseDTOList = boardService.findAllBoardQuestion(boardNo);
+        List<ReadBoardQuestionResponseDTO> responseDTOList = boardService.findAllBoardQuestion(createdBoard.getBoardNo());
 
         // then
         Assertions.assertFalse(responseDTOList.isEmpty(), "문제 목록이 비어있지 않아야 합니다.");
