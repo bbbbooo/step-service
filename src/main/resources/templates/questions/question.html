@@ -149,6 +149,7 @@
         let y = 10; // 시작 Y 좌표
         const boxHeight = 100; // 사각형 상자 높이
         const lineHeight = 10; // 행 간격
+        let correctAnswer = [];
 
         jsonData.forEach((question, index) => {
             const questionSubject = question.questionSubject;
@@ -159,6 +160,8 @@
                 question.view4,
                 question.view5
             ];
+
+            correctAnswer.push(question.questionCorrectAnswer);
 
             // 문제 설명 출력
             pdf.text(`${index + 1}. ${questionSubject}`, 10, y);
@@ -205,6 +208,10 @@
                 y = 10;
             }
         });
+
+        // 정답
+        pdf.addPage();
+        pdf.text(`정답 : ${correctAnswer}`, x, 10);
 
         // PDF 저장
         pdf.save('question_paper.pdf');
