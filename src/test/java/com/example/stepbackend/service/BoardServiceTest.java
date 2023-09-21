@@ -172,18 +172,18 @@ class BoardServiceTest {
         Board board = Board.toEntity(memberNo, workBook, createBoardRequestDTO);
         Board createdBoard = boardRepository.save(board);
 
-        System.out.println("-------------------------------- ------------------------------------");
-        System.out.println("-------------------------------- ------------------------------------");
-        System.out.println("-------------------------------- ------------------------------------");
-        System.out.println("-------------------------------- ------------------------------------");
-        System.out.println("생성된 게시글은 = " + createdBoard);
-        System.out.println("-------------------------------- ------------------------------------");
-        System.out.println("-------------------------------- ------------------------------------");
-        System.out.println("-------------------------------- ------------------------------------");
-        System.out.println("-------------------------------- ------------------------------------");
-
         // when
         List<ReadBoardQuestionResponseDTO> responseDTOList = boardService.findAllBoardQuestion(createdBoard.getBoardNo());
+
+        System.out.println("-------------------------------- ------------------------------------");
+        System.out.println("-------------------------------- ------------------------------------");
+        System.out.println("-------------------------------- ------------------------------------");
+        System.out.println("-------------------------------- ------------------------------------");
+        System.out.println("생성된 게시글은 = " + responseDTOList);
+        System.out.println("-------------------------------- ------------------------------------");
+        System.out.println("-------------------------------- ------------------------------------");
+        System.out.println("-------------------------------- ------------------------------------");
+        System.out.println("-------------------------------- ------------------------------------");
 
         // then
         Assertions.assertFalse(responseDTOList.isEmpty(), "문제 목록이 비어있지 않아야 합니다.");
