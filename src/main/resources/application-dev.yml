@@ -16,7 +16,7 @@ spring:
         show_sql: true
         format_sql: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: none
     defer-datasource-initialization: true
   sql:
     init:
@@ -71,3 +71,4 @@ mybatis:
   mapper-locations: mapper/**/*.xml
 #encrypt:
 #    key: key-brain
+
