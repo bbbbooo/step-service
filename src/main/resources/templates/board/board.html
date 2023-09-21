@@ -208,9 +208,36 @@
             background-color: #0056b3;
         }
 
+        /* "문제 풀이" 버튼 스타일 */
+        .solve-button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-left: 10px;
+            transition: background-color 0.3s, color 0.3s;
+        }
 
+        .solve-button:hover {
+            background-color: #0056b3;
+        }
 
+        .like-button {
+            border: none;
+            background-color: transparent;
+            color: red;
+            margin-left: 10px;
+            margin-bottom: 10px;
+            font-size: 40px;
+        }
+
+        .like-button:hover {
+            background-color: white;
+        }
     </style>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
 <th:block th:insert="~{common/header}" />
@@ -227,15 +254,19 @@
                 <div style="display: flex; align-items: center;">
                     <h2 th:text="${board.questionName}" style="margin-right: 10px;">게시물 제목</h2>
                     <span class="question-types">
-                    <span th:each="type : ${board.questionTypes}">
-                        <span th:if="${type == 'title'}" class="question-type-label title">제목 추론</span>
-                        <span th:if="${type == 'blank'}" class="question-type-label blank">빈칸 추론</span>
-                    </span>
+                        <span th:each="type : ${board.questionTypes}">
+                            <span th:if="${type == 'title'}" class="question-type-label title">제목 추론</span>
+                            <span th:if="${type == 'blank'}" class="question-type-label blank">빈칸 추론</span>
+                        </span>
                 </span>
+                    <button class="like-button fa"
+                            th:classappend="${board.isClicked == null or board.isClicked == false} ? 'fa-heart-o' : 'fa-heart'"
+                            th:attr="onclick='toggleHeart(this, ' + ${board.boardNo} + ')'"></button>
+                    <a th:id="'likeCount_' + ${board.boardNo}" th:text="${board.heartCount}" style="margin-left: 10px; margin-bottom: 5px"></a>
                 </div>
                 <div>
                     <a href="#" class="edit-button" th:attr="onclick='openModal(' + ${board.boardNo} + ')'">수정</a>
-                    <a href="#" class="delete-button">삭제</a>
+                    <a href="#" class="delete-button" th:attr="onclick='deleteBoard(' + ${board.boardNo} + ')'">삭제</a>
                 </div>
             </div>
 
@@ -248,6 +279,7 @@
             <!-- 게시일자 정보 -->
             <div class="board-info">
                 <p class="created-at" th:text="${board.createdAt}">게시일자</p>
+                <a href="#" class="solve-button" th:attr="onclick='solveBoard(' + ${board.boardNo} + ')'">문제 풀이</a>
             </div>
         </div>
     </th:block>
@@ -284,7 +316,6 @@
     </div>
 </div>
 
-
 <script>
     // JavaScript 함수로 모달 창 열기
     function openModal(boardNo) {
@@ -308,7 +339,6 @@
         }
     }
 
-
     function saveChanges() {
         var modal = document.getElementById("myModal");
         var boardNo = document.getElementById("editForm").getAttribute("data-boardNo");
@@ -328,12 +358,77 @@
         })
             .then(response => {
                 if (response.ok) {
-                    alert('성공적으로 수정 되었습니다.');
+                    alert('성공적으로 수정되었습니다.');
                     window.location.reload();
                     closeModal();
                 } else {
-                    // Handle any errors that occur during the request
-                    console.error('Error updating board');
+                    console.error('에러 발생');
+                }
+            })
+            .catch(error => {
+                console.error('Network error:', error);
+            });
+    }
+
+    function deleteBoard(boardNo) {
+        var confirmDelete = window.confirm('정말로 삭제하시겠습니까?');
+
+        if (confirmDelete) {
+            var url = '/board/delete';
+            fetch(url, {
+                method: "DELETE",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    boardNo: boardNo
+                })
+            })
+                .then(response => {
+                    if (response.ok) {
+                        alert('성공적으로 삭제되었습니다.');
+                        window.location.reload();
+                    }
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        }
+    }
+
+    function solveBoard(boardNo) {
+        console.log(boardNo);
+    }
+
+    function toggleHeart(element, boardNo) {
+        if (element.classList.contains('fa-heart-o')) {
+            element.classList.remove('fa-heart-o');
+            element.classList.add('fa-heart');
+        } else {
+            element.classList.remove('fa-heart');
+            element.classList.add('fa-heart-o');
+        }
+
+        fetch('/board/heart', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                boardNo: boardNo
+            })
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    console.error('에러 발생');
+                }
+            })
+            .then(data => {
+                const likeCountElement = document.getElementById('likeCount_' + boardNo);
+                if (likeCountElement) {
+                    likeCountElement.textContent = data.heartCount;
                 }
             })
             .catch(error => {
@@ -341,7 +436,6 @@
             });
     }
 </script>
-
 <th:block th:insert="~{common/footer}" />
 </body>
 </html>

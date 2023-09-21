@@ -45,6 +45,10 @@ public class Board {
     @Comment("만들어진 날짜")
     private LocalDate createdAt;
 
+    @Column
+    @Comment("좋아요 수")
+    private Long heartCount;
+
     public static Board toEntity(Long memberNo, WorkBook workBook, CreateBoardRequestDTO createBoardRequestDTO) {
         return Board.builder()
                 .memberNo(memberNo)
@@ -53,11 +57,21 @@ public class Board {
                 .questionNos(workBook.getQuestionNos())
                 .questionTypes(workBook.getQuestionTypes())
                 .createdAt(LocalDate.now())
+                .heartCount(0L)
                 .build();
     }
 
     public void update(String title, String description) {
         this.boardName = title;
         this.description = description;
+    }
+
+    public void increaseHeartCount() {
+        this.heartCount += 1L;
+    }
+
+    public void decreaseHeartCount() {
+        this.heartCount = Math.max(this.heartCount - 1L, 0L);
+
     }
 }
