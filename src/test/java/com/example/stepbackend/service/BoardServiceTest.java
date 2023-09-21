@@ -1,5 +1,7 @@
 package com.example.stepbackend.service;
 
+import com.example.stepbackend.aggregate.dto.Heart.PostHeartRequestDTO;
+import com.example.stepbackend.aggregate.dto.Heart.PostHeartResponseDTO;
 import com.example.stepbackend.aggregate.dto.board.CreateBoardRequestDTO;
 import com.example.stepbackend.aggregate.dto.board.UpdateBoardRequestDTO;
 import com.example.stepbackend.aggregate.entity.Board;
@@ -9,9 +11,13 @@ import com.example.stepbackend.repository.WorkBookRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @Transactional
@@ -96,5 +102,54 @@ class BoardServiceTest {
         // then
         Assertions.assertTrue(updateBoard.getBoardName().equals(title) &&
                 updateBoard.getDescription().equals(description));
+    }
+
+    @DisplayName("게시글 삭제")
+    @Test
+    void delete(){
+        // given
+        Long memberNo = 1L;
+
+        CreateBoardRequestDTO createBoardRequestDTO = CreateBoardRequestDTO.builder()
+                .build();
+
+        WorkBook testWorkBook = WorkBook.builder()
+                .build();
+
+        WorkBook workBook = workBookRepository.save(testWorkBook);
+
+        Board board = Board.toEntity(memberNo, workBook, createBoardRequestDTO);
+        boardRepository.save(board);
+
+        // when
+        Long boardNo = boardService.deleteBoard(board.getBoardNo());
+
+        // then
+        Assertions.assertTrue(board.getBoardNo().equals(boardNo));
+
+    }
+
+    @DisplayName("게시글 좋아요 증감")
+    @Test
+    void postHeart(){
+        // given
+        Long memberNo = 1L;
+
+        CreateBoardRequestDTO createBoardRequestDTO = CreateBoardRequestDTO.builder().build();
+        WorkBook testWorkBook = WorkBook.builder().build();
+        WorkBook workBook = workBookRepository.save(testWorkBook);
+        Board board = Board.toEntity(memberNo, workBook, createBoardRequestDTO);
+        boardRepository.save(board);
+        PostHeartRequestDTO postHeartRequestDTO = PostHeartRequestDTO.builder().boardNo(board.getBoardNo()).build();
+
+        // when
+        PostHeartResponseDTO increaseHeart = boardService.postHeart(postHeartRequestDTO, memberNo);
+        PostHeartResponseDTO decreaseHeart = boardService.postHeart(postHeartRequestDTO, memberNo);
+
+        // then
+        assertThat(increaseHeart.getHeartCount()).isEqualTo(1);
+        assertThat(decreaseHeart.getHeartCount()).isEqualTo(0);
+
+
     }
 }
