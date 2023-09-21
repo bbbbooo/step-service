@@ -172,6 +172,16 @@ class BoardServiceTest {
         Board board = Board.toEntity(memberNo, workBook, createBoardRequestDTO);
         Board createdBoard = boardRepository.save(board);
 
+        System.out.println("-------------------------------- ------------------------------------");
+        System.out.println("-------------------------------- ------------------------------------");
+        System.out.println("-------------------------------- ------------------------------------");
+        System.out.println("-------------------------------- ------------------------------------");
+        System.out.println("생성된 게시글은 = " + createdBoard);
+        System.out.println("-------------------------------- ------------------------------------");
+        System.out.println("-------------------------------- ------------------------------------");
+        System.out.println("-------------------------------- ------------------------------------");
+        System.out.println("-------------------------------- ------------------------------------");
+
         // when
         List<ReadBoardQuestionResponseDTO> responseDTOList = boardService.findAllBoardQuestion(createdBoard.getBoardNo());
 
