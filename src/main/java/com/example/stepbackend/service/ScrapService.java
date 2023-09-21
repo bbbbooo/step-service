@@ -1,5 +1,6 @@
 package com.example.stepbackend.service;
 
+import com.example.stepbackend.aggregate.dto.board.ReadScrapBoardDTO;
 import com.example.stepbackend.aggregate.dto.scrap.CreateScrapDTO;
 import com.example.stepbackend.aggregate.dto.scrap.ReadScrapByMemberDTO;
 import com.example.stepbackend.aggregate.dto.scrap.ReadScrapDTO;
@@ -63,8 +64,8 @@ public class ScrapService {
     }
 
     @Transactional(readOnly = true)
-    public ReadScrapByMemberDTO findScrapByMember(Long memberNo, Long questionNo) {
-        QuestionByMember question = questionByMemberRepository.findByMemberNoAndQuestionNo(memberNo, questionNo);
+    public ReadScrapByMemberDTO findScrapByMember(Long memberNo, Long questionNo, Integer markedNo) {
+        QuestionByMember question = questionByMemberRepository.findByMemberNoAndQuestionNoAndMarkedNo(memberNo, questionNo, markedNo);
 
         ReadScrapByMemberDTO readScrapByMemberDTO = ReadScrapByMemberDTO.fromEntity(question);
 
@@ -79,5 +80,18 @@ public class ScrapService {
         for(Scrap scrap : scraps){
             scrapRepository.delete(scrap);
         }
+    }
+
+    @Transactional(readOnly = true)
+    public ReadScrapBoardDTO findScrapBoard(Long memberNo, Long questionNo, Integer markedNo) {
+        Scrap scrap = scrapRepository.findByMemberNoAndQuestionNoAndMarkedNo(memberNo, questionNo, markedNo);
+
+        if (scrap == null){
+            return null;
+        }
+
+        ReadScrapBoardDTO readScrapBoardDTO = ReadScrapBoardDTO.fromEntity(scrap);
+
+        return readScrapBoardDTO;
     }
 }

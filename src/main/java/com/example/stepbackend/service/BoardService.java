@@ -130,7 +130,7 @@ public class BoardService {
                 solveQuestionRequestDTO.getQuestionNo(), solveQuestionRequestDTO.getMarkedNo());
 
         // 문제를 푼 적이 없거나 풀어도 다른 답안을 제출했다면 새로운 기록 생성
-        if (questionByMember == null){
+        if (questionByMember == null || questionByMember.getMarkedNo() != solveQuestionRequestDTO.getMarkedNo()){
             QuestionByMember history = QuestionByMember.toEntity(solveQuestionRequestDTO, memberNo);
             questionByMemberRepository.save(history);
 
