@@ -13,10 +13,10 @@
 <body>
 <th:block th:insert="~{common/header}" />
 <div class="flex flex-row ">
-    <div class="basis-2/12 justify-items-center">
+    <div class="basis-4/12 justify-items-center">
 
     </div>
-    <div class="basis-8/12">
+    <div class="basis-4/12">
         <!-- 로딩 화면 -->
         <div id="loading-screen" class="py-20" style="display: block;">
             <div class="relative flex justify-center items-center">
@@ -112,7 +112,10 @@
 <!--                    <span>채점 후 결과 확인</span>-->
 <!--                </button>-->
                 <button type="button" onclick="generatePDF()" class="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">
-                    <span>PDF 다운로드</span>
+                    <span>문제 다운로드</span>
+                </button>
+                <button type="button" onclick="generateWorkBook()" class="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">
+                    <span>문제집 다운로드</span>
                 </button>
             </div>
         </div>
@@ -120,19 +123,19 @@
     <th:block th:include="/questions/result-modal.html"></th:block>
 <!--    <th:block th:include="/questions/grading-modal.html"></th:block>-->
 
-    <div class="basis-2/12 justify-items-center">
+    <div class="basis-4/12 justify-items-center">
 
     </div>
 </div>
 <th:block th:insert="~{common/footer}" />
-<script>
+<script th:inline="javascript">
+
     window.jsPDF = window.jspdf.jsPDF
     window.canvas = window.html2canvas
-    function generatePDF() {
 
-        // const content = document.getElementById('questionSubject');
-        const content = document.getElementById('question-content');
-        const srcwidth = document.getElementById('question-content').scrollWidth;
+    function generateWorkBook() {
+
+        const jsonData = /*[[${res}]]*/ null;
         const customFontFamily = '/assets/font/KoPubWorld Batang Medium.ttf';
         const pdf = new jsPDF('p', 'mm', 'a4');
 
@@ -141,51 +144,126 @@
         pdf.addFont('/assets/font/KoPubWorld Batang Medium.ttf', customFontFamily, 'normal');
         pdf.setFont(customFontFamily);
 
-        const fontFaces = [
-            {
-                family: 'CustomFont', // 폰트 패밀리 이름
-                src: [
-                    {
-                        url: '/assets/font/KoPubWorld Batang Medium.ttf', // 폰트 파일 경로
-                        format: 'truetype', // 폰트 포맷
-                    },
-                ],
-            },
-        ];
+        // 문제 출력 설정
+        let x = 10; // 시작 X 좌표
+        let y = 10; // 시작 Y 좌표
+        const boxHeight = 100; // 사각형 상자 높이
+        const lineHeight = 10; // 행 간격
 
+        jsonData.forEach((question, index) => {
+            const questionSubject = question.questionSubject;
+            const options = [
+                question.view1,
+                question.view2,
+                question.view3,
+                question.view4,
+                question.view5
+            ];
+
+            // 문제 설명 출력
+            pdf.text(`${index + 1}. ${questionSubject}`, 10, y);
+            y += 5;
+
+            // 사각형 상자 안에 문제 내용 출력
+            const textWidth = 190;
+            const splittedText = pdf.splitTextToSize(question.questionBody, textWidth);
+            // const textHeight = (splittedText.length * 7) + 5; // 각 줄에 대한 높이 계산 (7은 줄 간격, 5는 여백)
+            const textHeight = (splittedText.length * 6.9); // 각 줄에 대한 높이 계산 (7은 줄 간격, 5는 여백)
+
+            pdf.rect(10, y, textWidth, textHeight - 5);
+            pdf.text(splittedText, 10, y + 7);
+            y += textHeight + 5;
+
+            // 한 페이지 넘어가면 보기 다음 페이지에서 이어나가게 출력
+            if (y >= pdf.internal.pageSize.height) {
+                pdf.addPage();
+                y = 20;
+            }
+
+            // 보기 출력
+            options.forEach((option, optionIndex) => {
+                const optionLabel = `①②③④⑤`.charAt(optionIndex);
+                pdf.text(`${optionLabel}\t ${option}`, 10, y);
+                pdf.text(option, x + 10, y);
+                y += 8;
+
+                if (y >= pdf.internal.pageSize.height) {
+                    pdf.addPage();
+                    y = 8;
+                }
+            });
+
+            // 다음 문제와의 간격 조정
+            y += 10;
+
+            // 다음 문제를 위해 Y 좌표 조정
+            // y += boxHeight + 10;
+
+            // 페이지 분리 처리
+            if (index < jsonData.length - 1 && y + boxHeight + 10 > pdf.internal.pageSize.height) {
+                pdf.addPage();
+                y = 10;
+            }
+        });
+
+        // PDF 저장
+        pdf.save('question_paper.pdf');
+    }
+</script>
+
+<script>
+    window.jsPDF = window.jspdf.jsPDF
+    window.canvas = window.html2canvas
+    function generatePDF() {
+
+        // const content = document.getElementById('questionSubject');
+        // document.getElementById('question-content').style.transform = 'scale(1)';
+        document.getElementById('question-content');
+        const content = document.getElementById('question-content');
+        const srcwidth = document.getElementById('question-content').scrollWidth;
+        const customFontFamily = '/assets/font/KoPubWorld Batang Medium.ttf';
+        const pdf = new jsPDF('p', 'mm', 'a4');
+
+        // const fontFaces = [
+        //     {
+        //         family: 'CustomFont', // 폰트 패밀리 이름
+        //         src: [
+        //             {
+        //                 url: '/assets/font/KoPubWorld Batang Medium.ttf', // 폰트 파일 경로
+        //                 format: 'truetype', // 폰트 포맷
+        //             },
+        //         ],
+        //     },
+        // ];
 
         // HTML 요소를 이미지로 렌더링하고 PDF에 추가합니다.
-
         // pdf.html(content, {
         //     fontFaces: fontFaces,
         //     html2canvas: {
-        //         scale: 250 / srcwidth
+        //         // scale: 250 / srcwidth
+        //         scale: 1
         //         //600 is the width of a4 page. 'a4': [595.28, 841.89]
         //     },
         //     callback: function (pdf) {
         //
         //         // PDF를 저장할 때 사용할 파일 이름 및 형식 설정
         //         pdf.save('question.pdf');
-        //         document.getElementById('question-content').style.transform = 'scale(1)';
+        //         // document.getElementById('question-content').style.transform = 'scale(1)';
         //     },
         // });
 
-        html2canvas(document.getElementById('question-content'), {scale: 3}) // scale 값을 조절하여 화질 향상
+        html2canvas(document.getElementById('question-content'), {scale: 2}) // scale 값을 조절하여 화질 향상
             .then(function (canvas) {
-                const imgData = canvas.toDataURL('image/jpeg', 1.0);
-                pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297); // A4 사이즈에 맞게 조절
+                const imgData = canvas.toDataURL('image/png', 1.0);
+                pdf.addImage(imgData, 'PNG', 0, 0, 210, 297); // A4 사이즈에 맞게 조절
 
                 // PDF를 저장할 때 사용할 파일 이름 및 형식 설정
                 pdf.save('question.pdf');
-
-                // 원본 HTML의 스타일을 원래대로 복구합니다.
-                document.getElementById('question-content').style.transform = 'scale(1)';
+                // document.getElementById('question-content').style.transform = 'scale(1)';
             })
             .catch(function (error) {
                 console.error('Error rendering HTML to canvas:', error);
-
-                // 원본 HTML의 스타일을 원래대로 복구합니다.
-                document.getElementById('question-content').style.transform = 'scale(1)';
+                // document.getElementById('question-content').style.transform = 'scale(1)';
             });
     }
 </script>
