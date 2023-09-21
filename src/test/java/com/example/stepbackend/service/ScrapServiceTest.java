@@ -41,7 +41,7 @@ class ScrapServiceTest {
 
 
         //when
-        Scrap scrap = Scrap.toEntity(createScrapDTO, memberNo, questionNo);
+        Scrap scrap = Scrap.toEntity(createScrapDTO, memberNo);
         Scrap createdScrap = scrapRepository.save(scrap);
 
         //then

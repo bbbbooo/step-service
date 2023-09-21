@@ -78,4 +78,14 @@ public class BoardController {
 
         return "board/question";
     }
+
+    @PostMapping("/solve")
+    @ResponseBody
+    public ResponseEntity<SolveQuestionResponseDTO> solve(@RequestBody SolveQuestionRequestDTO solveQuestionRequestDTO){
+        Long memberNo = 1L;
+
+        SolveQuestionResponseDTO solveQuestionResponseDTO = boardService.saveHistory(solveQuestionRequestDTO, memberNo);
+
+        return ResponseEntity.ok(solveQuestionResponseDTO);
+    }
 }

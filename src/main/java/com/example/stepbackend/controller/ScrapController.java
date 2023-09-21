@@ -38,10 +38,10 @@ public class ScrapController {
     }
 
     @GetMapping("detail/{questionNo}")
-    public String getScrap(@PathVariable Long questionNo, Model model){
+    public String getScrap(@PathVariable Long questionNo,@RequestParam Integer markedNo, Model model){
         Long memberNo = 1L;
 
-        ReadScrapDTO readScrapDTO = scrapService.findScrap(memberNo, questionNo);
+        ReadScrapDTO readScrapDTO = scrapService.findScrap(memberNo, questionNo, markedNo);
         ReadScrapByMemberDTO readScrapByMemberDTO = scrapService.findScrapByMember(memberNo, questionNo);
 
         model.addAttribute("scrap", ReadScrapAndMemberDTO.combine(readScrapDTO, readScrapByMemberDTO));
@@ -49,12 +49,13 @@ public class ScrapController {
         return "scrap/scrapDetail";
     }
 
-//    @PostMapping("/{questionNo}/scrap")
-//    public String create(@PathVariable Long questionNo, @RequestBody CreateScrapDTO createScrapDTO){
-//        Long memberNo = 1L;
-//
-//        scrapService.createScrap(createScrapDTO, questionNo, memberNo);
-//
-//        return "scrap/myScrapPage";
-//    }
+    @PostMapping("/create")
+    @ResponseBody
+    public String create( @RequestBody CreateScrapDTO createScrapDTO){
+        Long memberNo = 1L;
+
+        scrapService.createScrap(createScrapDTO, memberNo);
+
+        return "scrap/myScrapPage";
+    }
 }

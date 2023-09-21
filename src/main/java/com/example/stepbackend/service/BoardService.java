@@ -126,9 +126,10 @@ public class BoardService {
     /* 문제 풀때마다 기록 */
     @Transactional
     public SolveQuestionResponseDTO saveHistory(SolveQuestionRequestDTO solveQuestionRequestDTO, Long memberNo) {
-        QuestionByMember questionByMember = questionByMemberRepository.findByMemberNoAndQuestionNo(memberNo,
-                solveQuestionRequestDTO.getQuestionNo());
+        QuestionByMember questionByMember = questionByMemberRepository.findByMemberNoAndQuestionNoAndMarkedNo(memberNo,
+                solveQuestionRequestDTO.getQuestionNo(), solveQuestionRequestDTO.getMarkedNo());
 
+        // 문제를 푼 적이 없거나 풀어도 다른 답안을 제출했다면 새로운 기록 생성
         if (questionByMember == null){
             QuestionByMember history = QuestionByMember.toEntity(solveQuestionRequestDTO, memberNo);
             questionByMemberRepository.save(history);

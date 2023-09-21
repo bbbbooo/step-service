@@ -28,11 +28,11 @@ public class ScrapService {
     private final QuestionByMemberRepository questionByMemberRepository;
 
     /* 스크랩 저장 */
-//    @Transactional
-//    public void createScrap(CreateScrapDTO createScrapDTO, Long memberNo, Long questionNo) {
-//        Scrap scrap = Scrap.toEntity(createScrapDTO, memberNo, questionNo);
-//        scrapRepository.save(scrap);
-//    }
+    @Transactional
+    public void createScrap(CreateScrapDTO createScrapDTO, Long memberNo) {
+        Scrap scrap = Scrap.toEntity(createScrapDTO, memberNo);
+        scrapRepository.save(scrap);
+    }
 
     /* 한 회원에 대한 모든 스크랩 조회*/
     @Transactional(readOnly = true)
@@ -53,8 +53,8 @@ public class ScrapService {
     }
 
     @Transactional(readOnly = true)
-    public ReadScrapDTO findScrap(Long memberNo, Long questionNo) {
-        QuestionByMember questionByMember = questionByMemberRepository.findByMemberNoAndQuestionNo(memberNo, questionNo);
+    public ReadScrapDTO findScrap(Long memberNo, Long questionNo, Integer markedNo) {
+        QuestionByMember questionByMember = questionByMemberRepository.findByMemberNoAndQuestionNoAndMarkedNo(memberNo, questionNo, markedNo);
         Question question = questionRepository.findByQuestionNo(questionByMember.getQuestionNo());
 
         ReadScrapDTO readScrapDTO = ReadScrapDTO.fromEntity(question);
