@@ -31,16 +31,15 @@
             <div class="box-exam py-7 px-4 bg-slate-100">
                 <div style="text-align:Justify; line-height:130%; font-family: CustomFont; font-size: 14px;" name="divParagraph">
                     <span style="font-weight:bold; font-size:15px; font-style:italic"></span>
-                    <span id="questionSubject" style="white-space:pre-wrap;font-size:12px;line-height:130%; font-family: CustomFont; font-size: 14px;"></span>
+                    <span id="questionSubject" style="white-space:pre-wrap;font-size:12px;line-height:130%; font-family: CustomFont; font-size: 14px; width:50%;"></span>
                 </div>
-                <table style="margin:6px 0px 6px 0px; line-height:130%; font-size: 14px; border-spacing:0px; border-collapse:collapse; width:100%;"
+                <table style="margin:6px 0px 6px 0px; line-height:130%; font-size: 14px; border-spacing:0px; border-collapse:collapse;"
                        name="divTable"
                 >
                     <tr>
-                        <td style="padding:4px;border-style:solid;border-color:Black;border-width:1px 1px 1px 1px; line-height:130%; font-family: CustomFont; font-size: 14px;width:100%;" name="divTableCell">
+                        <td style="padding:8px; border-style:solid; border-color:Black; border-width:1px 1px 1px 1px; line-height:130%; font-family: CustomFont; font-size: 14px;" name="divTableCell">
                             <div style="text-align:Justify; line-height:130%; font-family: CustomFont; font-size: 14px;" name="divParagraph">
-                                    <span id="spanParagraph" style="font-size:12px; line-height:130%; font-family: CustomFont; font-size: 16px;">
-                                    </span>
+                                    <span id="spanParagraph" style="font-size:12px; line-height:130%; font-family: CustomFont; font-size: 16px;"></span>
                             </div>
                         </td>
                     </tr>
@@ -100,9 +99,9 @@
                     </li>
                 </ul>
             </div>
-            <div class="box-skip text-right">
-                <button type="button" onclick="pass()" class="btn-skip-exam text-right">문제 건너뛰기</button>
-            </div>
+        </div>
+        <div class="box-skip text-right">
+            <button type="button" onclick="pass()" class="btn-skip-exam text-right">문제 건너뛰기</button>
         </div>
         <div>
             <div id="checkAnswerDIV" class="btn_wrap btn_center_wrap" style="display: none;">
@@ -154,19 +153,40 @@
             },
         ];
 
-        // HTML 요소를 PDF로 변환
-        pdf.html(content, {
-            fontFaces: fontFaces,
-            html2canvas: {
-                scale: 250 / srcwidth
-                //600 is the width of a4 page. 'a4': [595.28, 841.89]
-            },
-            callback: function (pdf) {
+
+        // HTML 요소를 이미지로 렌더링하고 PDF에 추가합니다.
+
+        // pdf.html(content, {
+        //     fontFaces: fontFaces,
+        //     html2canvas: {
+        //         scale: 250 / srcwidth
+        //         //600 is the width of a4 page. 'a4': [595.28, 841.89]
+        //     },
+        //     callback: function (pdf) {
+        //
+        //         // PDF를 저장할 때 사용할 파일 이름 및 형식 설정
+        //         pdf.save('question.pdf');
+        //         document.getElementById('question-content').style.transform = 'scale(1)';
+        //     },
+        // });
+
+        html2canvas(document.getElementById('question-content'), {scale: 3}) // scale 값을 조절하여 화질 향상
+            .then(function (canvas) {
+                const imgData = canvas.toDataURL('image/jpeg', 1.0);
+                pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297); // A4 사이즈에 맞게 조절
 
                 // PDF를 저장할 때 사용할 파일 이름 및 형식 설정
                 pdf.save('question.pdf');
-            },
-        });
+
+                // 원본 HTML의 스타일을 원래대로 복구합니다.
+                document.getElementById('question-content').style.transform = 'scale(1)';
+            })
+            .catch(function (error) {
+                console.error('Error rendering HTML to canvas:', error);
+
+                // 원본 HTML의 스타일을 원래대로 복구합니다.
+                document.getElementById('question-content').style.transform = 'scale(1)';
+            });
     }
 </script>
 
