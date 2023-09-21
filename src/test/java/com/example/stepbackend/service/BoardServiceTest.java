@@ -3,9 +3,12 @@ package com.example.stepbackend.service;
 import com.example.stepbackend.aggregate.dto.Heart.PostHeartRequestDTO;
 import com.example.stepbackend.aggregate.dto.Heart.PostHeartResponseDTO;
 import com.example.stepbackend.aggregate.dto.board.*;
+import com.example.stepbackend.aggregate.dto.question.ResQuestionDTO;
 import com.example.stepbackend.aggregate.entity.Board;
+import com.example.stepbackend.aggregate.entity.Question;
 import com.example.stepbackend.aggregate.entity.WorkBook;
 import com.example.stepbackend.repository.BoardRepository;
+import com.example.stepbackend.repository.QuestionRepository;
 import com.example.stepbackend.repository.WorkBookRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -29,6 +32,9 @@ class BoardServiceTest {
 
     @Autowired
     private WorkBookRepository workBookRepository;
+
+    @Autowired
+    private QuestionRepository questionRepository;
 
     @DisplayName("나만의 문제집 공유 게시글 작성")
     @Test
@@ -156,6 +162,12 @@ class BoardServiceTest {
         // given
         Long memberNo = 1L;
 
+        Question question = new Question();
+        Question question2 = new Question();
+
+        questionRepository.save(question);
+        questionRepository.save(question2);
+
         CreateBoardRequestDTO createBoardRequestDTO = CreateBoardRequestDTO.builder()
                 .description("무무무무")
                 .workBookName("미미미미")
@@ -164,7 +176,7 @@ class BoardServiceTest {
 
         WorkBook testWorkBook = WorkBook.builder()
                 .questionTypes("title")
-                .questionNos("1, 2, 3")
+                .questionNos(question.getQuestionNo() + ", " + question2.getQuestionNo())
                 .build();
 
         WorkBook workBook = workBookRepository.save(testWorkBook);
@@ -174,16 +186,6 @@ class BoardServiceTest {
 
         // when
         List<ReadBoardQuestionResponseDTO> responseDTOList = boardService.findAllBoardQuestion(createdBoard.getBoardNo());
-
-        System.out.println("-------------------------------- ------------------------------------");
-        System.out.println("-------------------------------- ------------------------------------");
-        System.out.println("-------------------------------- ------------------------------------");
-        System.out.println("-------------------------------- ------------------------------------");
-        System.out.println("생성된 게시글은 = " + responseDTOList);
-        System.out.println("-------------------------------- ------------------------------------");
-        System.out.println("-------------------------------- ------------------------------------");
-        System.out.println("-------------------------------- ------------------------------------");
-        System.out.println("-------------------------------- ------------------------------------");
 
         // then
         Assertions.assertFalse(responseDTOList.isEmpty(), "문제 목록이 비어있지 않아야 합니다.");
