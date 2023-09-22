@@ -463,6 +463,7 @@
         const pdf = new jsPDF('p', 'mm', 'a4');
 
         // 한글 폰트를 추가합니다.
+        const customFontFamily = '/assets/font/KoPubWorld Batang Medium.ttf';
         pdf.addFileToVFS('/assets/font/KoPubWorld Batang Medium.ttf');
         pdf.addFont('/assets/font/KoPubWorld Batang Medium.ttf', customFontFamily, 'normal');
         pdf.setFont(customFontFamily);
@@ -473,12 +474,15 @@
 
         const storedData = localStorage.getItem(`question_${localStorage.getItem('questionCount')}`);
         let item = null;
+        let options = null;
+        let questionSubject = null;
+        const boxHeight = 100; // 사각형 상자 높이
 
         if (storedData) {
             item = JSON.parse(storedData);
 
-            const questionSubject = item.questionSubject;
-            const options = [
+            questionSubject = item.questionSubject;
+            options = [
                 item.view1,
                 item.view2,
                 item.view3,
@@ -491,6 +495,10 @@
         const splittedText = pdf.splitTextToSize(item.questionBody, textWidth);
         // const textHeight = (splittedText.length * 7) + 5; // 각 줄에 대한 높이 계산 (7은 줄 간격, 5는 여백)
         const textHeight = (splittedText.length * 6.9); // 각 줄에 대한 높이 계산 (7은 줄 간격, 5는 여백)
+
+        // 문제 설명 출력
+        pdf.text(`${questionCount + 1}. ${questionSubject}`, 10, y);
+        y += 5;
 
         pdf.rect(10, y, textWidth, textHeight - 5);
         pdf.text(splittedText, 10, y + 7);
@@ -519,10 +527,32 @@
         y += 10;
 
         // 페이지 분리 처리
-        if (index < result.length - 1 && y + boxHeight + 10 > pdf.internal.pageSize.height) {
+        if (y + boxHeight + 10 > pdf.internal.pageSize.height) {
             pdf.addPage();
             y = 10;
         }
+
+        pdf.setFontSize(14);
+
+        const commentarySplittedText = pdf.splitTextToSize(item.questionCommentary, 190);
+        const commentaryTextHeight = (splittedText.length * 6.9); // 각 줄에 대한 높이 계산 (7은 줄 간격, 5는 여백)
+
+        // 현재 페이지에 출력할 공간이 충분한지 확인하고, 부족하면 새 페이지 추가
+        if (y + commentaryTextHeight > pdf.internal.pageSize.height) {
+            pdf.addPage();
+            y = 10;
+        }
+
+        // 정답
+        pdf.text('정답 : ' + item.questionCorrectAnswer, x, y);
+        y += 10;
+
+        // 해설 페이지 추가 및 출력
+        pdf.text(`${questionCount + 1}번 문제 해설`, x, y);
+        y += 10;
+
+        pdf.text(commentarySplittedText, 10, y);
+        y += textHeight;
 
         // PDF 저장
         pdf.save('question_paper.pdf');
