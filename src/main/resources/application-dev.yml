@@ -16,7 +16,7 @@ spring:
         show_sql: true
         format_sql: true
     hibernate:
-      ddl-auto: none
+      ddl-auto: create-drop
     defer-datasource-initialization: true
   sql:
     init:
@@ -57,15 +57,15 @@ spring:
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user-name-attribute: response
 
-logging:
-  level:
-    org.mybatis: TRACE
-    org.thymeleaf: TRACE
-    org.quartz.core: TRACE
-    org.hibernate.SQL: TRACE
-    org.h2.server.web: TRACE
-    com.midnights.demo: TRACE
-    org.springframework.web: TRACE
+#logging:
+#  level:
+#    org.mybatis: TRACE
+#    org.thymeleaf: TRACE
+#    org.quartz.core: TRACE
+#    org.hibernate.SQL: TRACE
+#    org.h2.server.web: TRACE
+#    com.midnights.demo: TRACE
+#    org.springframework.web: TRACE
 
 mybatis:
   mapper-locations: mapper/**/*.xml

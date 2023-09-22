@@ -14,6 +14,7 @@
 <body>
 <th:block th:insert="~{common/header}" />
 <div class="flex flex-row ">
+    <div id="overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color: rgba(0,0,0,0.7); z-index:10;"></div>
     <div class="basis-3/12 justify-items-center">
 
     </div>
@@ -146,6 +147,9 @@
     // 문제 수정 여부
     let retryStatus = false;
 
+    const $overlay = document.getElementById('overlay');
+    const $correctAnswer = document.getElementById('correctAnswer');
+
     // AI 서빙 서버 요청 전 문제 대기상태 띄우기
     function updateHTML() {
         let loadingScreen = document.getElementById('loading-screen');
@@ -277,6 +281,7 @@
         let view3 = document.getElementById('view3');
         let view4 = document.getElementById('view4');
         let view5 = document.getElementById('view5');
+        let commentary = document.getElementById('commentary');
 
         if (spanParagraph && storedData) {
             // let item = storedData;
@@ -290,6 +295,8 @@
             view3.innerText = item.view3;
             view4.innerText = item.view4;
             view5.innerText = item.view5;
+            commentary.innerText = item.questionCommentary;
+            $correctAnswer.innerText = item.questionCorrectAnswer;
         }
     }
 
@@ -348,6 +355,7 @@
     closeModalButtons.forEach(button => {
         button.addEventListener("click", function() {
             modal.classList.add("hidden");
+            $overlay.style.display = "none";  // 오버레이 숨기기
         });
     });
 
@@ -359,9 +367,11 @@
         if(answer === null) {
             alert('문제를 선택하지 않았습니다.');
             document.getElementById('defaultModal');
+            $overlay.style.display = "none";  // 오버레이 숨기기
         } else {
             openModal();
             modal.classList.remove("hidden");
+            $overlay.style.display = "block"; // 오버레이 표시
         }
     }
 
@@ -450,7 +460,6 @@
         window.jsPDF = window.jspdf.jsPDF;
         window.canvas = window.html2canvas;
 
-        const jsonData = /*[[${res}]]*/ null;
         const customFontFamily = '/assets/font/KoPubWorld Batang Medium.ttf';
         const pdf = new jsPDF('p', 'mm', 'a4');
 
@@ -467,7 +476,7 @@
         let correctAnswer = [];
 
         // 문제 데이터
-        jsonData.forEach((question, index) => {
+        result.forEach((question, index) => {
             const questionSubject = question.questionSubject;
             const options = [
                 question.view1,
@@ -517,7 +526,7 @@
             y += 10;
 
             // 페이지 분리 처리
-            if (index < jsonData.length - 1 && y + boxHeight + 10 > pdf.internal.pageSize.height) {
+            if (index < result.length - 1 && y + boxHeight + 10 > pdf.internal.pageSize.height) {
                 pdf.addPage();
                 y = 10;
             }
@@ -529,6 +538,22 @@
 
         // PDF 저장
         pdf.save('question_paper.pdf');
+    }
+
+    // 오버레이 클릭 시 모달 닫기
+    $overlay.addEventListener("click", function() {
+
+        modal.classList.add("hidden");
+        $overlay.style.display = "none";
+    });
+
+    function getCommentary() {
+        let commentary = document.getElementById('commentary-box');
+
+        // 버튼이 클릭되었을 때 해설 출력
+        commentary.classList.remove("hidden");
+
+        document.getElementById('commentary-button').classList.add('hidden');
     }
 </script>
 </body>

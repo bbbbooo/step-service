@@ -21,6 +21,9 @@ public class ResQuestionDTO {
     // 문제 내용
     private String questionBody;
 
+    // 해설
+    private String questionCommentary;
+
     // 문제 유형(빈칸 추론 : blank, 제목 추론 : title)
     private String questionViewType;
 

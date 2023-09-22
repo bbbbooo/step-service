@@ -56,13 +56,13 @@ public class QuestionController {
 
     @PostMapping("/creation-question")
     @ResponseBody
-    public ResponseEntity readQuestion(@RequestParam String type, @CurrentUser User user) throws Exception {
+    public ResponseEntity readQuestion(@RequestParam String type) throws Exception {
         // 모델 서빙서버 url
-//        String uri = "http://192.168.0.59:5050/quiz/blank"; // 빈칸추론
-//        String uri = "http://192.168.0.59:5050/quiz/title"; // 제목추론
+        // String uri = "http://192.168.0.5:5050/" + type;
+        // blank 빈칸 , title 제목, suffle1 순서 바꾸는 문제(a-b-c), suffle2 순서 바꾸는 문제(1,2,3,4,5), topic 주제
 
         // mock 서버 url
-        String uri = "https://73e6fc73-1c71-424e-a25b-f77760a2e6e9.mock.pstmn.io/data?type=" + type;
+        String uri = "https://ada0d2bb-3eb6-47f0-aecd-aa8ab92d46de.mock.pstmn.io/" + type;
         ResponseEntity<String> responseEntity;
 
         try {
@@ -73,29 +73,16 @@ public class QuestionController {
         }
 
         JSONParser jsonParser = new JSONParser();
-        JSONObject jsonObject = (JSONObject) jsonParser.parse(responseEntity.getBody().toString());
 
-        JSONArray questions = null;
-        String classification = null;
-
-        if(jsonObject.get("blank") != null) {
-            questions = (JSONArray) jsonObject.get("blank");
-            classification = "blank";
-        } else {
-            questions = (JSONArray) jsonObject.get("title");
-            classification = "title";
-        }
+        JSONArray questions = (JSONArray) jsonParser.parse(responseEntity.getBody().toString());
 
         List<QuestionDTO> questionDTOS = new ArrayList<>();
-        int count = 1;
 
         for(Object questionObj : questions) {
-            String questionCount = String.valueOf(count);
             JSONObject questionJSON = (JSONObject) questionObj;
-            QuestionDTO questionDTO =  questionService.convertToDto(questionJSON, questionCount, classification);
+            QuestionDTO questionDTO =  questionService.convertToDto(questionJSON, type);
             questionService.registQuestion(questionDTO);
             questionDTOS.add(questionDTO);
-            count++;
         }
 
         HashMap map = new HashMap<>();
