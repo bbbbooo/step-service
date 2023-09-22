@@ -35,13 +35,14 @@ class ScrapServiceTest {
         Long memberNo = 1L;
         Long questionNo = 1L;
         CreateScrapDTO createScrapDTO = CreateScrapDTO.builder()
+                .questionNo(questionNo)
                 .markedNo(2)
                 .correctedMarkingStatus(false)
                 .build();
 
-
         //when
-        Scrap scrap = Scrap.toEntity(createScrapDTO, memberNo, questionNo);
+        Scrap scrap = Scrap.toEntity(createScrapDTO, memberNo);
+
         Scrap createdScrap = scrapRepository.save(scrap);
 
         //then

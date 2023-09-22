@@ -10,6 +10,8 @@ import javax.persistence.Column;
 @Builder
 public class CreateScrapDTO {
 
+    private Long questionNo;
+
     private Integer markedNo;
 
     private Boolean correctedMarkingStatus;

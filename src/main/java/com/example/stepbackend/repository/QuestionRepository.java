@@ -12,4 +12,6 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     List<Question> findTop10ByQuestionViewType(String type);
 
     Question findByQuestionNo(Long questionNo);
+
+    List<Question> findByQuestionNoIn(List<Long> questionNos);
 }

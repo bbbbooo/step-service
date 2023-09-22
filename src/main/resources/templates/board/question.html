@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Board Question</title>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+<th:block th:insert="~{common/header}" />
+
+<div class="flex flex-row ">
+    <div class="basis-2/12 justify-items-center"></div>
+    <div class="basis-8/12">
+        <div id="question-content" class="box-exam-body">
+            <div class="box-exam py-7 px-4 bg-slate-100">
+                <!-- 버튼 누를때마다 배열의 다음 인덱스 문제 표시 -->
+                <span style="font-weight:bold;font-size:15px;font-style:italic" id="questionNumber"></span>
+                <span id="subject" style="white-space:pre-wrap;font-size:12px;line-height:130%; font-family: 돋움; font-size: 14px;" th:text="${questions[0].questionSubject}"></span>
+
+                <table style="margin:6px 0px 6px 0px; line-height:130%; font-size: 14px;border-spacing:0px;border-collapse:collapse;width:100%;" name="divTable">
+                    <tr>
+                        <td style="padding:4px;border-style:solid;border-color:Black;border-width:1px 1px 1px 1px; line-height:130%; font-family: 돋움; font-size: 14px;width:100%;" name="divTableCell">
+                            <div style="text-align:Justify; line-height:130%; font-family: 돋움; font-size: 14px;" name="divParagraph">
+                                <span id="questionBody" style="font-size:12px; line-height:130%; font-family: 돋움; font-size: 16px;" th:text="${questions[0].questionBody}"></span>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+
+
+                <!-- 보기 -->
+                <ul id="imageList">
+                    <div style="text-align:right;font-size:12px;margin-bottom:12px;">
+                    </div>
+                    <li class="dontsplit odd" iscorrectanswer="False">
+                        <div style="width:20px; display:table-cell;" class="numbering" data-number="1">
+                            ①
+                        </div>
+                        <div style="display:table-cell;min-height:20px;padding-left:20px;height:22px;">
+                            <div style="text-align:Justify;line-height:130%; font-family: 돋움; font-size: 14px;" name="divParagraph">
+                                <span id="view1" th:text="${questions[0].view1}" style="white-space:pre-wrap;font-size:12px;line-height:130%; font-family: 돋움; font-size: 14px;"></span>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="dontsplit" iscorrectanswer="False">
+                        <div style="width:20px; display:table-cell;" class="numbering" data-number="2">
+                            ②
+                        </div>
+                        <div style="display:table-cell;min-height:20px;padding-left:20px;height:22px;">
+                            <div style="text-align:Justify;line-height:130%; font-family: 돋움; font-size: 14px;" name="divParagraph">
+                                <span id="view2" th:text="${questions[0].view2}" style="white-space:pre-wrap;font-size:12px;line-height:130%; font-family: 돋움; font-size: 14px;"></span>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="dontsplit odd" iscorrectanswer="False">
+                        <div style="width:20px; display:table-cell;" class="numbering" data-number="3">
+                            ③
+                        </div>
+                        <div style="display:table-cell;min-height:20px;padding-left:20px;height:22px;">
+                            <div style="text-align:Justify;line-height:130%; font-family: 돋움; font-size: 14px;" name="divParagraph">
+                                <span id="view3" th:text="${questions[0].view3}" style="white-space:pre-wrap;font-size:12px;line-height:130%; font-family: 돋움; font-size: 14px;"></span>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="dontsplit" iscorrectanswer="False">
+                        <div style="width:20px; display:table-cell;" class="numbering" data-number="4">
+                            ④
+                        </div>
+                        <div style="display:table-cell;min-height:20px;padding-left:20px;height:22px;">
+                            <div style="text-align:Justify;line-height:130%; font-family: 돋움; font-size: 14px;" name="divParagraph">
+                                <span id="view4" th:text="${questions[0].view4}" style="white-space:pre-wrap;font-size:12px;line-height:130%; font-family: 돋움; font-size: 14px;"></span>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="dontsplit odd" iscorrectanswer="False">
+                        <div style="width:20px; display:table-cell;" class="numbering" data-number="5">
+                            ⑤
+                        </div>
+                        <div style="display:table-cell;min-height:20px;padding-left:20px;height:22px;">
+                            <div style="text-align:Justify;line-height:130%; font-family: 돋움; font-size: 14px;" name="divParagraph">
+                                <span id="view5" th:text="${questions[0].view5}" style="white-space:pre-wrap;font-size:12px;line-height:130%; font-family: 돋움; font-size: 14px;"></span>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+
+            </div>
+        </div>
+
+        <button type="button" data-modal-target="defaultModal" data-modal-toggle="defaultModal" onclick="isAnswer();" class="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">
+            <span>정답 확인하기</span>
+        </button>
+
+        <!-- 다음 버튼 -->
+        <button type="button" id="nextButton">문제 건너뛰기</button>
+
+    </div>
+    <div class="basis-2/12 justify-items-center"></div>
+</div>
+
+<th:block th:include="/board/result-modal.html"></th:block>
+
+<th:block th:insert="~{common/footer}" />
+<script th:inline="javascript">
+
+    // 서버에서 받은 문제 데이터
+    var questions = /*[[${questions}]]*/ 'default';
+
+    // 현재 문제 인덱스
+    var currentQuestionIndex = 0;
+
+    // questionNo 가져오기
+    var questionNo = questions[currentQuestionIndex].questionNo;
+    $('#questionNumber').text(currentQuestionIndex + 1 + '. ');
+
+    $(document).ready(function() {
+        // 문제 업데이트
+        function updateQuestionContent() {
+            var currentQuestion = questions[currentQuestionIndex];
+
+            $('#questionNumber').text(currentQuestionIndex + 1 + '. ');
+            $('#subject').text(currentQuestion.questionSubject);
+
+            $('#questionBody').text(currentQuestion.questionBody);
+            $('#view1').text(currentQuestion.view1);
+            $('#view2').text(currentQuestion.view2);
+            $('#view3').text(currentQuestion.view3);
+            $('#view4').text(currentQuestion.view4);
+            $('#view5').text(currentQuestion.view5);
+        }
+
+        // 문제 건너 뛰기 버튼 누르면
+        $('#nextButton').click(function() {
+            removeImage();
+
+            // 다음 문제로 인덱스 증가
+            currentQuestionIndex++;
+
+            // 문제를 다 풀었다면
+            if (currentQuestionIndex >= questions.length) {
+                alert('모든 문제를 다 풀었습니다.');
+                var url = '/board';
+                window.location.href = url;
+                return;
+            }
+
+            // 문제 업데이트
+            updateQuestionContent();
+
+            // 다음 문제의 questionNo 가져오기
+            questionNo = questions[currentQuestionIndex].questionNo;
+        });
+    });
+
+    function next() {
+        removeImage();
+
+        // 다음 문제로 인덱스 증가
+        currentQuestionIndex++;
+
+        // 문제를 다 풀었다면
+        if (currentQuestionIndex >= questions.length) {
+            alert('모든 문제를 다 풀었습니다.');
+            var url = '/board';
+            window.location.href = url;
+            return;
+        }
+
+        // 문제 업데이트
+        function updateQuestionContent() {
+            var currentQuestion = questions[currentQuestionIndex];
+            $('#questionNumber').text(currentQuestionIndex + 1 + '. ');
+            $('#subject').text(currentQuestion.questionSubject);
+            $('#questionBody').text(currentQuestion.questionBody);
+            $('#view1').text(currentQuestion.view1);
+            $('#view2').text(currentQuestion.view2);
+            $('#view3').text(currentQuestion.view3);
+            $('#view4').text(currentQuestion.view4);
+            $('#view5').text(currentQuestion.view5);
+        }
+
+        // 다음 문제의 questionNo 가져오기
+        questionNo = questions[currentQuestionIndex].questionNo;
+
+        // 문제 업데이트
+        updateQuestionContent();
+    }
+
+
+    /*]]>*/
+
+
+    var imageMap = false;
+    var correctedMarkingStatus = false;
+    var answer = null;
+
+    function addImageBefore(number) {
+        if (imageMap) {
+            removeImage();
+        }
+
+        var img = document.createElement('img');
+        img.setAttribute('class', 'mychecking');
+        img.setAttribute('src', '/assets/img/icon_question_check.png');
+        img.style.position = 'absolute';
+
+
+        var numberingDiv = document.querySelector('[data-number="' + number + '"]');
+
+        if (numberingDiv) {
+
+            numberingDiv.parentNode.insertBefore(img, numberingDiv);
+
+            imageMap = true;
+            answer = number;
+        }
+    }
+
+    function removeImage() {
+        var existingImage = document.querySelector('.mychecking');
+        if (existingImage) {
+            existingImage.parentNode.removeChild(existingImage);
+            imageMap = false;
+            answer = null;
+        }
+    }
+
+    var questionNumbers = document.querySelectorAll('.numbering');
+    questionNumbers.forEach(function(numberingDiv) {
+        numberingDiv.addEventListener('click', function() {
+            var number = numberingDiv.getAttribute('data-number');
+            addImageBefore(number);
+        });
+    });
+
+    function openModal(correctAnswer) {
+        // 다음 문제 전환 하기 위해 필요 값
+        if (document.querySelector('.answer-image') != null) {
+            document.querySelector('.answer-image').remove();
+        }
+
+        // 정답 표시
+        if (answer == correctAnswer) {
+            document.getElementById('ans-wrong').innerText = '정답 입니다.';
+            correctedMarkingStatus = true;
+
+            // 정답 이미지 추가
+            let img = document.createElement('img');
+            img.setAttribute('class', 'answer-image');
+            img.setAttribute('src', '/assets/img/o.png');
+
+            let numberingDiv = document.querySelector('.contain-result-anwser');
+
+            // 이미지를 특정 요소(numberingDiv) 앞에 추가
+            numberingDiv.parentNode.insertBefore(img, numberingDiv);
+        }
+
+        // 오답 표시
+        if (answer != correctAnswer) {
+            document.getElementById('ans-wrong').innerText = '오답 입니다.';
+            correctedMarkingStatus = false;
+
+            // 오답 이미지 추가
+            let img = document.createElement('img');
+            img.setAttribute('class', 'answer-image');
+            img.setAttribute('src', '/assets/img/x.png');
+
+            let numberingDiv = document.querySelector('.contain-result-anwser');
+
+            // 이미지를 특정 요소(numberingDiv) 앞에 추가
+            numberingDiv.parentNode.insertBefore(img, numberingDiv);
+        }
+
+        console.log(questionNo);
+
+        const data = {
+            questionNo: questionNo,
+            markedNo: answer,
+            correctedMarkingStatus: correctedMarkingStatus
+        }
+
+        // 회원 별 문제 풀이 데이터 저장
+        axios.post('/board/solve', data)
+            .then((res) => {
+                console.log('회원이 문제를 풀었습니다.', res);
+            })
+    }
+
+    // 문제 확인
+    function isAnswer() {
+        if (answer === null) {
+            alert('문제를 선택하지 않았습니다.');
+        } else {
+            var correctAnswer = questions[currentQuestionIndex].questionCorrectAnswer;
+            openModal(correctAnswer);
+        }
+    }
+
+    function retry(){
+        removeImage();
+    }
+
+    function scrap() {
+        var questionNo = questions[currentQuestionIndex].questionNo;
+        var markedNo = answer;
+
+        axios.get('/scrap/workbook/detail/' + questionNo + '?markedNo=' + markedNo)
+            .then(function(response) {
+                var dataExists = response.data;
+
+                if (dataExists) {
+                    if (confirm('이미 스크랩한 적이 있습니다. 그래도 스크랩하시겠습니까?')) {
+                        const data = {
+                            questionNo : questionNo,
+                            markedNo : markedNo,
+                            correctedMarkingStatus : correctedMarkingStatus
+                        }
+                        axios.post('/scrap/create', data)
+                            .then((res) => {
+                                console.log(res)
+                            })
+                    } else {
+
+                    }
+                } else {
+
+                }
+            })
+            .catch(function(error) {
+                console.error('에러 발생:', error);
+            });
+    }
+
+</script>
+
+
+</body>
+</html>
