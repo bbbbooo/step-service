@@ -1,9 +1,7 @@
 package com.example.stepbackend.service;
 
 import com.example.stepbackend.aggregate.dto.board.ReadScrapBoardDTO;
-import com.example.stepbackend.aggregate.dto.scrap.CreateScrapDTO;
-import com.example.stepbackend.aggregate.dto.scrap.ReadScrapByMemberDTO;
-import com.example.stepbackend.aggregate.dto.scrap.ReadScrapDTO;
+import com.example.stepbackend.aggregate.dto.scrap.*;
 import com.example.stepbackend.aggregate.entity.Question;
 import com.example.stepbackend.aggregate.entity.QuestionByMember;
 import com.example.stepbackend.aggregate.entity.Scrap;
@@ -15,8 +13,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -44,6 +40,7 @@ public class ScrapService {
         return pagedScraps;
     }
 
+    /* 문제 푼 내역 조사 */
     @Transactional(readOnly = true)
     public Page<ReadScrapByMemberDTO> findAllScrapByMember(Long memberNo, Pageable pageable) {
         Page<QuestionByMember> questionByMembers = questionByMemberRepository.findByMemberNo(memberNo, pageable);
@@ -53,6 +50,7 @@ public class ScrapService {
         return readScrapByMemberDTOS;
     }
 
+    /* 스크랩 상세 조회 */
     @Transactional(readOnly = true)
     public ReadScrapDTO findScrap(Long memberNo, Long questionNo, Integer markedNo) {
         QuestionByMember questionByMember = questionByMemberRepository.findByMemberNoAndQuestionNoAndMarkedNo(memberNo, questionNo, markedNo);
@@ -63,6 +61,7 @@ public class ScrapService {
         return readScrapDTO;
     }
 
+    /* 스크랩 한개에 대한 회원별 내역 조사 */
     @Transactional(readOnly = true)
     public ReadScrapByMemberDTO findScrapByMember(Long memberNo, Long questionNo, Integer markedNo) {
         QuestionByMember question = questionByMemberRepository.findByMemberNoAndQuestionNoAndMarkedNo(memberNo, questionNo, markedNo);
@@ -74,14 +73,17 @@ public class ScrapService {
 
     /* 한 회원에 대한 모든 스크랩 삭제*/
     @Transactional
-    public void cancelScrap(Long memberNo, List<Long> questionNos) {
-        List<Scrap> scraps = scrapRepository.findByMemberNoAndQuestionNoIn(memberNo, questionNos);
-
-        for(Scrap scrap : scraps){
+    public CancelScrapResponseDTO cancelScrap(CancelScrapRequestDTO cancelScrapRequestDTO) {
+        for(Long scrapNo : cancelScrapRequestDTO.getScrapNos()){
+            Scrap scrap = scrapRepository.findByScrapNo(scrapNo);
             scrapRepository.delete(scrap);
         }
+
+        CancelScrapResponseDTO cancelScrapResponseDTO = CancelScrapResponseDTO.toDTO(cancelScrapRequestDTO);
+        return cancelScrapResponseDTO;
     }
 
+    /* 스크랩 여부 확인 */
     @Transactional(readOnly = true)
     public ReadScrapBoardDTO findScrapBoard(Long memberNo, Long questionNo, Integer markedNo) {
         Scrap scrap = scrapRepository.findByMemberNoAndQuestionNoAndMarkedNo(memberNo, questionNo, markedNo);
@@ -93,5 +95,14 @@ public class ScrapService {
         ReadScrapBoardDTO readScrapBoardDTO = ReadScrapBoardDTO.fromEntity(scrap);
 
         return readScrapBoardDTO;
+    }
+
+    /* 스크랩 번호 조사 */
+    @Transactional(readOnly = true)
+    public Page<ReadScrapListDTO> findScrapNo(Long memberNo, Pageable pageable) {
+        Page<Scrap> scraps = scrapRepository.findByMemberNo(memberNo, pageable);
+        Page<ReadScrapListDTO> readScrapListDTOS = ReadScrapListDTO.fromEntity(scraps);
+
+        return readScrapListDTOS;
     }
 }
