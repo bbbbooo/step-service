@@ -1,5 +1,6 @@
 package com.example.stepbackend.controller;
 
+import com.example.stepbackend.aggregate.dto.board.ReadBoardQuestionResponseDTO;
 import com.example.stepbackend.aggregate.dto.workbook.*;
 import com.example.stepbackend.service.WorkbookService;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -52,5 +55,14 @@ public class WorkBookController {
     public ResponseEntity<DeleteWorkBookResponseDTO> deleteWorkBook(@RequestBody DeleteWorkBookRequestDTO deleteWorkBookRequestDTO){
         DeleteWorkBookResponseDTO deleteWorkBookResponseDTO = workbookService.deleteWorkBook(deleteWorkBookRequestDTO);
         return ResponseEntity.ok(deleteWorkBookResponseDTO);
+    }
+
+    @GetMapping("/question")
+    public String question(@RequestParam("workBookNo")Long workBookNo , Model model){
+        List<ReadBoardQuestionResponseDTO> responseDTOList = workbookService.findAllBoardQuestion(workBookNo);
+
+        model.addAttribute("questions", responseDTOList);
+
+        return "board/question";
     }
 }
