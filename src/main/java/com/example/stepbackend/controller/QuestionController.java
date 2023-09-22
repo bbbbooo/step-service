@@ -33,10 +33,7 @@ public class QuestionController {
         Long userId = 1L;
         List<ResQuestionDTO> res = questionService.readQuestion(type, userId);
 
-//        JSONObject jsonObject = new JSONObject();
-
         if(!res.isEmpty()) {
-//            jsonObject.appendField("res", res);
             mv.addObject("res", res);
         } else {
             mv.addObject("res", null);
