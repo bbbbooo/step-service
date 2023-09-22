@@ -1,7 +1,6 @@
 package com.example.stepbackend.repository;
 
 import com.example.stepbackend.aggregate.entity.Question;
-import com.example.stepbackend.aggregate.entity.QuestionByMember;
 import com.example.stepbackend.aggregate.entity.Scrap;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,9 +21,9 @@ public interface ScrapRepository extends JpaRepository<Scrap, Long> {
 
     void deleteByMemberNoAndScrapNo(Long memberNo, Long questionNo);
 
-    List<Scrap> findByMemberNoAndQuestionNoIn(Long memberNo, List<Long> questionNos);
-
     Scrap findByScrapNo(Long scrapNo);
 
     Scrap findByMemberNoAndQuestionNoAndMarkedNo(Long memberNo, Long questionNo, Integer markedNo);
+
+    Page<Scrap> findByMemberNo(Long memberNo, Pageable pageable);
 }
