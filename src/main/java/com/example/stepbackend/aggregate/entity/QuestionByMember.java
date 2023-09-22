@@ -1,5 +1,6 @@
 package com.example.stepbackend.aggregate.entity;
 
+import com.example.stepbackend.aggregate.dto.board.SolveQuestionRequestDTO;
 import lombok.*;
 import org.hibernate.annotations.Comment;
 
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @ToString
 @Entity
+@Builder
 @Table(appliesTo = "question_by_member", comment = "회원별 문제 테이블")
 public class QuestionByMember {
 
@@ -42,4 +44,14 @@ public class QuestionByMember {
     @Column
     @Comment("등록 시간")
     private LocalDateTime createdTime;
+
+    public static QuestionByMember toEntity(SolveQuestionRequestDTO solveQuestionRequestDTO, Long memberNo) {
+        return QuestionByMember.builder()
+                .memberNo(memberNo)
+                .questionNo(solveQuestionRequestDTO.getQuestionNo())
+                .correctedMarkingStatus(solveQuestionRequestDTO.getCorrectedMarkingStatus())
+                .markedNo(solveQuestionRequestDTO.getMarkedNo())
+                .createdTime(LocalDateTime.now())
+                .build();
+    }
 }

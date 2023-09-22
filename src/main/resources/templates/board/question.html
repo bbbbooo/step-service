@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Board Question</title>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+</head>
+<body>
+<th:block th:insert="~{common/header}" />
+
+<div id="questionArea">
+    <!-- 첫 번째 문제 데이터 표시 -->
+    <h2 id="subject" th:text="${questions[0].questionSubject}"></h2>
+    <p id="body" th:text="${questions[0].questionBody}"></p>
+
+    <!-- 보기 -->
+    <ul>
+        <li id="view1" th:text="${questions[0].view1}"></li>
+        <li id="view2" th:text="${questions[0].view2}"></li>
+        <li id="view3" th:text="${questions[0].view3}"></li>
+        <li id="view4" th:text="${questions[0].view4}"></li>
+        <li id="view5" th:text="${questions[0].view5}"></li>
+    </ul>
+
+    <!-- 다음 버튼 -->
+    <button type="button" id="nextButton">다음</button>
+
+</div>
+
+<th:block th:insert="~{common/footer}" />
+<script th:inline="javascript">
+
+    // 서버에서 받은 문제 데이터
+    var questions = /*[[${questions}]]*/ 'default';
+
+    // 현재 문제 인덱스
+    var currentQuestionIndex = 0;
+
+    // questionNo 가져오기
+    var questionNo = questions[currentQuestionIndex].questionNo;
+
+    $(document).ready(function() {
+        $('#nextButton').click(function() {
+            // 다음 문제로 인덱스 증가
+            currentQuestionIndex++;
+
+            // 다음 문제 정보 가져오기
+            var nextQuestion = questions[currentQuestionIndex];
+
+            // 화면에 표시하기
+            $('#subject').text(nextQuestion.questionSubject);
+            $('#body').text(nextQuestion.questionBody);
+
+            // 보기
+            $('#view1').text(nextQuestion.view1);
+            $('#view2').text(nextQuestion.view2);
+            $('#view3').text(nextQuestion.view3);
+            $('#view4').text(nextQuestion.view4);
+            $('#view5').text(nextQuestion.view5);
+
+            var url = '/board/solve';
+            fetch(url, {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    boardNo: boardNo,
+                    questionNo : questionNo
+                })
+            })
+                .then(response => {
+                    if (response.ok) {
+                        alert('성공적으로 삭제되었습니다.');
+                        window.location.reload();
+                    }
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+
+            // 문제를 다 풀었다면
+            if (currentQuestionIndex >= questions.length) {
+                alert('모든 문제를 다 풀었습니다.');
+                var url = '/board';
+                window.location.href = url;
+                return;
+            }
+        });
+    });
+
+    /*]]>*/
+</script>
+
+
+</body>
+</html>

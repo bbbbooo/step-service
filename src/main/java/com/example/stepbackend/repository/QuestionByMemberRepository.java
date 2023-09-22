@@ -19,4 +19,6 @@ public interface QuestionByMemberRepository extends JpaRepository<QuestionByMemb
     Page<QuestionByMember> findByMemberNo(Long memberNo, Pageable pageable);
 
     QuestionByMember findByMemberNoAndQuestionNo(Long memberNo, Long questionNo);
+
+    QuestionByMember findByMemberNoAndQuestionNoAndMarkedNo(Long memberNo, Long questionNo, Integer markedNo);
 }
