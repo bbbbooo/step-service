@@ -1,10 +1,7 @@
 package com.example.stepbackend.controller;
 
 import com.example.stepbackend.aggregate.dto.board.ReadScrapBoardDTO;
-import com.example.stepbackend.aggregate.dto.scrap.CreateScrapDTO;
-import com.example.stepbackend.aggregate.dto.scrap.ReadScrapAndMemberDTO;
-import com.example.stepbackend.aggregate.dto.scrap.ReadScrapByMemberDTO;
-import com.example.stepbackend.aggregate.dto.scrap.ReadScrapDTO;
+import com.example.stepbackend.aggregate.dto.scrap.*;
 import com.example.stepbackend.service.ScrapService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -30,10 +27,11 @@ public class ScrapController {
 
         Page<ReadScrapDTO> readScrapDTOPage = scrapService.findAllScrap(memberNo, pageable);
         Page<ReadScrapByMemberDTO> readScrapByMemberDTOS = scrapService.findAllScrapByMember(memberNo, pageable);
-
+        Page<ReadScrapListDTO> readScrapListDTOS = scrapService.findScrapNo(memberNo, pageable);
 
         model.addAttribute("scraps", ReadScrapAndMemberDTO.combineLists(readScrapDTOPage.getContent(), readScrapByMemberDTOS.getContent()));
         model.addAttribute("allScrap", readScrapDTOPage);
+        model.addAttribute("scrapNos", readScrapListDTOS);
 
         return "scrap/myScrapPage";
     }
@@ -71,5 +69,14 @@ public class ScrapController {
         scrapService.createScrap(createScrapDTO, memberNo);
 
         return "scrap/myScrapPage";
+    }
+
+    /* 스크랩 취소(삭제) */
+    @DeleteMapping("/cancel")
+    @ResponseBody
+    public ResponseEntity<CancelScrapResponseDTO> cancel(@RequestBody CancelScrapRequestDTO cancelScrapRequestDTO){
+        CancelScrapResponseDTO cancelScrapResponseDTO = scrapService.cancelScrap(cancelScrapRequestDTO);
+
+        return ResponseEntity.ok(cancelScrapResponseDTO);
     }
 }

@@ -1,6 +1,7 @@
 package com.example.stepbackend.aggregate.dto.scrap;
 
 import com.example.stepbackend.aggregate.entity.Question;
+import com.example.stepbackend.aggregate.entity.Scrap;
 import lombok.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
