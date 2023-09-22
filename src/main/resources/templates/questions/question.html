@@ -454,11 +454,82 @@
             })
     }
 
+    window.jsPDF = window.jspdf.jsPDF;
+    window.canvas = window.html2canvas;
+
+    function generatePDF() {
+
+        document.getElementById('question-content');
+        const pdf = new jsPDF('p', 'mm', 'a4');
+
+        // 한글 폰트를 추가합니다.
+        pdf.addFileToVFS('/assets/font/KoPubWorld Batang Medium.ttf');
+        pdf.addFont('/assets/font/KoPubWorld Batang Medium.ttf', customFontFamily, 'normal');
+        pdf.setFont(customFontFamily);
+
+        // 문제 출력 설정
+        let x = 10; // 시작 X 좌표
+        let y = 10; // 시작 Y 좌표
+
+        const storedData = localStorage.getItem(`question_${localStorage.getItem('questionCount')}`);
+        let item = null;
+
+        if (storedData) {
+            item = JSON.parse(storedData);
+
+            const questionSubject = item.questionSubject;
+            const options = [
+                item.view1,
+                item.view2,
+                item.view3,
+                item.view4,
+                item.view5
+            ];
+        }
+
+        const textWidth = 190;
+        const splittedText = pdf.splitTextToSize(item.questionBody, textWidth);
+        // const textHeight = (splittedText.length * 7) + 5; // 각 줄에 대한 높이 계산 (7은 줄 간격, 5는 여백)
+        const textHeight = (splittedText.length * 6.9); // 각 줄에 대한 높이 계산 (7은 줄 간격, 5는 여백)
+
+        pdf.rect(10, y, textWidth, textHeight - 5);
+        pdf.text(splittedText, 10, y + 7);
+        y += textHeight + 5;
+
+        // 한 페이지 넘어가면 보기 다음 페이지에서 이어나가게 출력
+        if (y >= pdf.internal.pageSize.height) {
+            pdf.addPage();
+            y = 20;
+        }
+
+        // 보기 출력
+        options.forEach((option, optionIndex) => {
+            const optionLabel = `①②③④⑤`.charAt(optionIndex);
+            pdf.text(`${optionLabel}\t ${option}`, 10, y);
+            pdf.text(option, x + 10, y);
+            y += 8;
+
+            if (y >= pdf.internal.pageSize.height) {
+                pdf.addPage();
+                y = 8;
+            }
+        });
+
+        // 다음 문제와의 간격 조정
+        y += 10;
+
+        // 페이지 분리 처리
+        if (index < result.length - 1 && y + boxHeight + 10 > pdf.internal.pageSize.height) {
+            pdf.addPage();
+            y = 10;
+        }
+
+        // PDF 저장
+        pdf.save('question_paper.pdf');
+    }
+
     // 문제집 생성
     function generateWorkBook() {
-
-        window.jsPDF = window.jspdf.jsPDF;
-        window.canvas = window.html2canvas;
 
         const customFontFamily = '/assets/font/KoPubWorld Batang Medium.ttf';
         const pdf = new jsPDF('p', 'mm', 'a4');
