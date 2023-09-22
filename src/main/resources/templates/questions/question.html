@@ -474,6 +474,7 @@
         const boxHeight = 100; // 사각형 상자 높이
         const lineHeight = 10; // 행 간격
         let correctAnswer = [];
+        let commentaries = [];
 
         // 문제 데이터
         result.forEach((question, index) => {
@@ -488,6 +489,7 @@
 
             // 정답
             correctAnswer.push(question.questionCorrectAnswer);
+            commentaries.push((index + 1).toString() + '번 해설\n' +  question.questionCommentary);
 
             // 문제 설명 출력
             pdf.text(`${index + 1}. ${questionSubject}`, 10, y);
@@ -535,6 +537,23 @@
         // 정답
         pdf.addPage();
         pdf.text(`정답 : ${correctAnswer}`, x, 10);
+
+        // 해설 페이지 추가 및 출력
+        let answerY = 20;
+        pdf.setFontSize(14);
+        commentaries.forEach((commentary) => {
+            const splittedText = pdf.splitTextToSize(commentary, 190);
+            const textHeight = (splittedText.length * 6.9); // 각 줄에 대한 높이 계산 (7은 줄 간격, 5는 여백)
+
+            // 현재 페이지에 출력할 공간이 충분한지 확인하고, 부족하면 새 페이지 추가
+            if (answerY + textHeight > pdf.internal.pageSize.height) {
+                pdf.addPage();
+                answerY = 10;
+            }
+
+            pdf.text(splittedText, 10, answerY);
+            answerY += textHeight;
+        });
 
         // PDF 저장
         pdf.save('question_paper.pdf');
