@@ -420,7 +420,7 @@
 
 <script>
     function openModal(workBookName, workbookNo, description) {
-        var modal = document.getElementById("myModal");
+        const modal = document.getElementById("myModal");
         modal.style.display = "block";
 
         // 기존 문제집 이름과 설명 입력 필드에 설정
@@ -433,15 +433,15 @@
 
     // 모달 닫기 함수
     function closeModal() {
-        var modal = document.getElementById("myModal");
+        const modal = document.getElementById("myModal");
         modal.style.display = "none";
     }
 
     // 문제집 수정 함수
     function updateWorkbook() {
-        var workBookName = document.getElementById('workBookName').value;
-        var workBookDescription = document.getElementById('workBookDescription').value;
-        var workbookNo = document.getElementById('workBookName').getAttribute('data-workbook-no');
+        const workBookName = document.getElementById('workBookName').value;
+        const workBookDescription = document.getElementById('workBookDescription').value;
+        const workbookNo = document.getElementById('workBookName').getAttribute('data-workbook-no');
 
         // 데이터를 서버로 보내고 엔드포인트로 처리
         sendDataToServer(workBookName, workBookDescription, workbookNo);
@@ -452,7 +452,7 @@
 
     // 서버로 데이터 전송
     function sendDataToServer(workBookName, workBookDescription, workbookNo) {
-        var data = {
+        const data = {
             workBookName: workBookName,
             description: workBookDescription, // 추가된 문제집 설명
             workBookNo: workbookNo
@@ -477,7 +477,7 @@
     // 공유 모달 열기 함수
     function openShareModal(workbookNo) {
         console.log(workbookNo);
-        var shareModal = document.getElementById("shareModal");
+        const shareModal = document.getElementById("shareModal");
         shareModal.style.display = "block";
 
         document.getElementById('workBookName').setAttribute('data-workbook-no', workbookNo);
@@ -485,15 +485,15 @@
 
     // 공유 모달 닫기 함수
     function closeShareModal() {
-        var shareModal = document.getElementById("shareModal");
+        const shareModal = document.getElementById("shareModal");
         shareModal.style.display = "none";
     }
 
     // 문제집 공유 함수
     function shareWorkbook() {
-        var shareWorkBookName = document.getElementById('shareWorkBookName').value;
-        var shareDescription = document.getElementById('shareDescription').value;
-        var workbookNo = document.getElementById('workBookName').getAttribute('data-workbook-no');
+        const shareWorkBookName = document.getElementById('shareWorkBookName').value;
+        const shareDescription = document.getElementById('shareDescription').value;
+        const workbookNo = document.getElementById('workBookName').getAttribute('data-workbook-no');
 
         console.log(workbookNo);
 
@@ -507,10 +507,10 @@
     // 문제 풀이
     function solveBoard(workBookNo) {
         console.log(workBookNo);
-        var confirmSolve = window.confirm('문제를 푸시겠습니까?');
+        const confirmSolve = window.confirm('문제를 푸시겠습니까?');
 
         if (confirmSolve) {
-            var url = '/workbook/question?workBookNo=' + workBookNo;
+            const url = '/workbook/question?workBookNo=' + workBookNo;
             fetch(url, {
                 method: "GET",
                 headers: {
@@ -547,15 +547,15 @@
 
 
     function updateCharacterCount() {
-        var workBookNameInput = document.getElementById("workBookName");
-        var workBookDescriptionTextarea = document.getElementById("workBookDescription");
-        var workBookNameCharacterCount = document.getElementById("workBookNameCharacterCount");
-        var workBookDescriptionCharacterCount = document.getElementById("workBookDescriptionCharacterCount");
-        var maxWorkBookNameLength = 30;
-        var maxWorkBookDescriptionLength = 100;
+        const workBookNameInput = document.getElementById("workBookName");
+        const workBookDescriptionTextarea = document.getElementById("workBookDescription");
+        const workBookNameCharacterCount = document.getElementById("workBookNameCharacterCount");
+        const workBookDescriptionCharacterCount = document.getElementById("workBookDescriptionCharacterCount");
+        const maxWorkBookNameLength = 30;
+        const maxWorkBookDescriptionLength = 100;
 
-        var currentWorkBookNameLength = workBookNameInput.value.length;
-        var currentWorkBookDescriptionLength = workBookDescriptionTextarea.value.length;
+        const currentWorkBookNameLength = workBookNameInput.value.length;
+        const currentWorkBookDescriptionLength = workBookDescriptionTextarea.value.length;
 
         workBookNameCharacterCount.textContent = currentWorkBookNameLength + "/" + maxWorkBookNameLength + " 글자";
         workBookDescriptionCharacterCount.textContent = currentWorkBookDescriptionLength + "/" + maxWorkBookDescriptionLength + " 글자";
@@ -572,15 +572,15 @@
             workBookDescriptionCharacterCount.textContent = maxWorkBookDescriptionLength + "/" + maxWorkBookDescriptionLength + " 글자";
         }
 
-        var shareWorkBookNameInput = document.getElementById("shareWorkBookName");
-        var shareDescriptionTextarea = document.getElementById("shareDescription");
-        var shareWorkBookNameCharacterCount = document.getElementById("shareWorkBookNameCharacterCount");
-        var shareDescriptionCharacterCount = document.getElementById("shareDescriptionCharacterCount");
-        var maxShareWorkBookNameLength = 30;
-        var maxShareDescriptionLength = 100;
+        const shareWorkBookNameInput = document.getElementById("shareWorkBookName");
+        const shareDescriptionTextarea = document.getElementById("shareDescription");
+        const shareWorkBookNameCharacterCount = document.getElementById("shareWorkBookNameCharacterCount");
+        const shareDescriptionCharacterCount = document.getElementById("shareDescriptionCharacterCount");
+        const maxShareWorkBookNameLength = 30;
+        const maxShareDescriptionLength = 100;
 
-        var currentShareWorkBookNameLength = shareWorkBookNameInput.value.length;
-        var currentShareDescriptionLength = shareDescriptionTextarea.value.length;
+        const currentShareWorkBookNameLength = shareWorkBookNameInput.value.length;
+        const currentShareDescriptionLength = shareDescriptionTextarea.value.length;
 
         shareWorkBookNameCharacterCount.textContent = currentShareWorkBookNameLength + "/" + maxShareWorkBookNameLength + " 글자";
         shareDescriptionCharacterCount.textContent = currentShareDescriptionLength + "/" + maxShareDescriptionLength + " 글자";
@@ -600,8 +600,8 @@
 
     // 선택한 문제집 삭제 함수
     function deleteSelectedWorkbooks() {
-        var selectedWorkbooks = [];
-        var checkboxes = document.querySelectorAll('.workbook-checkbox:checked');
+        const selectedWorkbooks = [];
+        const checkboxes = document.querySelectorAll('.workbook-checkbox:checked');
 
         // 체크된 체크 박스에서 workbookNo를 추출하여 배열에 추가
         checkboxes.forEach(function (checkbox) {
@@ -613,7 +613,7 @@
             return;
         }
 
-        var confirmDelete = confirm('정말로 선택한 문제집을 삭제하시겠습니까?');
+        const confirmDelete = confirm('정말로 선택한 문제집을 삭제하시겠습니까?');
 
         if (confirmDelete) {
             // 사용자가 확인을 눌렀을 때만 삭제 작업을 수행
@@ -623,7 +623,6 @@
 
     // 서버로 선택한 문제집 삭제 요청 보내기
     function sendSelectedWorkbooksToDelete(selectedWorkbooks) {
-
         fetch('/workbook/myPage/delete', {
             method: 'DELETE',
             headers: {
