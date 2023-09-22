@@ -33,6 +33,8 @@ public class BoardService {
     @Transactional
     public CreateBoardResponseDTO createBoard(CreateBoardRequestDTO createBoardRequestDTO, Long memberNo) {
         WorkBook workBook = workBookRepository.findByMemberNoAndWorkBookNo(memberNo, Long.valueOf(createBoardRequestDTO.getWorkBookNo()));
+        workBook.updateIsShared(createBoardRequestDTO);
+
         Board board = Board.toEntity(memberNo, workBook, createBoardRequestDTO);
 
         boardRepository.save(board);
