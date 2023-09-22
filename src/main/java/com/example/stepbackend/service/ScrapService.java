@@ -1,5 +1,6 @@
 package com.example.stepbackend.service;
 
+import com.example.stepbackend.aggregate.dto.board.ReadScrapBoardDTO;
 import com.example.stepbackend.aggregate.dto.scrap.CreateScrapDTO;
 import com.example.stepbackend.aggregate.dto.scrap.ReadScrapByMemberDTO;
 import com.example.stepbackend.aggregate.dto.scrap.ReadScrapDTO;
@@ -28,11 +29,11 @@ public class ScrapService {
     private final QuestionByMemberRepository questionByMemberRepository;
 
     /* 스크랩 저장 */
-//    @Transactional
-//    public void createScrap(CreateScrapDTO createScrapDTO, Long memberNo, Long questionNo) {
-//        Scrap scrap = Scrap.toEntity(createScrapDTO, memberNo, questionNo);
-//        scrapRepository.save(scrap);
-//    }
+    @Transactional
+    public void createScrap(CreateScrapDTO createScrapDTO, Long memberNo) {
+        Scrap scrap = Scrap.toEntity(createScrapDTO, memberNo);
+        scrapRepository.save(scrap);
+    }
 
     /* 한 회원에 대한 모든 스크랩 조회*/
     @Transactional(readOnly = true)
@@ -53,8 +54,8 @@ public class ScrapService {
     }
 
     @Transactional(readOnly = true)
-    public ReadScrapDTO findScrap(Long memberNo, Long questionNo) {
-        QuestionByMember questionByMember = questionByMemberRepository.findByMemberNoAndQuestionNo(memberNo, questionNo);
+    public ReadScrapDTO findScrap(Long memberNo, Long questionNo, Integer markedNo) {
+        QuestionByMember questionByMember = questionByMemberRepository.findByMemberNoAndQuestionNoAndMarkedNo(memberNo, questionNo, markedNo);
         Question question = questionRepository.findByQuestionNo(questionByMember.getQuestionNo());
 
         ReadScrapDTO readScrapDTO = ReadScrapDTO.fromEntity(question);
@@ -63,8 +64,8 @@ public class ScrapService {
     }
 
     @Transactional(readOnly = true)
-    public ReadScrapByMemberDTO findScrapByMember(Long memberNo, Long questionNo) {
-        QuestionByMember question = questionByMemberRepository.findByMemberNoAndQuestionNo(memberNo, questionNo);
+    public ReadScrapByMemberDTO findScrapByMember(Long memberNo, Long questionNo, Integer markedNo) {
+        QuestionByMember question = questionByMemberRepository.findByMemberNoAndQuestionNoAndMarkedNo(memberNo, questionNo, markedNo);
 
         ReadScrapByMemberDTO readScrapByMemberDTO = ReadScrapByMemberDTO.fromEntity(question);
 
@@ -79,5 +80,18 @@ public class ScrapService {
         for(Scrap scrap : scraps){
             scrapRepository.delete(scrap);
         }
+    }
+
+    @Transactional(readOnly = true)
+    public ReadScrapBoardDTO findScrapBoard(Long memberNo, Long questionNo, Integer markedNo) {
+        Scrap scrap = scrapRepository.findByMemberNoAndQuestionNoAndMarkedNo(memberNo, questionNo, markedNo);
+
+        if (scrap == null){
+            return null;
+        }
+
+        ReadScrapBoardDTO readScrapBoardDTO = ReadScrapBoardDTO.fromEntity(scrap);
+
+        return readScrapBoardDTO;
     }
 }

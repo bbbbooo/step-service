@@ -1,6 +1,8 @@
 package com.example.stepbackend.service;
 
+import com.example.stepbackend.aggregate.dto.board.ReadBoardQuestionResponseDTO;
 import com.example.stepbackend.aggregate.dto.workbook.*;
+import com.example.stepbackend.aggregate.entity.Question;
 import com.example.stepbackend.aggregate.entity.WorkBook;
 import com.example.stepbackend.repository.QuestionRepository;
 import com.example.stepbackend.repository.WorkBookRepository;
@@ -10,7 +12,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -78,5 +82,21 @@ public class WorkbookService {
 
         DeleteWorkBookResponseDTO deleteWorkBookResponseDTO = DeleteWorkBookResponseDTO.toRequest(deleteWorkBookRequestDTO);
         return deleteWorkBookResponseDTO;
+    }
+
+    /* 문제집 내 리스트 불러오기 */
+    @Transactional(readOnly = true)
+    public List<ReadBoardQuestionResponseDTO> findAllBoardQuestion(Long workBookNo) {
+        String questionNoStr = workBookRepository.findQuestionNosbyWorkBookNo(workBookNo);
+
+        List<Long> questionNos = Arrays.stream(questionNoStr.split(", "))
+                .map(Long::parseLong)
+                .collect(Collectors.toList());
+
+        List<Question> questions = questionRepository.findByQuestionNoIn(questionNos);
+
+        List<ReadBoardQuestionResponseDTO> responseDTOList = ReadBoardQuestionResponseDTO.fromEntity(questions);
+
+        return responseDTOList;
     }
 }

@@ -25,4 +25,6 @@ public interface ScrapRepository extends JpaRepository<Scrap, Long> {
     List<Scrap> findByMemberNoAndQuestionNoIn(Long memberNo, List<Long> questionNos);
 
     Scrap findByScrapNo(Long scrapNo);
+
+    Scrap findByMemberNoAndQuestionNoAndMarkedNo(Long memberNo, Long questionNo, Integer markedNo);
 }

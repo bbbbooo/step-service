@@ -342,7 +342,7 @@
 
             <!-- Button -->
             <div class="button-container">
-                <button class="solve-button">문제 풀이</button>
+                <button class="solve-button" th:attr="onclick='solveBoard(' + ${workbook.workBookNo} + ')'">문제 풀이</button>
                 <button class="share-button" th:attr="onclick='openShareModal(' + ${workbook.workBookNo} + ')'">문제 공유</button>
             </div>
         </div>
@@ -504,6 +504,29 @@
         closeShareModal();
     }
 
+    // 문제 풀이
+    function solveBoard(workBookNo) {
+        console.log(workBookNo);
+        var confirmSolve = window.confirm('문제를 푸시겠습니까?');
+
+        if (confirmSolve) {
+            var url = '/workbook/question?workBookNo=' + workBookNo;
+            fetch(url, {
+                method: "GET",
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => {
+                    var url = '/workbook/question?workBookNo=' + workBookNo;
+                    window.location.href = url;
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        }
+    }
+
     // 서버로 데이터 전송 (문제집 공유)
     function sendDataToServerForSharing(shareWorkBookName, shareDescription, workbookNo) {
         fetch('/board/create', {
@@ -616,8 +639,6 @@
                 alert('문제집 삭제 중 오류가 발생했습니다.');
             });
     }
-
-
 </script>
 </body>
 </html>
