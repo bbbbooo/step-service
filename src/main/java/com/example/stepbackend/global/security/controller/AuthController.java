@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -27,7 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Controller
-@RequestMapping("/auth")
+@RequestMapping("/oauth")
 public class AuthController {
 
     private final IssueTokenService issueTokenService;
@@ -81,40 +83,41 @@ public class AuthController {
     @GetMapping("/signup")
     public String kakaoSignUp() {
 
-        return "auth/signup";
+        return "oauth/signup";
     }
 
-    @GetMapping("/access-permit")
-    public String accessPermit(@RequestParam String code, HttpServletResponse response) {
+//    @GetMapping("/access-permit")
+//    public String accessPermit(@RequestParam String code, HttpServletResponse response) {
+//
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(MediaType.valueOf(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
+//
+//        MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
+//        parameters.add("code", code);
+//        parameters.add("client_id", clientId);
+//        parameters.add("redirect_uri", redirectUri);
+//        parameters.add("client_secret", clientSecret);
+//        parameters.add("grant_type", "authorization_code");
+//
+//        HttpEntity<MultiValueMap> entity = new HttpEntity<>(parameters, headers);
+//
+//        String uri = "https://kauth.kakao.com/oauth/token";
+//
+//        RestTemplate restTemplate = new RestTemplate();
+//
+//        restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
+//
+//        ResponseEntity<Object> res = restTemplate.exchange(uri, HttpMethod.POST, entity, Object.class);
+//
+//        Map<String,Object> body = (Map<String, Object>) res.getBody();
+//        String accessToken = (String) body.get("access_token");
+//
+//        Cookie cookie = new Cookie("authorize-access-token", accessToken);
+//        response.addCookie(cookie);
+//
+//        return "redirect:/auth/signup";
+//    }
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.valueOf(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
-
-        MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
-        parameters.add("code", code);
-        parameters.add("client_id", clientId);
-        parameters.add("redirect_uri", redirectUri);
-        parameters.add("client_secret", clientSecret);
-        parameters.add("grant_type", "authorization_code");
-
-        HttpEntity<MultiValueMap> entity = new HttpEntity<>(parameters, headers);
-
-        String uri = "https://kauth.kakao.com/oauth/token";
-
-        RestTemplate restTemplate = new RestTemplate();
-
-        restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
-
-        ResponseEntity<Object> res = restTemplate.exchange(uri, HttpMethod.POST, entity, Object.class);
-
-        Map<String,Object> body = (Map<String, Object>) res.getBody();
-        String accessToken = (String) body.get("access_token");
-
-        Cookie cookie = new Cookie("authorize-access-token", accessToken);
-        response.addCookie(cookie);
-
-        return "redirect:/auth/signup";
-    }
 
     @GetMapping("/token")
     public void getToken(@RequestBody Map<String, Object> token) {
@@ -126,7 +129,7 @@ public class AuthController {
 
 
 
-        return "auth/signin";
+        return "oauth/signin";
     }
 
     @GetMapping("/mypage")
@@ -134,7 +137,7 @@ public class AuthController {
 
 
 
-        return "auth/mypage";
+        return "oauth/mypage";
     }
 
 //    @PostMapping ("/signup")
@@ -167,4 +170,5 @@ public class AuthController {
 //
 //        return mv;
 //    }
+
 }
