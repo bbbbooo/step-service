@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @Transactional
 class QuestionServiceTest {
 
-    @DisplayName("Question")
+    @DisplayName("문제")
     private static Stream<Arguments> getQuestionInfo() {
         return Stream.of(
                 Arguments.of(
@@ -46,7 +46,7 @@ class QuestionServiceTest {
         );
     }
 
-    @DisplayName("QuestionByMember")
+    @DisplayName("회원 별 문제")
     private static Stream<Arguments> getQuestionByMemberInfo() {
         return Stream.of(
                 Arguments.of(
@@ -54,6 +54,17 @@ class QuestionServiceTest {
                         1L,
                         3,
                         false
+                )
+        );
+    }
+
+    @DisplayName("신고")
+    public static Stream<Arguments> getReportInfo() {
+        return Stream.of(
+                Arguments.of(
+                        1L,
+                        1L,
+                        1L
                 )
         );
     }
@@ -143,6 +154,19 @@ class QuestionServiceTest {
 
         //then
         assertEquals(questionByMember.getQuestionNo(), foundMemberHistory.getQuestionNo());
+    }
+
+    @ParameterizedTest
+    @MethodSource("getReportInfo")
+    @DisplayName("문제 신고")
+    void testReportQuestionByMember(long memberNo, long questionNo, long workbookNo) {
+
+        //given
+
+
+        //when
+
+        //then
     }
 
 

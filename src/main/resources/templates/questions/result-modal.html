@@ -34,12 +34,33 @@
                     <!-- //modal_content -->
                 </div>
             </div>
+            <div  id="commentary-box" class="hidden">
+                <div class="py-5 text-center text-lg font-bold text-slate-900">
+                    <span class="py-5 text-center text-slate-900">정답 : </span>
+                    <span id="correctAnswer" class="py-5 text-center text-slate-900"></span>
+                </div>
+                <div class="py-5 text-center text-lg font-bold text-slate-900">
+                    해설
+                </div>
+                <div style="padding: 10px;">
+                    <table style="margin:6px 0px 6px 0px; border-spacing:0px; border-collapse:collapse;"
+                    >
+                        <tr>
+                            <td style="padding:8px; border-style:solid; border-color:Black; border-width:1px 1px 1px 1px; line-height:130%; font-family: CustomFont;">
+                                <div style="text-align:Justify;">
+                                    <span id="commentary" class="py-5 text-center text-lg font-normal text-slate-900"></span>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
             <!-- Modal footer -->
             <div class="flex items-center p-6 space-x-2 border-t border-gray-200 rounded-b dark:border-gray-600">
                 <button data-modal-hide="defaultModal" type="button" class="text-white bg-slate-400 hover:bg-slate-300 focus:ring-4 focus:outline-none focus:ring-slate-300 font-medium rounded-lg text-sm px-5 py-2.5 hover:text-white text-center">문제 스크랩</button>
                 <button data-modal-hide="defaultModal" onclick="retry()" type="button" class="text-white bg-violet-500 hover:bg-violet-400 focus:ring-4 focus:outline-none focus:ring-violet-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-white focus:z-10">다시 풀기</button>
                 <button data-modal-hide="defaultModal" onclick="next()" type="button" class="text-white bg-blue-500 hover:bg-blue-400 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-white focus:z-10">다음 문제</button>
-                <button data-modal-hide="defaultModal" type="button" class="text-white bg-emerald-400 hover:bg-emerald-300 focus:ring-4 focus:outline-none focus:ring-emerald-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-white focus:z-10">정답 및 해설</button>
+                <button id="commentary-button" onClick="getCommentary()" type="button" class="text-white bg-emerald-400 hover:bg-emerald-300 focus:ring-4 focus:outline-none focus:ring-emerald-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-white focus:z-10">정답 및 해설</button>
             </div>
         </div>
     </div>

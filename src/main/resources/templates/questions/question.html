@@ -14,6 +14,7 @@
 <body>
 <th:block th:insert="~{common/header}" />
 <div class="flex flex-row ">
+    <div id="overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color: rgba(0,0,0,0.7); z-index:10;"></div>
     <div class="basis-3/12 justify-items-center">
 
     </div>
@@ -146,6 +147,9 @@
     // 문제 수정 여부
     let retryStatus = false;
 
+    const $overlay = document.getElementById('overlay');
+    const $correctAnswer = document.getElementById('correctAnswer');
+
     // AI 서빙 서버 요청 전 문제 대기상태 띄우기
     function updateHTML() {
         let loadingScreen = document.getElementById('loading-screen');
@@ -277,6 +281,7 @@
         let view3 = document.getElementById('view3');
         let view4 = document.getElementById('view4');
         let view5 = document.getElementById('view5');
+        let commentary = document.getElementById('commentary');
 
         if (spanParagraph && storedData) {
             // let item = storedData;
@@ -290,6 +295,8 @@
             view3.innerText = item.view3;
             view4.innerText = item.view4;
             view5.innerText = item.view5;
+            commentary.innerText = item.questionCommentary;
+            $correctAnswer.innerText = item.questionCorrectAnswer;
         }
     }
 
@@ -348,6 +355,7 @@
     closeModalButtons.forEach(button => {
         button.addEventListener("click", function() {
             modal.classList.add("hidden");
+            $overlay.style.display = "none";  // 오버레이 숨기기
         });
     });
 
@@ -359,9 +367,11 @@
         if(answer === null) {
             alert('문제를 선택하지 않았습니다.');
             document.getElementById('defaultModal');
+            $overlay.style.display = "none";  // 오버레이 숨기기
         } else {
             openModal();
             modal.classList.remove("hidden");
+            $overlay.style.display = "block"; // 오버레이 표시
         }
     }
 
@@ -444,13 +454,113 @@
             })
     }
 
+    window.jsPDF = window.jspdf.jsPDF;
+    window.canvas = window.html2canvas;
+
+    function generatePDF() {
+
+        document.getElementById('question-content');
+        const pdf = new jsPDF('p', 'mm', 'a4');
+
+        // 한글 폰트를 추가합니다.
+        const customFontFamily = '/assets/font/KoPubWorld Batang Medium.ttf';
+        pdf.addFileToVFS('/assets/font/KoPubWorld Batang Medium.ttf');
+        pdf.addFont('/assets/font/KoPubWorld Batang Medium.ttf', customFontFamily, 'normal');
+        pdf.setFont(customFontFamily);
+
+        // 문제 출력 설정
+        let x = 10; // 시작 X 좌표
+        let y = 10; // 시작 Y 좌표
+
+        const storedData = localStorage.getItem(`question_${localStorage.getItem('questionCount')}`);
+        let item = null;
+        let options = null;
+        let questionSubject = null;
+        const boxHeight = 100; // 사각형 상자 높이
+
+        if (storedData) {
+            item = JSON.parse(storedData);
+
+            questionSubject = item.questionSubject;
+            options = [
+                item.view1,
+                item.view2,
+                item.view3,
+                item.view4,
+                item.view5
+            ];
+        }
+
+        const textWidth = 190;
+        const splittedText = pdf.splitTextToSize(item.questionBody, textWidth);
+        // const textHeight = (splittedText.length * 7) + 5; // 각 줄에 대한 높이 계산 (7은 줄 간격, 5는 여백)
+        const textHeight = (splittedText.length * 6.9); // 각 줄에 대한 높이 계산 (7은 줄 간격, 5는 여백)
+
+        // 문제 설명 출력
+        pdf.text(`${questionCount + 1}. ${questionSubject}`, 10, y);
+        y += 5;
+
+        pdf.rect(10, y, textWidth, textHeight - 5);
+        pdf.text(splittedText, 10, y + 7);
+        y += textHeight + 5;
+
+        // 한 페이지 넘어가면 보기 다음 페이지에서 이어나가게 출력
+        if (y >= pdf.internal.pageSize.height) {
+            pdf.addPage();
+            y = 20;
+        }
+
+        // 보기 출력
+        options.forEach((option, optionIndex) => {
+            const optionLabel = `①②③④⑤`.charAt(optionIndex);
+            pdf.text(`${optionLabel}\t ${option}`, 10, y);
+            pdf.text(option, x + 10, y);
+            y += 8;
+
+            if (y >= pdf.internal.pageSize.height) {
+                pdf.addPage();
+                y = 8;
+            }
+        });
+
+        // 다음 문제와의 간격 조정
+        y += 10;
+
+        // 페이지 분리 처리
+        if (y + boxHeight + 10 > pdf.internal.pageSize.height) {
+            pdf.addPage();
+            y = 10;
+        }
+
+        pdf.setFontSize(14);
+
+        const commentarySplittedText = pdf.splitTextToSize(item.questionCommentary, 190);
+        const commentaryTextHeight = (splittedText.length * 6.9); // 각 줄에 대한 높이 계산 (7은 줄 간격, 5는 여백)
+
+        // 현재 페이지에 출력할 공간이 충분한지 확인하고, 부족하면 새 페이지 추가
+        if (y + commentaryTextHeight > pdf.internal.pageSize.height) {
+            pdf.addPage();
+            y = 10;
+        }
+
+        // 정답
+        pdf.text('정답 : ' + item.questionCorrectAnswer, x, y);
+        y += 10;
+
+        // 해설 페이지 추가 및 출력
+        pdf.text(`${questionCount + 1}번 문제 해설`, x, y);
+        y += 10;
+
+        pdf.text(commentarySplittedText, 10, y);
+        y += textHeight;
+
+        // PDF 저장
+        pdf.save('question_paper.pdf');
+    }
+
     // 문제집 생성
     function generateWorkBook() {
 
-        window.jsPDF = window.jspdf.jsPDF;
-        window.canvas = window.html2canvas;
-
-        const jsonData = /*[[${res}]]*/ null;
         const customFontFamily = '/assets/font/KoPubWorld Batang Medium.ttf';
         const pdf = new jsPDF('p', 'mm', 'a4');
 
@@ -465,9 +575,10 @@
         const boxHeight = 100; // 사각형 상자 높이
         const lineHeight = 10; // 행 간격
         let correctAnswer = [];
+        let commentaries = [];
 
         // 문제 데이터
-        jsonData.forEach((question, index) => {
+        result.forEach((question, index) => {
             const questionSubject = question.questionSubject;
             const options = [
                 question.view1,
@@ -479,6 +590,7 @@
 
             // 정답
             correctAnswer.push(question.questionCorrectAnswer);
+            commentaries.push((index + 1).toString() + '번 해설\n' +  question.questionCommentary);
 
             // 문제 설명 출력
             pdf.text(`${index + 1}. ${questionSubject}`, 10, y);
@@ -517,7 +629,7 @@
             y += 10;
 
             // 페이지 분리 처리
-            if (index < jsonData.length - 1 && y + boxHeight + 10 > pdf.internal.pageSize.height) {
+            if (index < result.length - 1 && y + boxHeight + 10 > pdf.internal.pageSize.height) {
                 pdf.addPage();
                 y = 10;
             }
@@ -527,8 +639,41 @@
         pdf.addPage();
         pdf.text(`정답 : ${correctAnswer}`, x, 10);
 
+        // 해설 페이지 추가 및 출력
+        let answerY = 20;
+        pdf.setFontSize(14);
+        commentaries.forEach((commentary) => {
+            const splittedText = pdf.splitTextToSize(commentary, 190);
+            const textHeight = (splittedText.length * 6.9); // 각 줄에 대한 높이 계산 (7은 줄 간격, 5는 여백)
+
+            // 현재 페이지에 출력할 공간이 충분한지 확인하고, 부족하면 새 페이지 추가
+            if (answerY + textHeight > pdf.internal.pageSize.height) {
+                pdf.addPage();
+                answerY = 10;
+            }
+
+            pdf.text(splittedText, 10, answerY);
+            answerY += textHeight;
+        });
+
         // PDF 저장
         pdf.save('question_paper.pdf');
+    }
+
+    // 오버레이 클릭 시 모달 닫기
+    $overlay.addEventListener("click", function() {
+
+        modal.classList.add("hidden");
+        $overlay.style.display = "none";
+    });
+
+    function getCommentary() {
+        let commentary = document.getElementById('commentary-box');
+
+        // 버튼이 클릭되었을 때 해설 출력
+        commentary.classList.remove("hidden");
+
+        document.getElementById('commentary-button').classList.add('hidden');
     }
 </script>
 </body>

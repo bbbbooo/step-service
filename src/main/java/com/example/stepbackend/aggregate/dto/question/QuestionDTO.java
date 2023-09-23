@@ -18,6 +18,9 @@ public class QuestionDTO {
     // 문제 유형(빈칸 추론 : blank, 제목 추론 : title)
     private String questionViewType;
 
+    // 문제 해설
+    private String questionCommentary;
+
     // 1번 보기
     private String view1;
 
@@ -51,11 +54,15 @@ public class QuestionDTO {
     // 문제 출처 발행 연도
     private Integer questionSourcePublishYear;
 
+    // 해설
+    private String commentary;
+
     public Question toEntity() {
         Question question = new Question();
         question.setQuestionSubject(this.questionSubject);
         question.setQuestionBody(this.questionBody);
         question.setQuestionViewType(this.questionViewType);
+        question.setQuestionCommentary(this.questionCommentary);
         question.setQuestionLargeClassification(this.questionLargeClassification);
         question.setQuestionMiddleClassification(this.questionMiddleClassification);
         question.setQuestionSmallClassification(this.questionSmallClassification);
@@ -67,6 +74,7 @@ public class QuestionDTO {
         question.setView3(this.view3);
         question.setView4(this.view4);
         question.setView5(this.view5);
+
         return question;
     }
 }
