@@ -31,6 +31,14 @@ public class WorkBookController {
         return ResponseEntity.ok(createWorkBookDTO);
     }
 
+    @GetMapping("/find")
+    @ResponseBody
+    public ResponseEntity<FindWorkBookResponse> find(@RequestParam Long workBookNo){
+        FindWorkBookResponse findWorkBookResponse = workbookService.findWorkBook(workBookNo);
+
+        return ResponseEntity.ok(findWorkBookResponse);
+    }
+
     @GetMapping("myPage/myWorkBook")
     public String findAll(@PageableDefault(size = 15, sort = "workBookNo", direction = Sort.Direction.DESC) Pageable pageable, Model model){
         Long memberNo = 1L;

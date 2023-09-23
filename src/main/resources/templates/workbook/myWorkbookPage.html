@@ -503,7 +503,6 @@
 
     // 공유 모달 열기 함수
     function openShareModal(workbookNo) {
-        console.log(workbookNo);
         const shareModal = document.getElementById("shareModal");
         shareModal.style.display = "block";
 
@@ -555,27 +554,50 @@
     }
 
     // 서버로 데이터 전송 (문제집 공유)
+    // 서버로 데이터 전송 (문제집 공유)
     function sendDataToServerForSharing(shareWorkBookName, shareDescription, workbookNo) {
-        fetch('/board/create', {
-            method: 'POST',
+        // GET 요청을 보내서 공유할 문제집의 정보를 가져옵니다.
+        fetch('/workbook/find?workBookNo=' + workbookNo, {
+            method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                workBookName: shareWorkBookName,
-                description: shareDescription,
-                workBookNo : workbookNo,
-                isShared : true
-            })
+            }
         })
             .then(response => {
-                alert("성공적으로 공유되었습니다.")
-                window.location.reload();
+                // 서버로부터 응답을 받은 경우
+                if (response.ok) {
+                    // 응답이 정상적인 경우
+                    alert("공유 받은 문제집은 공유할 수 없습니다.");
+                } else {
+                    // 응답이 오류인 경우 = 공유 가능
+                    return fetch('/board/create', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            workBookName: shareWorkBookName,
+                            description: shareDescription,
+                            workBookNo: workbookNo,
+                            isShared: true
+                        })
+                    });
+                }
+            })
+            .then(response => {
+                // POST 요청의 응답을 확인하고 메시지를 표시
+                if (response.ok) {
+                    alert("성공적으로 공유되었습니다.");
+                    window.location.reload();
+                } else {
+                    alert("공유하는데 실패하였습니다.");
+                }
             })
             .catch(error => {
-                alert("공유하는데 실패하였습니다.")
+                console.error("오류 발생: " + error);
             });
     }
+
 
 
     function updateCharacterCount() {
