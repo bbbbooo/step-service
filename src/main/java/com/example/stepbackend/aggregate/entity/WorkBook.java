@@ -1,5 +1,6 @@
 package com.example.stepbackend.aggregate.entity;
 
+import com.example.stepbackend.aggregate.dto.board.CreateBoardRequestDTO;
 import com.example.stepbackend.aggregate.dto.workbook.CreateWorkBookRequestDTO;
 import lombok.*;
 import org.hibernate.annotations.Comment;
@@ -47,6 +48,14 @@ public class WorkBook {
     @Comment("최종 수정 시간")
     private LocalDateTime lastUpdatedTime;
 
+    @Column
+    @Comment("내가 공유했는지 확인")
+    private Boolean isShared;
+
+    @Column
+    @Comment("공유 받았는지 확인")
+    private Boolean hadShared;
+
     public static WorkBook toEntity(Long memberNo, CreateWorkBookRequestDTO createWorkBookRequestDTO, List<String> questionTypes) {
         String questionNosToString = createWorkBookRequestDTO.getQuestionNos().stream()
                 .map(String::valueOf)
@@ -63,6 +72,19 @@ public class WorkBook {
                 .workBookName(createWorkBookRequestDTO.getWorkBookName())
                 .questionTypes(questionTypesToString)
                 .lastUpdatedTime(LocalDateTime.now())
+                .isShared(false)
+                .build();
+    }
+
+    public static WorkBook toEntityFromBoard(Board board) {
+        return WorkBook.builder()
+                .memberNo(board.getMemberNo())
+                .questionTypes(board.getQuestionTypes())
+                .workBookName(board.getBoardName())
+                .questionNos(board.getQuestionNos())
+                .description(board.getDescription())
+                .lastUpdatedTime(LocalDateTime.now())
+                .hadShared(true)
                 .build();
     }
 
@@ -70,5 +92,9 @@ public class WorkBook {
         this.workBookName = workBookName;
         this.description = description;
         this.lastUpdatedTime = LocalDateTime.now();
+    }
+
+    public void updateIsShared(CreateBoardRequestDTO createBoardRequestDTO) {
+        this.isShared = createBoardRequestDTO.getIsShared();
     }
 }

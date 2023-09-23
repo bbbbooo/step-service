@@ -111,6 +111,30 @@
             color: #333;
         }
 
+        /* 공유 여부 확인 */
+        .shared-label{
+            border: 1px solid #ccc;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-weight: bold;
+            background-color: #4aa8d8;
+            color: #fff;
+            position: relative;
+            top: -3px;
+        }
+
+        .received-label{
+            border: 1px solid #ccc;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-weight: bold;
+            background-color: #4aa8d8;
+            color: #fff;
+            position: relative;
+            top: -3px;
+        }
+
+
         /* 시간 이모티콘 추가 */
         .time-updated::before {
             content: "\1F552";
@@ -337,6 +361,8 @@
                     <span th:if="${type == 'title'}" class="question-type-label title">제목 추론</span>
                     <span th:if="${type == 'blank'}" class="question-type-label blank">빈칸 추론</span>
                 </span>
+                <span th:if="${workbook.isShared}" class="shared-label">공유 완료</span>
+                <span th:if="${workbook.hadShared}" class="received-label">공유 받음</span>
             </div>
 
             <p class='time-updated' th:text="${workbook.lastUpdatedTime}"></p>
@@ -535,7 +561,12 @@
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ workBookName: shareWorkBookName, description: shareDescription, workBookNo : workbookNo })
+            body: JSON.stringify({
+                workBookName: shareWorkBookName,
+                description: shareDescription,
+                workBookNo : workbookNo,
+                isShared : true
+            })
         })
             .then(response => {
                 alert("성공적으로 공유되었습니다.")

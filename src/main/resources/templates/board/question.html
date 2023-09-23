@@ -111,11 +111,16 @@
 
     // questionNo 가져오기
     var questionNo = questions[currentQuestionIndex].questionNo;
+
+    // 현재 페이지의 쿼리 문자열 가져오기
+    let queryString = window.location.search;
+
     $('#questionNumber').text(currentQuestionIndex + 1 + '. ');
 
     $(document).ready(function() {
         // 문제 업데이트
         function updateQuestionContent() {
+
             var currentQuestion = questions[currentQuestionIndex];
 
             $('#questionNumber').text(currentQuestionIndex + 1 + '. ');
@@ -138,10 +143,27 @@
 
             // 문제를 다 풀었다면
             if (currentQuestionIndex >= questions.length) {
-                alert('모든 문제를 다 풀었습니다.');
-                var url = '/board';
-                window.location.href = url;
-                return;
+
+                if (queryString) {
+                    const params = new URLSearchParams(queryString);
+
+                    const paramValue = params.get('boardNo');
+
+                    const data = {
+                        boardNo: paramValue
+                    }
+
+                    axios.post('/board/after/solve', data)
+                        .then((res) => {
+                            console.log('성공적으로 문제집으로 옮겼습니다.', res);
+                        })
+                        .catch((error) => {
+                            console.error('문제집으로 옮기는 중 오류 발생:', error);
+                        });
+
+                    alert('모든 문제를 다 풀었습니다.');
+                    return;
+                }
             }
 
             // 문제 업데이트
@@ -160,6 +182,26 @@
 
         // 문제를 다 풀었다면
         if (currentQuestionIndex >= questions.length) {
+            if (queryString) {
+                const params = new URLSearchParams(queryString);
+
+                const paramValue = params.get('boardNo');
+
+                const data = {
+                    boardNo: paramValue
+                }
+
+                axios.post('/board/after/solve', data)
+                    .then((res) => {
+                        console.log('성공적으로 문제집으로 옮겼습니다.', res);
+                    })
+                    .catch((error) => {
+                        console.error('문제집으로 옮기는 중 오류 발생:', error);
+                    });
+                alert('모든 문제를 다 풀었습니다.');
+                return;
+            }
+
             alert('모든 문제를 다 풀었습니다.');
             var url = '/board';
             window.location.href = url;
@@ -271,7 +313,6 @@
             numberingDiv.parentNode.insertBefore(img, numberingDiv);
         }
 
-        console.log(questionNo);
 
         const data = {
             questionNo: questionNo,

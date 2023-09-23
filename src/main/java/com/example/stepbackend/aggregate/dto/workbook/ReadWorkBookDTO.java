@@ -26,6 +26,8 @@ public class ReadWorkBookDTO {
 
     private Boolean isShared;
 
+    private Boolean hadShared;
+
     private String[] questionTypes;
 
     private String questionName;
@@ -55,6 +57,8 @@ public class ReadWorkBookDTO {
                 .questionName(workBook.getWorkBookName())
                 .lastUpdatedTime(formattedLastUpdatedTime)
                 .description(workBook.getDescription())
+                .isShared(workBook.getIsShared())
+                .hadShared(workBook.getHadShared())
                 .build();
     }
 }

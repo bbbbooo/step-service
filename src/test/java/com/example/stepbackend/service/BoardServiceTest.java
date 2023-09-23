@@ -46,14 +46,18 @@ class BoardServiceTest {
                 .description("무무무무")
                 .workBookName("미미미미")
                 .workBookNo("14")
+                .isShared(true)
                 .build();
 
         WorkBook testWorkBook = WorkBook.builder()
                 .questionTypes("title")
                 .questionNos("1,2,3")
+                .isShared(false)
                 .build();
 
         WorkBook workBook = workBookRepository.save(testWorkBook);
+
+        workBook.updateIsShared(createBoardRequestDTO);
 
         Board board = Board.toEntity(memberNo, workBook, createBoardRequestDTO);
 
@@ -66,7 +70,8 @@ class BoardServiceTest {
                 createBoardRequestDTO.getDescription().equals(createdBoard.getDescription()) &&
                 workBook.getQuestionTypes().equals(createdBoard.getQuestionTypes()) &&
                         workBook.getQuestionNos().equals(createdBoard.getQuestionNos()) &&
-                        memberNo.equals(createdBoard.getMemberNo())
+                        memberNo.equals(createdBoard.getMemberNo()) &&
+                        createBoardRequestDTO.getIsShared().equals(workBook.getIsShared())
                 );
     }
 
@@ -207,5 +212,23 @@ class BoardServiceTest {
 
         // then
         Assertions.assertNotNull(solveQuestionResponseDTO);
+    }
+
+    @DisplayName("문제 풀고나서 나의 문제집으로 이동")
+    @Test
+    void solveAfterIntoMyWorkbook(){
+        // given
+        Board board = Board.builder().build();
+        Board createBoard = boardRepository.save(board);
+
+        CreateSolveAfterRequestDTO createSolveAfterRequestDTO = CreateSolveAfterRequestDTO.builder()
+                .boardNo(createBoard.getBoardNo())
+                .build();
+
+        // when
+        CreateSolveAfterResponseDTO createSolveAfterResponseDTO = boardService.createSolveAfter(createSolveAfterRequestDTO);
+
+        // then
+        Assertions.assertNotNull(createSolveAfterResponseDTO);
     }
 }
