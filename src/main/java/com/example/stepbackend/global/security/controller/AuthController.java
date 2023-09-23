@@ -49,7 +49,7 @@ public class AuthController {
     @Value("${spring.security.oauth2.client.registration.kakao.client-secret}")
     private String clientSecret;
 
-    @PostMapping("/token")
+    @PostMapping("/access-permit")
     public ResponseEntity<?> issueToken(@RequestHeader(HttpHeaders.AUTHORIZATION) String bearerToken) {
         String accessToken = bearerToken.substring(7);
 
@@ -86,37 +86,37 @@ public class AuthController {
         return "oauth/signup";
     }
 
-//    @GetMapping("/access-permit")
-//    public String accessPermit(@RequestParam String code, HttpServletResponse response) {
-//
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(MediaType.valueOf(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
-//
-//        MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
-//        parameters.add("code", code);
-//        parameters.add("client_id", clientId);
-//        parameters.add("redirect_uri", redirectUri);
-//        parameters.add("client_secret", clientSecret);
-//        parameters.add("grant_type", "authorization_code");
-//
-//        HttpEntity<MultiValueMap> entity = new HttpEntity<>(parameters, headers);
-//
-//        String uri = "https://kauth.kakao.com/oauth/token";
-//
-//        RestTemplate restTemplate = new RestTemplate();
-//
-//        restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
-//
-//        ResponseEntity<Object> res = restTemplate.exchange(uri, HttpMethod.POST, entity, Object.class);
-//
-//        Map<String,Object> body = (Map<String, Object>) res.getBody();
-//        String accessToken = (String) body.get("access_token");
-//
-//        Cookie cookie = new Cookie("authorize-access-token", accessToken);
-//        response.addCookie(cookie);
-//
-//        return "redirect:/auth/signup";
-//    }
+    @GetMapping("/access-permit")
+    public String accessPermit(@RequestParam String code, HttpServletResponse response) {
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.valueOf(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
+
+        MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
+        parameters.add("code", code);
+        parameters.add("client_id", clientId);
+        parameters.add("redirect_uri", redirectUri);
+        parameters.add("client_secret", clientSecret);
+        parameters.add("grant_type", "authorization_code");
+
+        HttpEntity<MultiValueMap> entity = new HttpEntity<>(parameters, headers);
+
+        String uri = "https://kauth.kakao.com/oauth/token";
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
+
+        ResponseEntity<Object> res = restTemplate.exchange(uri, HttpMethod.POST, entity, Object.class);
+
+        Map<String,Object> body = (Map<String, Object>) res.getBody();
+        String accessToken = (String) body.get("access_token");
+
+        Cookie cookie = new Cookie("authorize-access-token", accessToken);
+        response.addCookie(cookie);
+
+        return "redirect:/oauth/signup";
+    }
 
 
     @GetMapping("/token")
