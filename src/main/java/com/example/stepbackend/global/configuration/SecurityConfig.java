@@ -90,7 +90,7 @@ public class SecurityConfig {
                                         "/api-docs", "/api-docs/**", "/v3/api-docs/**"
                                 )
                                 .antMatchers(
-                                        "/login/**","/auth/**"
+                                        "/auth/**"
                                 )
                 )
                 .authorizeHttpRequests((authorize) -> authorize.anyRequest().permitAll());
@@ -103,15 +103,15 @@ public class SecurityConfig {
         http
                 .cors()
                 .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
+//                .sessionManagement()
+//                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+//                .and()
                 .csrf()
                 .disable()
                 .formLogin()
                 .disable()
                 .exceptionHandling()
-                .authenticationEntryPoint(authEntryPoint)
+                //.authenticationEntryPoint(authEntryPoint)
                 .and()
 
                 .authorizeRequests()
@@ -126,11 +126,6 @@ public class SecurityConfig {
                 .and()
                 .oauth2Login()
                 .authorizationEndpoint()
-                .baseUri("/oauth2/authorize")
-                .authorizationRequestRepository(cookieAuthorizationRequestRepository())
-                .and()
-                .redirectionEndpoint()
-                .baseUri("/oauth2/callback/*")
                 .and()
                 .userInfoEndpoint()
                 .userService(customOAuth2UserService)
