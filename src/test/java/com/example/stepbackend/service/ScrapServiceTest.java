@@ -1,5 +1,7 @@
 package com.example.stepbackend.service;
 
+import com.example.stepbackend.aggregate.dto.scrap.CancelScrapRequestDTO;
+import com.example.stepbackend.aggregate.dto.scrap.CancelScrapResponseDTO;
 import com.example.stepbackend.aggregate.dto.scrap.CreateScrapDTO;
 import com.example.stepbackend.aggregate.dto.scrap.ReadScrapDTO;
 import com.example.stepbackend.aggregate.entity.Scrap;
@@ -68,13 +70,23 @@ class ScrapServiceTest {
     @Test
     void cancelScrap(){
         //given
-        Long memberNo = 1L;
-        List<Long> questionNos = Arrays.asList(1L, 2L, 3L);
+        Scrap scrap = new Scrap();
+        Scrap scrap2 = new Scrap();
+
+        scrapRepository.save(scrap);
+        scrapRepository.save(scrap2);
+
+        List<Long> scrapNos = Arrays.asList(scrap.getScrapNo(), scrap2.getScrapNo());
+
+        CancelScrapRequestDTO cancelScrapRequestDTO = CancelScrapRequestDTO.builder()
+                .scrapNos(scrapNos)
+                .build();
 
         //when
-        scrapService.cancelScrap(memberNo, questionNos);
+        CancelScrapResponseDTO cancelScrapResponseDTO = scrapService.cancelScrap(cancelScrapRequestDTO);
 
         //then
-        Assertions.assertEquals(0, scrapRepository.findByMemberNoAndQuestionNoIn(memberNo, questionNos).size());
+        Assertions.assertTrue(cancelScrapResponseDTO.getScrapNos().equals(scrapNos));
+
     }
 }
