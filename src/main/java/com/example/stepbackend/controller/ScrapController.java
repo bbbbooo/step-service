@@ -2,6 +2,8 @@ package com.example.stepbackend.controller;
 
 import com.example.stepbackend.aggregate.dto.board.ReadScrapBoardDTO;
 import com.example.stepbackend.aggregate.dto.scrap.*;
+import com.example.stepbackend.global.common.annotation.CurrentUser;
+import com.example.stepbackend.global.security.token.UserPrincipal;
 import com.example.stepbackend.service.ScrapService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,8 +24,8 @@ public class ScrapController {
 
     /* 마이 페이지 내 스크랩 조회 */
     @GetMapping("/myPage/myScrap")
-    public String getMyAllScrap(@PageableDefault Pageable pageable, Model model){
-        Long memberNo = 1L;
+    public String getMyAllScrap(@PageableDefault Pageable pageable, Model model, @CurrentUser UserPrincipal user){
+        Long memberNo = user.getId();
 
         Page<ReadScrapDTO> readScrapDTOPage = scrapService.findAllScrap(memberNo, pageable);
         Page<ReadScrapByMemberDTO> readScrapByMemberDTOS = scrapService.findAllScrapByMember(memberNo, pageable);
