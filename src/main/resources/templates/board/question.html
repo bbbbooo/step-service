@@ -141,25 +141,26 @@
             $('#view5').text(currentQuestion.view5);
         }
 
+        const redirectToUrl = '/workbook/myPage/myWorkBook';
+
         // 문제 건너 뛰기 버튼 누르면
         $('#nextButton').click(function() {
             removeImage();
 
             // 다음 문제로 인덱스 증가
             currentQuestionIndex++;
+            let url =  '/workbook/myPage/myWorkBook'
 
             // 문제를 다 풀었다면
             if (currentQuestionIndex >= questions.length) {
+                const params = new URLSearchParams(queryString);
+                const boardNo = params.get('boardNo');
+                const workBookNo = params.get('workBookNo');
 
-                if (queryString) {
-                    const params = new URLSearchParams(queryString);
-
-                    const paramValue = params.get('boardNo');
-
+                if (boardNo) {
                     const data = {
-                        boardNo: paramValue
+                        boardNo: boardNo
                     }
-
                     axios.post('/board/after/solve', data)
                         .then((res) => {
                             console.log('성공적으로 문제집으로 옮겼습니다.', res);
@@ -167,10 +168,15 @@
                         .catch((error) => {
                             console.error('문제집으로 옮기는 중 오류 발생:', error);
                         });
-
-                    alert('모든 문제를 다 풀었습니다.');
-                    return;
                 }
+
+                if (workBookNo){
+                    console.log(workBookNo);
+                }
+
+                alert('모든 문제를 다 풀었습니다.');
+                window.location.href = url;
+                return;
             }
 
             // 문제 업데이트
@@ -192,28 +198,30 @@
         if (currentQuestionIndex >= questions.length) {
             if (queryString) {
                 const params = new URLSearchParams(queryString);
+                const boardNo = params.get('boardNo');
+                const workBookNo = params.get('workBookNo');
 
-                const paramValue = params.get('boardNo');
-
-                const data = {
-                    boardNo: paramValue
+                if (boardNo) {
+                    const data = {
+                        boardNo: boardNo
+                    }
+                    axios.post('/board/after/solve', data)
+                        .then((res) => {
+                            console.log('성공적으로 문제집으로 옮겼습니다.', res);
+                        })
+                        .catch((error) => {
+                            console.error('문제집으로 옮기는 중 오류 발생:', error);
+                        });
                 }
 
-                axios.post('/board/after/solve', data)
-                    .then((res) => {
-                        console.log('성공적으로 문제집으로 옮겼습니다.', res);
-                    })
-                    .catch((error) => {
-                        console.error('문제집으로 옮기는 중 오류 발생:', error);
-                    });
+                if (workBookNo){
+                    console.log(workBookNo);
+                }
+
                 alert('모든 문제를 다 풀었습니다.');
                 window.location.href = url;
                 return;
             }
-
-            alert('모든 문제를 다 풀었습니다.');
-            window.location.href = url;
-            return;
         }
 
         // 문제 업데이트
@@ -465,7 +473,6 @@
         // PDF 저장
         pdf.save('question_paper.pdf');
     }
-
 </script>
 
 
