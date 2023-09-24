@@ -12,6 +12,7 @@
     <th:block th:insert="~{common/header}" />
     <div style="text-align: center">
         <h1 th:text="|${user.getName()} (님) 환영합니다!!|"></h1>
+        <img th:src="${user.getProfileImage()}"/>
     </div>
     <th:block th:insert="~{common/footer}" />
 </body>

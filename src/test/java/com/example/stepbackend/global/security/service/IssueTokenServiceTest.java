@@ -27,7 +27,7 @@ class IssueTokenServiceTest {
         customTokenService = Mockito.mock(CustomTokenService.class);
         issueTokenService = Mockito.mock(IssueTokenService.class);
 
-        userPrincipal = UserPrincipal.builder(1L, "팽구리", Role.USER.name()).build();
+        userPrincipal = UserPrincipal.builder(1L, "팽구리", Role.USER.name(), "profile").build();
         defaultAccessToken = customTokenService.createToken(userPrincipal.getId(), userPrincipal.getRole());
     }
 
