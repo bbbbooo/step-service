@@ -99,4 +99,13 @@ public class WorkbookService {
 
         return responseDTOList;
     }
+
+    @Transactional(readOnly = true)
+    public FindWorkBookResponse findWorkBook(Long workBookNo) {
+        WorkBook workBook = workBookRepository.findByWorkBookNo(workBookNo);
+
+        FindWorkBookResponse findWorkBookResponse = FindWorkBookResponse.fromEntity(workBook);
+
+        return findWorkBookResponse;
+    }
 }
