@@ -101,9 +101,9 @@
                     </li>
                 </ul>
             </div>
-        </div>
-        <div class="box-skip text-right">
-            <button type="button" onclick="pass()" class="btn-skip-exam text-right">문제 건너뛰기</button>
+            <div class="box-skip text-right">
+                <button type="button" onclick="pass()" class="btn-skip-exam text-right">문제 건너뛰기</button>
+            </div>
         </div>
         <div>
             <div id="checkAnswerDIV" class="btn_wrap btn_center_wrap" style="display: none;">
@@ -674,6 +674,23 @@
         commentary.classList.remove("hidden");
 
         document.getElementById('commentary-button').classList.add('hidden');
+    }
+
+    function scrap() {
+
+        const data = {
+            questionNo : item.questionNo,
+            markedNo: answer,
+            correctedMarkingStatus : correctedMarkingStatus
+        }
+
+        axios.post('/scrap/create', data)
+            .then((res) => {
+                alert('스크랩 되었습니다.');
+            })
+            .catch((err) => {
+                alert('스크랩 되지 않았습니다..');
+            })
     }
 </script>
 </body>
