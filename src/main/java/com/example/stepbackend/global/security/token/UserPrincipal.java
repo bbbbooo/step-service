@@ -52,6 +52,7 @@ public class UserPrincipal implements OAuth2User, UserDetails {
             this.role = role;
             this.authorities = Collections.singletonList(new SimpleGrantedAuthority(role));
             this.attributes = attributes;
+
         }
 
         public Builder(Long id, String nickname, String role) {
@@ -59,6 +60,7 @@ public class UserPrincipal implements OAuth2User, UserDetails {
             this.nickname = nickname;
             this.role = role;
             this.authorities = Collections.singletonList(new SimpleGrantedAuthority(role));
+
         }
 
         /**

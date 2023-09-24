@@ -41,7 +41,7 @@ class FindUserServiceTest {
         );
     }
 
-    @DisplayName("UID를 통해 생성이 되는 지 확인하기")
+    @DisplayName("UID를 통해 찾아지는 지 확인하기")
     @ParameterizedTest
     @MethodSource("getUserInfo")
     void findByUID(CreateUserDTO createUserDTO) {
@@ -50,7 +50,7 @@ class FindUserServiceTest {
         Assertions.assertNotNull(findUserService.findByUID(createUserDTO.getUID()));
     }
 
-    @DisplayName("ID를 통해 생성이 되는 지 확인하기")
+    @DisplayName("ID를 통해 찾아지는 지 확인하기")
     @ParameterizedTest
     @MethodSource("getUserInfo")
     void findById(CreateUserDTO createUserDTO) {

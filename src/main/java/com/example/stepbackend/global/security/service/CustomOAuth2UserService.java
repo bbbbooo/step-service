@@ -38,11 +38,14 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     public OAuth2User loadUser(OAuth2UserRequest oAuth2UserRequest) {
 
         OAuth2User oAuth2User = super.loadUser(oAuth2UserRequest);
-        String registrationId = oAuth2UserRequest.getClientRegistration().getRegistrationId();
+        String registrationId = oAuth2UserRequest.getClientRegistration().getRegistrationId().toUpperCase();
+
+        System.out.println("registrationId = " + registrationId);
 
         String userNameAttributeName = oAuth2UserRequest.getClientRegistration().getProviderDetails().getUserInfoEndpoint().getUserNameAttributeName();
 
         OAuth2UserInfo attributes = OAuth2UserInfoFactory.getOAuth2UserInfo(registrationId, oAuth2User.getAttributes());
+        System.out.println("attributes = " + attributes);
 
         UserPrincipal socialUser = saveOrUpdate(attributes, registrationId);
 
@@ -51,6 +54,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private UserPrincipal saveOrUpdate(OAuth2UserInfo attributes, String provider) {
         FindUserDTO user = findUserService.findByUID(attributes.getId());
+        System.out.println(" attributes.getEmail() = " +  attributes.getEmail());
         UserPrincipal oauthUser;
         if(user == null) {
             CreateUserDTO createUserDTO = new CreateUserDTO(attributes.getId(), attributes.getNickname(), Role.USER, attributes.getImageUrl(), attributes.getEmail(), Provider.valueOf(provider.toUpperCase()));

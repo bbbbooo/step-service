@@ -90,7 +90,7 @@ public class SecurityConfig {
                                         "/api-docs", "/api-docs/**", "/v3/api-docs/**"
                                 )
                                 .antMatchers(
-                                        "/login/**","/auth/**"
+                                        "/auth/**"
                                 )
                 )
                 .authorizeHttpRequests((authorize) -> authorize.anyRequest().permitAll());
@@ -103,34 +103,29 @@ public class SecurityConfig {
         http
                 .cors()
                 .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
+//                .sessionManagement()
+//                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+//                .and()
                 .csrf()
                 .disable()
                 .formLogin()
                 .disable()
                 .exceptionHandling()
-                .authenticationEntryPoint(authEntryPoint)
+                //.authenticationEntryPoint(authEntryPoint)
                 .and()
 
                 .authorizeRequests()
                 .antMatchers("/question/**")
                 .permitAll()
-                .antMatchers("/oauth2/**")
+                .antMatchers("/oauth2/**", "/auth/**", "/oauth/**", "/login/**")
                 .hasRole(Role.USER.name())
-                .antMatchers("/blog/**", "/member/**")
+                .antMatchers("/blog/**", "/member/**")//유저일 시 허용되는 url
                 .permitAll()
                 .antMatchers("/admin/**")
                 .hasRole(Role.ADMIN.name())
                 .and()
                 .oauth2Login()
                 .authorizationEndpoint()
-                .baseUri("/oauth2/authorize")
-                .authorizationRequestRepository(cookieAuthorizationRequestRepository())
-                .and()
-                .redirectionEndpoint()
-                .baseUri("/oauth2/callback/*")
                 .and()
                 .userInfoEndpoint()
                 .userService(customOAuth2UserService)
