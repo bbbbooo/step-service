@@ -337,6 +337,20 @@
     <p style="font-size: 18px;">이 페이지에서는 여러분의 문제집 목록을 확인하고 수정할 수 있습니다.</p>
     <p style="font-size: 18px; margin-bottom: 20px;">내가 만든 문제집 중 나만 보기 아까운 문제집은 모두에게 공유할 수 있습니다!</p>
     <button id="delete-workbooks-button" onclick="deleteSelectedWorkbooks()">선택한 문제집 삭제</button>
+
+    <!-- 옵션 버튼 -->
+    <button id="option-button" onclick="toggleOptions()">옵션</button>
+
+    <!-- 옵션 버튼을 클릭했을 때 옵션을 선택할 수 있는 체크박스들을 보여줄 div 추가 -->
+    <div id="options-container" style="display: none;">
+        <label><input type="checkbox" id="title-option" /> 제목 추론</label>
+        <label><input type="checkbox" id="blank-option" /> 빈칸 추론</label>
+        <label><input type="checkbox" id="shared-option" /> 공유 완료</label>
+        <label><input type="checkbox" id="received-option" /> 공유 받음</label>
+        <!-- 옵션 선택 후 적용 버튼 -->
+        <button id="apply-options-button" onclick="applyOptions()">적용</button>
+    </div>
+
     <div class="flex">
         <!-- Example workbook div (you can repeat this for each workbook) -->
         <div class="workbook" th:each="workbook : ${workbooks}">
@@ -554,9 +568,7 @@
     }
 
     // 서버로 데이터 전송 (문제집 공유)
-    // 서버로 데이터 전송 (문제집 공유)
     function sendDataToServerForSharing(shareWorkBookName, shareDescription, workbookNo) {
-        // GET 요청을 보내서 공유할 문제집의 정보를 가져옵니다.
         fetch('/workbook/find?workBookNo=' + workbookNo, {
             method: 'GET',
             headers: {
@@ -565,7 +577,8 @@
         })
             .then(response => {
                 // 서버로부터 응답을 받은 경우
-                if (response.ok) {
+                console.log(response);
+                if (response == true) {
                     // 응답이 정상적인 경우
                     alert("공유 받은 문제집은 공유할 수 없습니다.");
                 } else {
@@ -597,8 +610,6 @@
                 console.error("오류 발생: " + error);
             });
     }
-
-
 
     function updateCharacterCount() {
         const workBookNameInput = document.getElementById("workBookName");
@@ -692,6 +703,49 @@
                 alert('문제집 삭제 중 오류가 발생했습니다.');
             });
     }
+
+    // 옵션 버튼을 클릭했을 때 옵션 선택 체크박스들을 표시/숨김
+    function toggleOptions() {
+        const optionsContainer = document.getElementById('options-container');
+        const applyButton = document.getElementById('apply-options-button');
+
+        // 체크박스들을 토글
+        if (optionsContainer.style.display === 'none') {
+            optionsContainer.style.display = 'block';
+            applyButton.style.display = 'block';
+        } else {
+            optionsContainer.style.display = 'none';
+            applyButton.style.display = 'none';
+        }
+    }
+
+    // 옵션 선택 후 적용 함수
+    function applyOptions() {
+        // 선택한 옵션들을 가져오기
+        const titleOption = document.getElementById('title-option').checked;
+        const blankOption = document.getElementById('blank-option').checked;
+        const sharedOption = document.getElementById('shared-option').checked;
+        const receivedOption = document.getElementById('received-option').checked;
+
+        // 현재 페이지 URL 가져오기
+        const currentURL = new URL(window.location.href);
+
+        // 수정할 쿼리 문자열 생성
+        const newSearchParams = new URLSearchParams();
+        newSearchParams.set('titleOption', titleOption);
+        newSearchParams.set('blankOption', blankOption);
+        newSearchParams.set('sharedOption', sharedOption);
+        newSearchParams.set('receivedOption', receivedOption);
+
+        // 수정된 쿼리 문자열을 URL에 설정
+        currentURL.search = newSearchParams.toString();
+
+        // 수정된 URL로 이동 (새로고침)
+        window.location.href = currentURL.toString();
+    }
+
+
+
 </script>
 </body>
 </html>

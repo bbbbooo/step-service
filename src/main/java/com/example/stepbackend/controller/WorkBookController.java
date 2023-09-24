@@ -22,6 +22,7 @@ public class WorkBookController {
 
     private final WorkbookService workbookService;
 
+    /* 문제집 생성 */
     @PostMapping("create")
     @ResponseBody
     public ResponseEntity<CreateWorkBookDTO> create(@RequestBody CreateWorkBookRequestDTO createWorkBookRequestDTO){
@@ -31,6 +32,7 @@ public class WorkBookController {
         return ResponseEntity.ok(createWorkBookDTO);
     }
 
+    /* 문제집 존재 여부 확인 */
     @GetMapping("/find")
     @ResponseBody
     public ResponseEntity<FindWorkBookResponse> find(@RequestParam Long workBookNo){
@@ -39,17 +41,21 @@ public class WorkBookController {
         return ResponseEntity.ok(findWorkBookResponse);
     }
 
+    /* 문제집 불러오기 */
     @GetMapping("myPage/myWorkBook")
-    public String findAll(@PageableDefault(size = 15, sort = "workBookNo", direction = Sort.Direction.DESC) Pageable pageable, Model model){
+    public String findAll(@PageableDefault(size = 15, sort = "workBookNo", direction = Sort.Direction.DESC) Pageable pageable,
+                          @ModelAttribute FilterWorkBookRequestDTO filterWorkBookRequestDTO,
+                          Model model){
         Long memberNo = 1L;
 
-        Page<ReadWorkBookDTO> readWorkBookDTOS = workbookService.getWorkBookMyPage(memberNo, pageable);
+        Page<ReadWorkBookDTO> readWorkBookDTOS = workbookService.getWorkBookMyPage(memberNo, pageable, filterWorkBookRequestDTO);
 
         model.addAttribute("workbooks", readWorkBookDTOS);
 
         return "workbook/myWorkbookPage";
     }
 
+    /* 문제집 제목, 설명 수정 */
     @PatchMapping("myPage/update")
     @ResponseBody
     public String updateWorkBookName(@RequestBody UpdateWorkBookDTO updateWorkBookDTO){
@@ -58,6 +64,7 @@ public class WorkBookController {
         return "success";
     }
 
+    /* 문제집 삭제 */
     @DeleteMapping("myPage/delete")
     @ResponseBody
     public ResponseEntity<DeleteWorkBookResponseDTO> deleteWorkBook(@RequestBody DeleteWorkBookRequestDTO deleteWorkBookRequestDTO){
@@ -65,6 +72,7 @@ public class WorkBookController {
         return ResponseEntity.ok(deleteWorkBookResponseDTO);
     }
 
+    /* 문제 풀기 페이지 */
     @GetMapping("/question")
     public String question(@RequestParam("workBookNo")Long workBookNo , Model model){
         List<ReadBoardQuestionResponseDTO> responseDTOList = workbookService.findAllBoardQuestion(workBookNo);
@@ -73,4 +81,14 @@ public class WorkBookController {
 
         return "board/question";
     }
+
+    /* 옵션 필터링 */
+//    @GetMapping
+//    @ResponseBody
+//    public ResponseEntity<FilterWorkBookResponseDTO> filter(@RequestBody FilterWorkBookRequestDTO filterWorkBookRequestDTO){
+//        Long memberNo = 1L;
+//        FilterWorkBookResponseDTO filterWorkBookResponseDTO = workbookService.filterOption(filterWorkBookRequestDTO, memberNo);
+//
+//        return ResponseEntity.ok(filterWorkBookResponseDTO);
+//    }
 }

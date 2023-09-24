@@ -8,10 +8,14 @@ import com.example.stepbackend.repository.QuestionRepository;
 import com.example.stepbackend.repository.WorkBookRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.criteria.Predicate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,14 +43,55 @@ public class WorkbookService {
     }
 
     /* 마이 페이지 내 문제집 전체 보기*/
+//    @Transactional(readOnly = true)
+//    public Page<ReadWorkBookDTO> getWorkBookMyPage(Long memberNo, Pageable pageable, FilterWorkBookRequestDTO filterWorkBookRequestDTO) {
+//        Page<WorkBook> workBooks = workBookRepository.findByMemberNo(memberNo, pageable);
+//
+//        Page<ReadWorkBookDTO> readWorkBookDTOS = ReadWorkBookDTO.fromEntity(workBooks);
+//
+//        return readWorkBookDTOS;
+//    }
+
+    /* 마이 페이지 내 문제집 전체 보기 */
+    /* 필터링이 있을 경우, 조사하여 각각의 조건에 맞추어 검색함. 기본적으로 or 연산 */
     @Transactional(readOnly = true)
-    public Page<ReadWorkBookDTO> getWorkBookMyPage(Long memberNo, Pageable pageable) {
-        Page<WorkBook> workBooks = workBookRepository.findByMemberNo(memberNo, pageable);
+    public Page<ReadWorkBookDTO> getWorkBookMyPage(Long memberNo, Pageable pageable, FilterWorkBookRequestDTO filterWorkBookRequestDTO) {
+        List<WorkBook> filteredWorkBooks = new ArrayList<>();
 
-        Page<ReadWorkBookDTO> readWorkBookDTOS = ReadWorkBookDTO.fromEntity(workBooks);
+        if (filterWorkBookRequestDTO != null) {
+            if (filterWorkBookRequestDTO.getTitleOption() != null && filterWorkBookRequestDTO.getTitleOption()) {
+                Page<WorkBook> titleWorkBooks = workBookRepository.findByMemberNoAndQuestionTypesContaining(memberNo, "title", pageable);
+                filteredWorkBooks.addAll(titleWorkBooks.getContent());
+            }
 
+            if (filterWorkBookRequestDTO.getBlankOption() != null && filterWorkBookRequestDTO.getBlankOption()) {
+                Page<WorkBook> blankWorkBooks = workBookRepository.findByMemberNoAndQuestionTypesContaining(memberNo, "blank", pageable);
+                filteredWorkBooks.addAll(blankWorkBooks.getContent());
+            }
+
+            if (filterWorkBookRequestDTO.getSharedOption() != null && filterWorkBookRequestDTO.getSharedOption()) {
+                Page<WorkBook> sharedWorkBooks = workBookRepository.findByMemberNoAndIsShared(memberNo, true, pageable);
+                filteredWorkBooks.addAll(sharedWorkBooks.getContent());
+            }
+
+            if (filterWorkBookRequestDTO.getReceivedOption() != null && filterWorkBookRequestDTO.getReceivedOption()) {
+                Page<WorkBook> receivedWorkBooks = workBookRepository.findByMemberNoAndHadShared(memberNo, true, pageable);
+                filteredWorkBooks.addAll(receivedWorkBooks.getContent());
+            }
+        }
+
+        if (filteredWorkBooks.isEmpty()) {
+            // 필터링된 결과가 비어 있는 경우, 모든 워크북을 조회한 결과를 반환
+            Page<WorkBook> allWorkBooks = workBookRepository.findByMemberNo(memberNo, pageable);
+            return ReadWorkBookDTO.fromEntity(allWorkBooks);
+        }
+
+        Page<ReadWorkBookDTO> readWorkBookDTOS = ReadWorkBookDTO.fromEntity(new PageImpl<>(filteredWorkBooks, pageable, filteredWorkBooks.size()));
         return readWorkBookDTOS;
     }
+
+
+
 
     /* 문제집 상세 조회 */
     @Transactional(readOnly = true)
@@ -108,4 +153,8 @@ public class WorkbookService {
 
         return findWorkBookResponse;
     }
+
+
+//    public FilterWorkBookResponseDTO filterOption(FilterWorkBookRequestDTO filterWorkBookRequestDTO, Long memberNo) {
+//    }
 }
