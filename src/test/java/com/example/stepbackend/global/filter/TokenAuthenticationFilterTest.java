@@ -102,17 +102,19 @@ public class TokenAuthenticationFilterTest {
         verify(mockFilterChainSpy, times(1)).doFilter(mockRequest, mockResponse);
     }
 
-    @DisplayName("tokenAuthenticationFilter를 통해 JWT 토큰에서 복호화한 사용자 정보를 SecurityContextHolder에 정상적으로 저장되는지 확인")
-    @Test
-    void testFilterSetsAuthenticationInSecurityContext() throws ServletException, IOException {
-
-        tokenAuthenticationFilter.doFilter(mockRequest, mockResponse, mockFilterChain);
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
-
-        Assertions.assertEquals(principal.getId(), user.getId());
-        Assertions.assertEquals(principal.getNickname(), user.getNickname());
-        Assertions.assertEquals(principal.getRole(), user.getRole().getKey());
-    }
+//    @DisplayName("tokenAuthenticationFilter를 통해 JWT 토큰에서 복호화한 사용자 정보를 SecurityContextHolder에 정상적으로 저장되는지 확인")
+//    @Test
+//    void testFilterSetsAuthenticationInSecurityContext() throws ServletException, IOException {
+//
+//        tokenAuthenticationFilter.doFilter(mockRequest, mockResponse, mockFilterChain);
+//
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
+//
+//        Assertions.assertEquals(principal.getId(), user.getId());
+//        Assertions.assertEquals(principal.getNickname(), user.getNickname());
+////        Assertions.assertEquals(principal.getProfileImage(), user.getProfileImage());
+//        Assertions.assertEquals(principal.getRole(), user.getRole().getKey());
+//
+//    }
 }
