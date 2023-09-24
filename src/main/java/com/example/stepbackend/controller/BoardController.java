@@ -3,6 +3,8 @@ package com.example.stepbackend.controller;
 import com.example.stepbackend.aggregate.dto.Heart.PostHeartRequestDTO;
 import com.example.stepbackend.aggregate.dto.Heart.PostHeartResponseDTO;
 import com.example.stepbackend.aggregate.dto.board.*;
+import com.example.stepbackend.global.common.annotation.CurrentUser;
+import com.example.stepbackend.global.security.token.UserPrincipal;
 import com.example.stepbackend.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -24,8 +26,9 @@ public class BoardController {
     private final BoardService boardService;
 
     @GetMapping
-    public String getBoardPage(@PageableDefault(sort = "boardNo", direction = Sort.Direction.DESC)Pageable pageable, Model model){
-        Long memberNo = 1L;
+    public String getBoardPage(@PageableDefault(sort = "boardNo", direction = Sort.Direction.DESC)Pageable pageable, Model model,
+                               @CurrentUser UserPrincipal user){
+        Long memberNo = user.getId();
 
         Page<ReadBoardPageDTO> readBoardPageDTOPage = boardService.findAll(pageable, memberNo);
 
@@ -36,8 +39,9 @@ public class BoardController {
 
     @PostMapping("/create")
     @ResponseBody
-    public ResponseEntity<CreateBoardResponseDTO> create(@RequestBody CreateBoardRequestDTO createBoardRequestDTO){
-        Long memberNo = 1L;
+    public ResponseEntity<CreateBoardResponseDTO> create(@RequestBody CreateBoardRequestDTO createBoardRequestDTO,
+                                                         @CurrentUser UserPrincipal user){
+        Long memberNo = user.getId();
 
         CreateBoardResponseDTO createBoardResponseDTO = boardService.createBoard(createBoardRequestDTO, memberNo);
 
@@ -62,8 +66,9 @@ public class BoardController {
 
     @PostMapping("/heart")
     @ResponseBody
-    public ResponseEntity<PostHeartResponseDTO> post(@RequestBody PostHeartRequestDTO postHeartRequestDTO){
-        Long memberNo = 1L;
+    public ResponseEntity<PostHeartResponseDTO> post(@RequestBody PostHeartRequestDTO postHeartRequestDTO,
+                                                     @CurrentUser UserPrincipal user){
+        Long memberNo = user.getId();
 
         PostHeartResponseDTO postHeartResponseDTO = boardService.postHeart(postHeartRequestDTO, memberNo);
 
@@ -81,8 +86,9 @@ public class BoardController {
 
     @PostMapping("/solve")
     @ResponseBody
-    public ResponseEntity<SolveQuestionResponseDTO> solve(@RequestBody SolveQuestionRequestDTO solveQuestionRequestDTO){
-        Long memberNo = 1L;
+    public ResponseEntity<SolveQuestionResponseDTO> solve(@RequestBody SolveQuestionRequestDTO solveQuestionRequestDTO,
+                                                          @CurrentUser UserPrincipal user){
+        Long memberNo = user.getId();
 
         SolveQuestionResponseDTO solveQuestionResponseDTO = boardService.saveHistory(solveQuestionRequestDTO, memberNo);
 

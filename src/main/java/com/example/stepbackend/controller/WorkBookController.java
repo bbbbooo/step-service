@@ -2,6 +2,8 @@ package com.example.stepbackend.controller;
 
 import com.example.stepbackend.aggregate.dto.board.ReadBoardQuestionResponseDTO;
 import com.example.stepbackend.aggregate.dto.workbook.*;
+import com.example.stepbackend.global.common.annotation.CurrentUser;
+import com.example.stepbackend.global.security.token.UserPrincipal;
 import com.example.stepbackend.service.WorkbookService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -25,8 +27,9 @@ public class WorkBookController {
     /* 문제집 생성 */
     @PostMapping("create")
     @ResponseBody
-    public ResponseEntity<CreateWorkBookDTO> create(@RequestBody CreateWorkBookRequestDTO createWorkBookRequestDTO){
-        Long memberNo = 1L;
+    public ResponseEntity<CreateWorkBookDTO> create(@RequestBody CreateWorkBookRequestDTO createWorkBookRequestDTO,
+                                                    @CurrentUser UserPrincipal user){
+        Long memberNo = user.getId();
         CreateWorkBookDTO createWorkBookDTO = workbookService.createWorkbook(createWorkBookRequestDTO, memberNo);
 
         return ResponseEntity.ok(createWorkBookDTO);
@@ -45,8 +48,9 @@ public class WorkBookController {
     @GetMapping("myPage/myWorkBook")
     public String findAll(@PageableDefault(size = 15, sort = "workBookNo", direction = Sort.Direction.DESC) Pageable pageable,
                           @ModelAttribute FilterWorkBookRequestDTO filterWorkBookRequestDTO,
+                          @CurrentUser UserPrincipal user,
                           Model model){
-        Long memberNo = 1L;
+        Long memberNo = user.getId();
 
         Page<ReadWorkBookDTO> readWorkBookDTOS = workbookService.getWorkBookMyPage(memberNo, pageable, filterWorkBookRequestDTO);
 
@@ -81,14 +85,4 @@ public class WorkBookController {
 
         return "board/question";
     }
-
-    /* 옵션 필터링 */
-//    @GetMapping
-//    @ResponseBody
-//    public ResponseEntity<FilterWorkBookResponseDTO> filter(@RequestBody FilterWorkBookRequestDTO filterWorkBookRequestDTO){
-//        Long memberNo = 1L;
-//        FilterWorkBookResponseDTO filterWorkBookResponseDTO = workbookService.filterOption(filterWorkBookRequestDTO, memberNo);
-//
-//        return ResponseEntity.ok(filterWorkBookResponseDTO);
-//    }
 }
