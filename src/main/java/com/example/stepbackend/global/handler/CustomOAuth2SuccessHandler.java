@@ -68,8 +68,8 @@ public class CustomOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHa
 
         String token = issueTokenService.issueTokenByUserPrincipal(userPrincipal);
 
-        return UriComponentsBuilder.fromUriString(targetUrl)
-                .queryParam("token", token)
+        return UriComponentsBuilder.fromUriString("/oauth/name")
+//                .queryParam("token", token)
                 .build().toUriString();
     }
 

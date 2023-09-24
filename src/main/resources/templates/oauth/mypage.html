@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ONESTEP</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://kit.fontawesome.com/ba60aefbce.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <th:block th:insert="~{common/header}" />
+    <div style="text-align: center">
+        <h1 th:text="|${user.getName()} (님) 환영합니다!!|"></h1>
+    </div>
+    <th:block th:insert="~{common/footer}" />
+</body>
+</html>

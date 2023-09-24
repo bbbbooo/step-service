@@ -23,4 +23,11 @@ public abstract class OAuth2UserInfo {
     public abstract String getEmail();
 
     public abstract String getImageUrl();
+
+    @Override
+    public String toString() {
+        return "OAuth2UserInfo{" +
+                "attributes=" + attributes +
+                '}';
+    }
 }

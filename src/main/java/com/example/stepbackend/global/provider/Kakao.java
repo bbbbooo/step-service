@@ -22,34 +22,34 @@ public class Kakao extends OAuth2UserInfo {
 
     @Override
     public String getNickname() {
-        Map<String, Object> propertise = (Map<String, Object>) attributes.get("propertise");
+        Map<String, Object> properties = (Map<String, Object>) attributes.get("properties");
 
-        if(propertise == null) {
+        if(properties == null) {
             return null;
         }
 
-        return (String) attributes.get("nickName");
+        return (String) properties.get("nickname");
     }
 
     @Override
     public String getEmail() {
-        Map<String, Object> propertise = (Map<String, Object>) attributes.get("kakao_account");
+        Map<String, Object> properties = (Map<String, Object>) attributes.get("kakao_account");
 
-        if(propertise == null) {
+        if(properties == null) {
             return null;
         }
 
-        return (String) attributes.get("email");
+        return (String) properties.get("email");
     }
 
     @Override
     public String getImageUrl() {
-        Map<String, Object> propertise = (Map<String, Object>) attributes.get("propertise");
+        Map<String, Object> properties = (Map<String, Object>) attributes.get("properties");
 
-        if(propertise == null) {
+        if(properties == null) {
             return null;
         }
 
-        return (String) propertise.get("thumbnail_image");
+        return (String) properties.get("thumbnail_image");
     }
 }
