@@ -1,5 +1,9 @@
 package com.example.stepbackend.controller;
 
+import com.example.stepbackend.aggregate.entity.enumType.Role;
+import com.example.stepbackend.global.common.annotation.CurrentUser;
+import com.example.stepbackend.global.security.token.UserPrincipal;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,7 +18,14 @@ import java.util.List;
 public class MainController {
 
     @GetMapping("/")
-    public String main() {
+    public String main(Authentication authentication, Model model) {
+
+        if(authentication != null) {
+            if(authentication.getAuthorities().stream().anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals(Role.USER.getKey()))) {
+                UserPrincipal user = (UserPrincipal) authentication.getPrincipal();
+                model.addAttribute("user", user);
+            }
+        }
 
         return "main";
     }

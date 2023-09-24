@@ -1,7 +1,5 @@
 package com.example.stepbackend.global.security.controller;
 
-import com.example.stepbackend.aggregate.dto.user.CreateUserDTO;
-import com.example.stepbackend.aggregate.dto.user.SignUpDTO;
 import com.example.stepbackend.global.common.annotation.CurrentUser;
 import com.example.stepbackend.global.common.response.api.ApiResponse;
 import com.example.stepbackend.global.security.dto.AuthResponse;
@@ -12,20 +10,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.Map;
 
 @Controller
@@ -71,17 +65,24 @@ public class AuthController {
     }
 
     @GetMapping("/name")
-    public ResponseEntity<?> issueToken(@CurrentUser UserPrincipal userPrincipal) {
-        System.out.println("userPrincipal = " + userPrincipal);
-        System.out.println("userPrincipal.getNickname() = " + userPrincipal.getNickname());
+    public String issueToken(@CurrentUser UserPrincipal userPrincipal, Model model) {
+//        System.out.println("userPrincipal = " + userPrincipal);
+//        System.out.println("userPrincipal.getNickname() = " + userPrincipal.getNickname());
+//        System.out.println(userPrincipal.getRole());
+//
+//        Map<String , String> responseBody = new HashMap<>();
+//        responseBody.put("nickname", userPrincipal.getNickname());
+////        responseBody.put("profile", userPrincipal.get)
+//        return ResponseEntity.status(HttpStatus.OK).body(responseBody);
+        model.addAttribute("user", userPrincipal);
 
-        Map<String , String> responseBody = new HashMap<>();
-        responseBody.put("nickname", userPrincipal.getNickname());
-        return ResponseEntity.status(HttpStatus.OK).body(responseBody);
+        return "oauth/mypage";
+
     }
 
     @GetMapping("/signup")
     public String kakaoSignUp() {
+
 
         return "oauth/signup";
     }
@@ -133,9 +134,10 @@ public class AuthController {
     }
 
     @GetMapping("/mypage")
-    public String mypage() {
+    public String mypage(@CurrentUser UserPrincipal userPrincipal, Model model) {
 
-
+        model.addAttribute(userPrincipal.getNickname());
+//        model.addAttribute(userPrincipal.)
 
         return "oauth/mypage";
     }
