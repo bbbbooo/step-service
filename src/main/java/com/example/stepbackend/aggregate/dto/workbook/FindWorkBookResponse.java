@@ -11,11 +11,11 @@ import lombok.*;
 @AllArgsConstructor
 public class FindWorkBookResponse {
 
-    private Long workBookNo;
+    private Boolean hadShared;
 
     public static FindWorkBookResponse fromEntity(WorkBook workBook) {
         return FindWorkBookResponse.builder()
-                .workBookNo(workBook.getWorkBookNo())
+                .hadShared(workBook.getHadShared())
                 .build();
     }
 }
