@@ -61,23 +61,24 @@ public class QuestionService {
         Question foundQuestion =  questionRepository.save(question);
     }
 
-    public QuestionDTO convertToDto(JSONObject jsonObject, String questionCount, String classification) {
+    public QuestionDTO convertToDto(JSONObject jsonObject, String classification) {
 
-        JSONObject json = (JSONObject) jsonObject.get("Q"+questionCount);
 
-        String main = (String) json.get("main");
-        Integer answer = (Integer) json.get("answer");
         String subject = null;
-        String view1 = (String) json.get("view1");
-        String view2 = (String) json.get("view2");
-        String view3 = (String) json.get("view3");
-        String view4 = (String) json.get("view4");
-        String view5 = (String) json.get("view5");
+        String main = (String) jsonObject.get("main");
+        Integer answer = (Integer) jsonObject.get("answer");
+        String commentary = (String) jsonObject.get("commentary");
+        String view1 = (String) jsonObject.get("view1");
+        String view2 = (String) jsonObject.get("view2");
+        String view3 = (String) jsonObject.get("view3");
+        String view4 = (String) jsonObject.get("view4");
+        String view5 = (String) jsonObject.get("view5");
 
         QuestionDTO result = new QuestionDTO();
         result.setQuestionBody(main);
         result.setQuestionViewType(classification);
         result.setQuestionCorrectAnswer(answer);
+        result.setQuestionCommentary(commentary);
 
         if(classification.equals("title")) {
             subject = "다음 글의 제목으로 가장 적절한 것은?";

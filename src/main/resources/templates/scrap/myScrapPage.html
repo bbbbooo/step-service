@@ -114,7 +114,6 @@
                     <th>중분류</th>
                     <th>소분류</th>
                     <th>선택</th>
-                    <th>스크랩 번호</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -122,7 +121,8 @@
                     <td th:text="${scrap.readScrapDTO.questionNo}"></td>
                     <td th:text="${scrap.readScrapDTO.questionSubject}"></td>
                     <td class="truncate-text">
-                        <a th:text="${scrap.readScrapDTO.questionBody}" th:href="@{/scrap/detail/{questionNo}(questionNo=${scrap.readScrapDTO.questionNo})}"></a>
+                        <a th:text="${scrap.readScrapDTO.questionBody}" th:href="@{/scrap/detail/{questionNo}(questionNo=${scrap.readScrapDTO.questionNo},markedNo=${scrap.readScrapByMemberDTO.markedNo})}"></a>
+
                     </td>
                     <td th:text="${scrap.readScrapDTO.questionCorrectAnswer}"></td>
                     <td>
@@ -136,7 +136,6 @@
                     <td class="checkbox">
                         <input type="checkbox" th:id="${'questionNos' + scrap.readScrapDTO.questionNo}" th:value="${scrapNos.content[scrapStat.index].scrapNo}"/>
                     </td>
-                    <td th:text="${scrapNos.content[scrapStat.index].scrapNo}"></td>
                 </tr>
                 </tbody>
             </table>

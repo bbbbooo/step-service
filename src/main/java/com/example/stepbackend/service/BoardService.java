@@ -33,6 +33,8 @@ public class BoardService {
     @Transactional
     public CreateBoardResponseDTO createBoard(CreateBoardRequestDTO createBoardRequestDTO, Long memberNo) {
         WorkBook workBook = workBookRepository.findByMemberNoAndWorkBookNo(memberNo, Long.valueOf(createBoardRequestDTO.getWorkBookNo()));
+        workBook.updateIsShared(createBoardRequestDTO);
+
         Board board = Board.toEntity(memberNo, workBook, createBoardRequestDTO);
 
         boardRepository.save(board);
@@ -141,5 +143,17 @@ public class BoardService {
 
         SolveQuestionResponseDTO solveQuestionResponseDTO = SolveQuestionResponseDTO.fromEntity(questionByMember);
         return solveQuestionResponseDTO;
+    }
+
+    @Transactional
+    public CreateSolveAfterResponseDTO createSolveAfter(CreateSolveAfterRequestDTO createSolveAfterRequestDTO) {
+        Board board = boardRepository.findByBoardNo(createSolveAfterRequestDTO.getBoardNo());
+
+        WorkBook workBook = WorkBook.toEntityFromBoard(board);
+        workBookRepository.save(workBook);
+
+        CreateSolveAfterResponseDTO createSolveAfterResponseDTO = CreateSolveAfterResponseDTO.fromEntity(workBook);
+
+        return createSolveAfterResponseDTO;
     }
 }

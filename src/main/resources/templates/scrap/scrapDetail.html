@@ -141,34 +141,34 @@
 </div>
 
 <!-- 화면 하단 다음 글, 이전 글 네비게이션 -->
-<div class="navigation flex justify-center space-x-4">
-    <div class="prev-post">
-        <a id="prev-post-link" class="text-blue-500 font-bold hover:underline">이전 글</a>
-    </div>
-    <div class="next-post">
-        <a id="next-post-link" class="text-blue-500 font-bold hover:underline">다음 글</a>
-    </div>
-</div>
+<!--<div class="navigation flex justify-center space-x-4">-->
+<!--    <div class="prev-post">-->
+<!--        <a id="prev-post-link" class="text-blue-500 font-bold hover:underline">이전 글</a>-->
+<!--    </div>-->
+<!--    <div class="next-post">-->
+<!--        <a id="next-post-link" class="text-blue-500 font-bold hover:underline">다음 글</a>-->
+<!--    </div>-->
+<!--</div>-->
 
 
 
-<!-- 푸터 유지 -->
+
 <th:block th:insert="~{common/footer}" />
 
-<script>
-    // 현재 URL 가져오기
-    let url = window.location.href;
+<!--<script>-->
+<!--    // 현재 URL 가져오기-->
+<!--    let url = window.location.href;-->
 
-    // 마지막 '/' 이후의 문자열(현재 페이지 번호) 가져오기
-    let currentPage = url.substring(url.lastIndexOf('/') + 1);
+<!--    // 마지막 '/' 이후의 문자열(현재 페이지 번호) 가져오기-->
+<!--    let currentPage = url.substring(url.lastIndexOf('/') + 1);-->
 
-    // 숫자로 변환하기
-    currentPage = parseInt(currentPage);
+<!--    // 숫자로 변환하기-->
+<!--    currentPage = parseInt(currentPage);-->
 
-    // 화면 하단 다음 글, 이전 글 네비게이션
-    document.querySelector(".prev-post a").href = "/scrap/detail/" + (currentPage - 1);
-    document.querySelector(".next-post a").href = "/scrap/detail/" + (currentPage + 1);
-</script>
+<!--    // 화면 하단 다음 글, 이전 글 네비게이션-->
+<!--    document.querySelector(".prev-post a").href = "/scrap/detail/" + (currentPage - 1);-->
+<!--    document.querySelector(".next-post a").href = "/scrap/detail/" + (currentPage + 1);-->
+<!--</script>-->
 
 </body>
 </html>

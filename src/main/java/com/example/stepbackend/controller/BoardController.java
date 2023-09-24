@@ -88,4 +88,12 @@ public class BoardController {
 
         return ResponseEntity.ok(solveQuestionResponseDTO);
     }
+
+    @PostMapping("/after/solve")
+    @ResponseBody
+    public ResponseEntity<CreateSolveAfterResponseDTO> solveAfter(@RequestBody CreateSolveAfterRequestDTO createSolveAfterRequestDTO){
+        CreateSolveAfterResponseDTO createSolveAfterResponseDTO = boardService.createSolveAfter(createSolveAfterRequestDTO);
+
+        return ResponseEntity.ok(createSolveAfterResponseDTO);
+    }
 }

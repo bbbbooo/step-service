@@ -13,4 +13,6 @@ public class CreateBoardRequestDTO {
     private String description;
 
     private String workBookNo;
+
+    private Boolean isShared;
 }

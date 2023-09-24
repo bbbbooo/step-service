@@ -31,6 +31,11 @@ public class Question {
     @Lob
     private String questionBody;
 
+    @Column(name = "commentary")
+    @Comment("해설")
+    @Lob
+    private String questionCommentary;
+
     @Column(name = "question_view_type")
     @Comment("문제 유형")
     private String questionViewType;
@@ -83,6 +88,7 @@ public class Question {
         ResQuestionDTO resQuestionDto = new ResQuestionDTO();
         resQuestionDto.setQuestionSubject(this.questionSubject);
         resQuestionDto.setQuestionBody(this.questionBody);
+        resQuestionDto.setQuestionCommentary(this.questionCommentary);
         resQuestionDto.setView1(this.view1);
         resQuestionDto.setView2(this.view2);
         resQuestionDto.setView3(this.view3);

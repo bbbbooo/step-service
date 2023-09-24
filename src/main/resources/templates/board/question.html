@@ -4,6 +4,9 @@
     <title>Board Question</title>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.1/flowbite.min.js"></script>
 </head>
 <body>
 <th:block th:insert="~{common/header}" />
@@ -91,6 +94,10 @@
             <span>정답 확인하기</span>
         </button>
 
+        <button type="button" onclick="generateWorkBook()" class="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">
+            <span>문제집 다운로드</span>
+        </button>
+
         <!-- 다음 버튼 -->
         <button type="button" id="nextButton">문제 건너뛰기</button>
 
@@ -104,18 +111,23 @@
 <script th:inline="javascript">
 
     // 서버에서 받은 문제 데이터
-    var questions = /*[[${questions}]]*/ 'default';
+    let questions = /*[[${questions}]]*/ 'default';
 
     // 현재 문제 인덱스
     var currentQuestionIndex = 0;
 
     // questionNo 가져오기
     var questionNo = questions[currentQuestionIndex].questionNo;
+
+    // 현재 페이지의 쿼리 문자열 가져오기
+    let queryString = window.location.search;
+
     $('#questionNumber').text(currentQuestionIndex + 1 + '. ');
 
     $(document).ready(function() {
         // 문제 업데이트
         function updateQuestionContent() {
+
             var currentQuestion = questions[currentQuestionIndex];
 
             $('#questionNumber').text(currentQuestionIndex + 1 + '. ');
@@ -129,17 +141,40 @@
             $('#view5').text(currentQuestion.view5);
         }
 
+        const redirectToUrl = '/workbook/myPage/myWorkBook';
+
         // 문제 건너 뛰기 버튼 누르면
         $('#nextButton').click(function() {
             removeImage();
 
             // 다음 문제로 인덱스 증가
             currentQuestionIndex++;
+            let url =  '/workbook/myPage/myWorkBook'
 
             // 문제를 다 풀었다면
             if (currentQuestionIndex >= questions.length) {
+                const params = new URLSearchParams(queryString);
+                const boardNo = params.get('boardNo');
+                const workBookNo = params.get('workBookNo');
+
+                if (boardNo) {
+                    const data = {
+                        boardNo: boardNo
+                    }
+                    axios.post('/board/after/solve', data)
+                        .then((res) => {
+                            console.log('성공적으로 문제집으로 옮겼습니다.', res);
+                        })
+                        .catch((error) => {
+                            console.error('문제집으로 옮기는 중 오류 발생:', error);
+                        });
+                }
+
+                if (workBookNo){
+                    console.log(workBookNo);
+                }
+
                 alert('모든 문제를 다 풀었습니다.');
-                var url = '/board';
                 window.location.href = url;
                 return;
             }
@@ -157,13 +192,36 @@
 
         // 다음 문제로 인덱스 증가
         currentQuestionIndex++;
+        let url =  '/workbook/myPage/myWorkBook'
 
         // 문제를 다 풀었다면
         if (currentQuestionIndex >= questions.length) {
-            alert('모든 문제를 다 풀었습니다.');
-            var url = '/board';
-            window.location.href = url;
-            return;
+            if (queryString) {
+                const params = new URLSearchParams(queryString);
+                const boardNo = params.get('boardNo');
+                const workBookNo = params.get('workBookNo');
+
+                if (boardNo) {
+                    const data = {
+                        boardNo: boardNo
+                    }
+                    axios.post('/board/after/solve', data)
+                        .then((res) => {
+                            console.log('성공적으로 문제집으로 옮겼습니다.', res);
+                        })
+                        .catch((error) => {
+                            console.error('문제집으로 옮기는 중 오류 발생:', error);
+                        });
+                }
+
+                if (workBookNo){
+                    console.log(workBookNo);
+                }
+
+                alert('모든 문제를 다 풀었습니다.');
+                window.location.href = url;
+                return;
+            }
         }
 
         // 문제 업데이트
@@ -271,7 +329,6 @@
             numberingDiv.parentNode.insertBefore(img, numberingDiv);
         }
 
-        console.log(questionNo);
 
         const data = {
             questionNo: questionNo,
@@ -331,6 +388,91 @@
             });
     }
 
+    // 문제집 생성
+    function generateWorkBook() {
+        window.jsPDF = window.jspdf.jsPDF;
+        window.canvas = window.html2canvas;
+
+        const jsonData =  /*[[${questions}]]*/ null;
+        const customFontFamily = '/assets/font/KoPubWorld Batang Medium.ttf';
+        const pdf = new jsPDF('p', 'mm', 'a4');
+
+        // 한글 폰트를 추가합니다.
+        pdf.addFileToVFS('/assets/font/KoPubWorld Batang Medium.ttf');
+        pdf.addFont('/assets/font/KoPubWorld Batang Medium.ttf', customFontFamily, 'normal');
+        pdf.setFont(customFontFamily);
+
+        // 문제 출력 설정
+        let x = 10; // 시작 X 좌표
+        let y = 10; // 시작 Y 좌표
+        const boxHeight = 100; // 사각형 상자 높이
+        const lineHeight = 10; // 행 간격
+        let correctAnswer = [];
+
+        // 문제 데이터
+        jsonData.forEach((question, index) => {
+            const questionSubject = question.questionSubject;
+            const options = [
+                question.view1,
+                question.view2,
+                question.view3,
+                question.view4,
+                question.view5
+            ];
+
+            // 정답
+            correctAnswer.push(question.questionCorrectAnswer);
+
+            // 문제 설명 출력
+            pdf.text(`${index + 1}. ${questionSubject}`, 10, y);
+            y += 5;
+
+            // 사각형 상자 안에 문제 내용 출력
+            const textWidth = 190;
+            const splittedText = pdf.splitTextToSize(question.questionBody, textWidth);
+            // const textHeight = (splittedText.length * 7) + 5; // 각 줄에 대한 높이 계산 (7은 줄 간격, 5는 여백)
+            const textHeight = (splittedText.length * 6.9); // 각 줄에 대한 높이 계산 (7은 줄 간격, 5는 여백)
+
+            pdf.rect(10, y, textWidth, textHeight - 5);
+            pdf.text(splittedText, 10, y + 7);
+            y += textHeight + 5;
+
+            // 한 페이지 넘어가면 보기 다음 페이지에서 이어나가게 출력
+            if (y >= pdf.internal.pageSize.height) {
+                pdf.addPage();
+                y = 20;
+            }
+
+            // 보기 출력
+            options.forEach((option, optionIndex) => {
+                const optionLabel = `①②③④⑤`.charAt(optionIndex);
+                pdf.text(`${optionLabel}\t ${option}`, 10, y);
+                pdf.text(option, x + 10, y);
+                y += 8;
+
+                if (y >= pdf.internal.pageSize.height) {
+                    pdf.addPage();
+                    y = 8;
+                }
+            });
+
+            // 다음 문제와의 간격 조정
+            y += 10;
+
+            // 페이지 분리 처리
+            if (index < jsonData.length - 1 && y + boxHeight + 10 > pdf.internal.pageSize.height) {
+                pdf.addPage();
+                y = 10;
+            }
+        });
+
+        // 정답
+        pdf.addPage();
+        pdf.text(`정답 : ${correctAnswer}`, x, 10);
+
+        // PDF 저장
+        pdf.save('question_paper.pdf');
+    }
 </script>
 
 
