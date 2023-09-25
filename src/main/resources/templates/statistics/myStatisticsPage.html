@@ -38,7 +38,7 @@
                 </dl>
             </div>
         </section>
-        <div class="max-w-screen-xl  text-center mx-auto">
+        <div class="max-w-screen-lg  text-center mx-auto">
             <h3 class="pt-7 mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">문제 유형별 정답률</h3>
             <canvas id="myChart" width="1200" height="300"></canvas>
         </div>
@@ -100,8 +100,8 @@
                     'rgba(255, 99, 132, 0.2)',
                     'rgba(54, 162, 235, 0.2)',
                     'rgba(255, 206, 86, 0.2)',
-                    'rgba(123, 200, 110, 1)',
-                    'rgba(85, 63, 254, 1)'
+                    'rgba(123, 200, 110, 0.2)',
+                    'rgba(85, 63, 254, 0.2)'
                 ],
                 borderColor: [
                     'rgba(255, 99, 132, 1)',
@@ -120,7 +120,6 @@
             type: 'bar', // 막대 그래프 형태
             data: data,
             options: {
-                // aspectRatio: 10,
                 scales: {
                     y: {
                         beginAtZero: true,
