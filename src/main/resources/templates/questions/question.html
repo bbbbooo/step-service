@@ -691,18 +691,22 @@
             correctedMarkingStatus : correctedMarkingStatus
         }
 
-        axios.post('/scrap/create', data)
-            .then((res) => {
-                if(scrapStatus === false) {
-                    alert('스크랩 되었습니다.\n나의 학습 현황 > 나의 스크랩에서 확인하실 수 있습니다.');
-                    scrapStatus = true;
-                } else {
-                    alert('이미 스크랩된 문제입니다.');
-                }
-            })
-            .catch((err) => {
-                alert('스크랩 되지 않았습니다..');
-            })
+        if(scrapStatus === false) {
+            axios.post('/scrap/create', data)
+                .then((res) => {
+                    if(res) {
+                        console.log('스크랩 되었습니다.');
+                    }
+                })
+                .catch((err) => {
+                    alert('스크랩 되지 않았습니다..');
+                });
+
+            alert('스크랩 되었습니다.\n나의 학습 현황 > 나의 스크랩에서 확인하실 수 있습니다.');
+            scrapStatus = true;
+        } else {
+            alert('이미 스크랩된 문제입니다.');
+        }
     }
 </script>
 </body>
