@@ -10,9 +10,21 @@
 </head>
 <body>
     <th:block th:insert="~{common/header}" />
-    <div style="position: absolute; left: 500px" >
-        <h1 th:text="|${user.getName()} (님) 환영합니다!!|"></h1>
-        <img th:src="${user.getProfileImage()}"/>
+<!--    <div style="position: absolute; left: 500px" >-->
+<!--        <h1 th:text="|${user.getName()} (님) 환영합니다!!|"></h1>-->
+<!--        <img th:src="${user.getProfileImage()}"/>-->
+<!--    </div>-->
+    <div className="profile-container" style="justify-content: center; padding-top: 150px;" >
+        <div className="container" style="text-align: center; align-items: center">
+            <div className="profile-info" style="text-align: center; align-items: center">
+                <div className="profile-avatar" style="text-align: center;align-items: center; margin-left: 830px">
+                    <img th:src="${user.getProfileImage()}" style="border-radius: 50%; width: 250px; height: 250px; text-align: center; display: flex; align-items: center;"/>
+                </div>
+                <div className="profile-name">
+                    <p className="font-mono" th:text="|${user.getName()} (님)|" style="font-weight: 500; font-size: 25px; color: lightskyblue"></p>
+                </div>
+            </div>
+        </div>
     </div>
     <th:block th:insert="~{common/footer}" />
 </body>
