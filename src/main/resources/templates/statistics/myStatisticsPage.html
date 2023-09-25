@@ -57,14 +57,34 @@
 
         document.getElementById('today').innerText = todayStatistic.date;
         document.getElementById('today-question-count').innerText = todayStatistic.totalSolvedQuestion;
-        document.getElementById('today-question-accuracy').innerText = Math.round(todayStatistic.answerAccuracy * 100) + '%';
+
+
+        if(todayStatistic.answerAccuracy >= 0 && todayStatistic.answerAccuracy) {
+            document.getElementById('today-question-accuracy').innerText = Math.round(todayStatistic.answerAccuracy * 100) + '%';
+        } else {
+            document.getElementById('today-question-accuracy').innerText = '-';
+        }
+
 
         document.getElementById('week').innerText = weekStatistic.weekStartDate + ' ~ ' + weekStatistic.weekEndDate;
         document.getElementById('week-question-count').innerText = weekStatistic.totalSolvedQuestion;
-        document.getElementById('week-question-accuracy').innerText = Math.round(weekStatistic.answerAccuracy) + '%';
+
+        if(weekStatistic.answerAccuracy >= 0 && weekStatistic.answerAccuracy) {
+            document.getElementById('week-question-accuracy').innerText = Math.round(weekStatistic.answerAccuracy) + '%';
+        } else {
+            document.getElementById('week-question-accuracy').innerText = '-';
+        }
+
 
         document.getElementById('total-question-count').innerText = totalStatistic.totalSolvedQuestion;
-        document.getElementById('total-question-accuracy').innerText = Math.round(totalStatistic.answerAccuracy) + '%';
+
+        if(totalStatistic.answerAccuracy >= 0 && totalStatistic.answerAccuracy) {
+            document.getElementById('total-question-accuracy').innerText = Math.round(totalStatistic.answerAccuracy) + '%';
+        } else {
+            document.getElementById('total-question-accuracy').innerText = '-';
+        }
+
+
 
         let questionTypes = [];
         let answerAccuracy = [];
