@@ -5,6 +5,7 @@ import com.example.stepbackend.aggregate.dto.question.ReqQuestionByMemberDTO;
 import com.example.stepbackend.aggregate.dto.question.ResQuestionDTO;
 import com.example.stepbackend.aggregate.entity.User;
 import com.example.stepbackend.global.common.annotation.CurrentUser;
+import com.example.stepbackend.global.security.token.UserPrincipal;
 import com.example.stepbackend.service.QuestionService;
 import lombok.RequiredArgsConstructor;
 import net.minidev.json.JSONArray;
@@ -29,8 +30,8 @@ public class QuestionController {
     private final QuestionService questionService;
 
     @GetMapping
-    public ModelAndView question(@RequestParam String type,  ModelAndView mv) {
-        Long userId = 1L;
+    public ModelAndView question(@RequestParam String type, ModelAndView mv, @CurrentUser UserPrincipal user) {
+        Long userId = user.getId();
         List<ResQuestionDTO> res = questionService.readQuestion(type, userId);
 
         if(!res.isEmpty()) {
@@ -46,9 +47,9 @@ public class QuestionController {
 
     @PostMapping
     @ResponseBody
-    public ResponseEntity postQuestionByMember(@CurrentUser User user, @RequestBody ReqQuestionByMemberDTO req) {
+    public ResponseEntity postQuestionByMember(@CurrentUser UserPrincipal user, @RequestBody ReqQuestionByMemberDTO req) {
 
-        Long memberNo = 1L;
+        Long memberNo = user.getId();
         questionService.registQuestionByMember(req, memberNo);
 
         return new ResponseEntity<>("true", HttpStatus.OK);
