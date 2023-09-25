@@ -21,9 +21,6 @@ public class MainController {
 
     public String main(@CurrentUser UserPrincipal user, Model model) {
 
-
-
-
         return "main";
     }
 }
