@@ -18,14 +18,11 @@ import java.util.List;
 public class MainController {
 
     @GetMapping("/")
-    public String main(Authentication authentication, Model model) {
 
-        if(authentication != null) {
-            if(authentication.getAuthorities().stream().anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals(Role.USER.getKey()))) {
-                UserPrincipal user = (UserPrincipal) authentication.getPrincipal();
-                model.addAttribute("user", user);
-            }
-        }
+    public String main(@CurrentUser UserPrincipal user, Model model) {
+
+
+
 
         return "main";
     }

@@ -20,6 +20,7 @@ public class UserPrincipal implements OAuth2User, UserDetails {
     private final Long id;
     private final String nickname;
     private final String role;
+    private final String profileImage;
     private final Collection<? extends GrantedAuthority> authorities;
     private final Map<String, Object> attributes;
 
@@ -27,38 +28,42 @@ public class UserPrincipal implements OAuth2User, UserDetails {
         this.id = builder.id;
         this.nickname = builder.nickname;
         this.role = builder.role;
+        this.profileImage = builder.profileImage;
         this.authorities = builder.authorities;
         this.attributes = builder.attributes;
     }
 
-    public static Builder builder(Long id, String nickname, String role, Map<String, Object> attributes) {
-        return new Builder(id, nickname, role, attributes);
+    public static Builder builder(Long id, String nickname, String role,String profileImage, Map<String, Object> attributes) {
+        return new Builder(id, nickname, role, profileImage, attributes);
     }
 
-    public static Builder builder(Long id, String nickname, String role) {
-        return new Builder(id, nickname, role);
+    public static Builder builder(Long id, String nickname, String role, String profileImage) {
+        return new Builder(id, nickname, role, profileImage);
     }
 
     public static class Builder {
         private final Long id;
         private final String nickname;
         private final String role;
+        private final String profileImage;
         private final Collection<? extends GrantedAuthority> authorities;
         private Map<String, Object> attributes;
 
-        public Builder(Long id, String nickname, String role, Map<String, Object> attributes) {
+        public Builder(Long id, String nickname, String role,String profileImage, Map<String, Object> attributes) {
             this.id = id;
             this.nickname = nickname;
             this.role = role;
+            this.profileImage = profileImage;
             this.authorities = Collections.singletonList(new SimpleGrantedAuthority(role));
             this.attributes = attributes;
 
         }
 
-        public Builder(Long id, String nickname, String role) {
+        public Builder(Long id, String nickname, String role, String profileImage) {
             this.id = id;
             this.nickname = nickname;
             this.role = role;
+            this.profileImage = profileImage;
             this.authorities = Collections.singletonList(new SimpleGrantedAuthority(role));
 
         }
@@ -75,15 +80,15 @@ public class UserPrincipal implements OAuth2User, UserDetails {
     }
 
     public static UserPrincipal create(User user, Map<String, Object> attributes) {
-        return UserPrincipal.builder(user.getId(), user.getNickname(), Role.valueOf(user.getRole().name()).getKey(), attributes).build();
+        return UserPrincipal.builder(user.getId(), user.getNickname(), Role.valueOf(user.getRole().name()).getKey(), user.getProfileImage(),attributes).build();
     }
 
     public static UserPrincipal create(FindUserDTO user, Map<String, Object> attributes) {
-        return UserPrincipal.builder(user.getId(), user.getNickname(), Role.valueOf(user.getRole()).getKey(), attributes).build();
+        return UserPrincipal.builder(user.getId(), user.getNickname(), Role.valueOf(user.getRole()).getKey(),user.getProfileImage(), attributes).build();
     }
 
     public static UserPrincipal create(FindUserDTO user) {
-        return UserPrincipal.builder(user.getId(), user.getNickname(), Role.valueOf(user.getRole()).getKey()).build();
+        return UserPrincipal.builder(user.getId(), user.getNickname(),user.getProfileImage(), Role.valueOf(user.getRole()).getKey()).build();
     }
 
     @Override
@@ -130,4 +135,5 @@ public class UserPrincipal implements OAuth2User, UserDetails {
     public String getName() {
         return nickname;
     }
+
 }

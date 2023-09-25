@@ -140,6 +140,10 @@ public class SecurityConfig {
 //                .addFilterBefore(authenticationExceptionFilter(resolver), TokenAuthenticationFilter.class)
 //                .addFilterBefore(nullPointExceptionFilter, AuthenticationExceptionFilter.class);
 
+        http
+                .logout()
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/oauth/name");
         return http.build();
     }
 
