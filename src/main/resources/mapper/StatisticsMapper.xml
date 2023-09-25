@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.stepbackend.repository.StatisticsMapper">
+    <resultMap id="questionTypeStatisticsMap" type="com.example.stepbackend.aggregate.dto.statistics.ReadStatisticsDTO">
+        <result property="questionType" column="question_type"/>
+        <result property="memberNo" column="member_No"/>
+        <result property="totalAttempts" column="total_attempts"/>
+        <result property="correctAttempts" column="correct_attempts"/>
+        <result property="answerAccuracy" column="answer_accuracy"/>
+    </resultMap>
+
+    <resultMap id="todayStatisticsMap" type="com.example.stepbackend.aggregate.dto.statistics.TodayStatisticsDTO">
+        <result property="date" column="date"/>
+        <result property="totalSolvedQuestion" column="total_solved_question"/>
+        <result property="answerAccuracy" column="answer_accuracy"/>
+    </resultMap>
+
+    <resultMap id="weekStatisticsMap" type="com.example.stepbackend.aggregate.dto.statistics.WeekStatisticsDTO">
+        <result property="weekStartDate" column="week_start_date"/>
+        <result property="weekEndDate" column="week_end_date"/>
+        <result property="totalSolvedQuestion" column="total_solved_question"/>
+        <result property="answerAccuracy" column="answer_accuracy"/>
+    </resultMap>
+
+    <resultMap id="totalStatisticsMap" type="com.example.stepbackend.aggregate.dto.statistics.TotalStatisticsDTO">
+        <result property="totalSolvedQuestion" column="total_solved_question"/>
+        <result property="answerAccuracy" column="answer_accuracy"/>
+    </resultMap>
+
+    <select id="findStatisticsByUser" parameterType="_long" resultMap="questionTypeStatisticsMap">
+        SELECT
+            q.question_view_type AS question_type,
+            u.id AS member_No,
+            COUNT(qtm.corrected_marking_status) AS total_attempts,
+            SUM(qtm.corrected_marking_status) AS correct_attempts,
+            SUM(qtm.corrected_marking_status) / COUNT(qtm.corrected_marking_status) AS answer_accuracy
+        FROM
+            `user` u
+                LEFT JOIN `question_by_member` qtm ON (u.id = qtm.member_no)
+                LEFT JOIN `question` q ON (qtm.question_no = q.question_no)
+        where u.id = #{userId}
+        GROUP BY
+            q.question_view_type;
+    </select>
+
+    <select id="findTodayStatistics" parameterType="_long" resultMap="todayStatisticsMap">
+        SELECT
+            COUNT(qbm.question_by_member_no) AS total_solved_question,
+            SUM(qbm.corrected_marking_status) / COUNT(qbm.corrected_marking_status) AS answer_accuracy,
+            CURDATE() as date
+        FROM
+            `question_by_member` qbm
+        WHERE DATE(`created_time`) = CURDATE()
+          AND qbm.member_no = #{userId};
+    </select>
+
+    <select id="findWeekStatistics" parameterType="_long" resultMap="weekStatisticsMap">
+        -- 회원 별로 가장 최근 주 월요일부터 일요일까지 푼 문제 수를 계산합니다.
+        SELECT
+            DATE_SUB(DATE_ADD(CURDATE(), INTERVAL 6 - WEEKDAY(CURDATE()) DAY), INTERVAL 6 DAY) AS week_start_date,
+            DATE_ADD(CURDATE(), INTERVAL 6 - WEEKDAY(CURDATE()) DAY) AS week_end_date,
+            COUNT(qbm.corrected_marking_status) AS total_solved_question,
+            (SUM(qbm.corrected_marking_status) / NULLIF(COUNT(qbm.corrected_marking_status), 0)) * 100 AS answer_accuracy
+        FROM
+            `question_by_member` qbm
+        WHERE DATE(qbm.`created_time`) BETWEEN DATE_SUB(DATE_ADD(CURDATE(), INTERVAL 6 - WEEKDAY(CURDATE()) DAY), INTERVAL 6 DAY) AND  DATE_ADD(CURDATE(), INTERVAL 6 - WEEKDAY(CURDATE()) DAY)
+          AND qbm.member_no = #{userId}
+        GROUP BY
+            week_start_date, week_end_date;
+    </select>
+
+    <select id="findTotalStatistics" parameterType="_long" resultMap="totalStatisticsMap">
+        -- 회원 별로 전체 문제 통계를 계산합니다.
+        SELECT
+            COUNT(qbm.corrected_marking_status) AS total_solved_question,
+            (SUM(qbm.corrected_marking_status) / NULLIF(COUNT(qbm.corrected_marking_status), 0)) * 100 AS answer_accuracy
+        FROM
+            `question_by_member` qbm
+        WHERE qbm.member_no = #{userId};
+    </select>
+</mapper>

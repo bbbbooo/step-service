@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <th:block th:insert="~{common/header}" />
+    <div class="basis-3/12 justify-items-center">
+
+    </div>
+
+    <div class="basis-6/12">
+        <section class="bg-white">
+            <h1 class="pt-7 mb-2 text-2xl text-center font-bold tracking-tight text-gray-900">나의 문제 학습 현황을 한눈에 확인 하세요.</h1>
+            <div class="max-w-screen-xl px-4 py-8 mx-auto text-center lg:py-16 lg:px-6">
+                <dl class="grid max-w-screen-md gap-8 mx-auto text-gray-900 sm:grid-cols-3 dark:text-white">
+                    <div class="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+                        <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">오늘 나의 학습</h5>
+                        <p id="today" class="mb-3 font-normal text-gray-700 dark:text-gray-400"></p>
+                        <p class="mb-3 font-normal text-gray-700"><span>문제 수 : </span><span id="today-question-count"></span></p>
+                        <p class="mb-3 font-normal text-gray-700"><span>정답률 : </span><span id="today-question-accuracy"></span></p>
+                    </div>
+
+                    <div class="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+                        <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">주간 문제 풀이 수</h5>
+                        <p id="week" class="mb-3 font-normal text-gray-700 dark:text-gray-400"></p>
+                        <p class="mb-3 font-normal text-gray-700 dark:text-gray-400"><span>문제 수 : </span><span id="week-question-count"></span></p>
+                        <p class="mb-3 font-normal text-gray-700"><span>정답률 : </span><span id="week-question-accuracy"></span></p>
+                    </div>
+
+                    <div class="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+                        <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">전체 문제 풀이 수</h5>
+                        <p class="mb-3 font-normal text-gray-700 dark:text-gray-400"><span>문제 수 : </span><span id="total-question-count"></span></p>
+                        <p class="mb-3 font-normal text-gray-700"><span>정답률 : </span><span id="total-question-accuracy"></span></p>
+                    </div>
+                </dl>
+            </div>
+        </section>
+        <div class="max-w-screen-xl  text-center mx-auto">
+            <h3 class="pt-7 mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">문제 유형별 정답률</h3>
+            <canvas id="myChart" width="1200" height="300"></canvas>
+        </div>
+    </div>
+
+    <div class="basis-3/12 justify-items-center">
+
+    </div>
+    <th:block th:insert="~{common/footer}" />
+    <script th:inline="javascript">
+        let results = /*[[${results}]]*/ null;
+        let todayStatistic = /*[[${todayStatistic}]]*/ null;
+        let weekStatistic = /*[[${weekStatistic}]]*/ null;
+        let totalStatistic = /*[[${totalStatistic}]]*/ null;
+        console.log('totalStatistic', totalStatistic);
+
+        document.getElementById('today').innerText = todayStatistic.date;
+        document.getElementById('today-question-count').innerText = todayStatistic.totalSolvedQuestion;
+        document.getElementById('today-question-accuracy').innerText = Math.round(todayStatistic.answerAccuracy * 100) + '%';
+
+        document.getElementById('week').innerText = weekStatistic.weekStartDate + ' ~ ' + weekStatistic.weekEndDate;
+        document.getElementById('week-question-count').innerText = weekStatistic.totalSolvedQuestion;
+        document.getElementById('week-question-accuracy').innerText = Math.round(weekStatistic.answerAccuracy) + '%';
+
+        document.getElementById('total-question-count').innerText = totalStatistic.totalSolvedQuestion;
+        document.getElementById('total-question-accuracy').innerText = Math.round(totalStatistic.answerAccuracy) + '%';
+
+        let questionTypes = [];
+        let answerAccuracy = [];
+
+        results.forEach((result) => {
+            switch (result.questionType) {
+                case 'blank' : questionTypes.push('빈칸추론')
+                    break;
+                case 'title' : questionTypes.push('제목추론')
+                    break;
+                case 'suffle1' : questionTypes.push('순서추론(abc)')
+                    break;
+                case 'shuffle2' : questionTypes.push('순서초론(12345)')
+                    break;
+                case 'topic' : questionTypes.push('주제추론')
+                    break;
+                default : questionTypes.push()
+                    break;
+            }
+
+            answerAccuracy.push(result.answerAccuracy * 100);
+        })
+
+        Chart.defaults.font.size = 20;
+
+        // 서버에서 가져온 문제 유형별 정답률 데이터 (예시)
+        let data = {
+            labels: questionTypes,
+            datasets: [{
+                label: '백분율',
+                data: answerAccuracy, // 각 유형의 정답률
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(123, 200, 110, 1)',
+                    'rgba(85, 63, 254, 1)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(123, 200, 110, 1)',
+                    'rgba(85, 63, 254, 1)'
+                ],
+                borderWidth: 1
+            }]
+        };
+
+        // Chart.js 그래프 생성
+        let ctx = document.getElementById('myChart').getContext('2d');
+        let myChart = new Chart(ctx, {
+            type: 'bar', // 막대 그래프 형태
+            data: data,
+            options: {
+                // aspectRatio: 10,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100 // Y 축의 최대값 (백분율이므로 0부터 100까지)
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
