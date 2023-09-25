@@ -115,9 +115,7 @@ public class SecurityConfig {
                 .and()
 
                 .authorizeRequests()
-                .antMatchers("/question/**")
-                .permitAll()
-                .antMatchers("/oauth2/**", "/auth/**", "/oauth/**", "/login/**")
+                .antMatchers("/oauth2/**", "/auth/**", "/oauth/**", "/login/**", "/question/**")
                 .hasRole(Role.USER.name())
                 .antMatchers("/blog/**", "/member/**")//유저일 시 허용되는 url
                 .permitAll()

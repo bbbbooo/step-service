@@ -6,8 +6,6 @@ import com.example.stepbackend.repository.WorkBookRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
@@ -65,8 +63,10 @@ class WorkbookServiceTest {
         Long memberNo = 1L;
         Pageable pageable = PageRequest.of(0, 10);
 
+        FilterWorkBookRequestDTO filterWorkBookRequestDTO = FilterWorkBookRequestDTO.builder().build();
+
         // when
-        Page<ReadWorkBookDTO> readWorkBookDTOS = workbookService.getWorkBookMyPage(memberNo, pageable);
+        Page<ReadWorkBookDTO> readWorkBookDTOS = workbookService.getWorkBookMyPage(memberNo, pageable, filterWorkBookRequestDTO);
 
         // then
         Assertions.assertNotNull(readWorkBookDTOS);

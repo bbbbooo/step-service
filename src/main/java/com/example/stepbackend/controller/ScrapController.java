@@ -2,6 +2,8 @@ package com.example.stepbackend.controller;
 
 import com.example.stepbackend.aggregate.dto.board.ReadScrapBoardDTO;
 import com.example.stepbackend.aggregate.dto.scrap.*;
+import com.example.stepbackend.global.common.annotation.CurrentUser;
+import com.example.stepbackend.global.security.token.UserPrincipal;
 import com.example.stepbackend.service.ScrapService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,8 +24,8 @@ public class ScrapController {
 
     /* 마이 페이지 내 스크랩 조회 */
     @GetMapping("/myPage/myScrap")
-    public String getMyAllScrap(@PageableDefault Pageable pageable, Model model){
-        Long memberNo = 1L;
+    public String getMyAllScrap(@PageableDefault Pageable pageable, Model model, @CurrentUser UserPrincipal user){
+        Long memberNo = user.getId();
 
         Page<ReadScrapDTO> readScrapDTOPage = scrapService.findAllScrap(memberNo, pageable);
         Page<ReadScrapByMemberDTO> readScrapByMemberDTOS = scrapService.findAllScrapByMember(memberNo, pageable);
@@ -38,8 +40,8 @@ public class ScrapController {
 
     /* 마이 페이지 내 스크랩 상세 조회*/
     @GetMapping("detail/{questionNo}")
-    public String getScrap(@PathVariable Long questionNo,@RequestParam Integer markedNo, Model model){
-        Long memberNo = 1L;
+    public String getScrap(@PathVariable Long questionNo,@RequestParam Integer markedNo, Model model,  @CurrentUser UserPrincipal user){
+        Long memberNo = user.getId();
 
         ReadScrapDTO readScrapDTO = scrapService.findScrap(memberNo, questionNo, markedNo);
         ReadScrapByMemberDTO readScrapByMemberDTO = scrapService.findScrapByMember(memberNo, questionNo, markedNo);
@@ -52,8 +54,9 @@ public class ScrapController {
     /* 문제 풀고 스크랩할때 스크랩 했는지 안했는지 조사 */
     @GetMapping("/workbook/detail/{questionNo}")
     @ResponseBody
-    public ResponseEntity<ReadScrapBoardDTO> getScrapBoard(@PathVariable Long questionNo, @RequestParam Integer markedNo){
-        Long memberNo = 1L;
+    public ResponseEntity<ReadScrapBoardDTO> getScrapBoard(@PathVariable Long questionNo, @RequestParam Integer markedNo,
+                                                           @CurrentUser UserPrincipal user){
+        Long memberNo = user.getId();
 
         ReadScrapBoardDTO readScrapBoardDTO = scrapService.findScrapBoard(memberNo, questionNo, markedNo);
 
@@ -63,8 +66,8 @@ public class ScrapController {
     /* 스크랩 저장 */
     @PostMapping("/create")
     @ResponseBody
-    public String create( @RequestBody CreateScrapDTO createScrapDTO){
-        Long memberNo = 1L;
+    public String create( @RequestBody CreateScrapDTO createScrapDTO,  @CurrentUser UserPrincipal user){
+        Long memberNo = user.getId();
 
         scrapService.createScrap(createScrapDTO, memberNo);
 
