@@ -143,7 +143,7 @@ public class SecurityConfig {
         http
                 .logout()
                 .logoutUrl("/logout")
-                .logoutSuccessUrl("/oauth/name");
+                .logoutSuccessUrl("/");
         return http.build();
     }
 
