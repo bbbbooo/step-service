@@ -8,7 +8,7 @@
 
 <br/>
 
----
+
 
 ## 2. 팀원
 
@@ -27,13 +27,15 @@
 
 </table>
 
+<br/>
+
+
 
 ## 3. 기능
 - ### 회원가입 / 로그인
   - 카카오 기반 oauth 인증
   - JWT 토큰 사용
   
-  <br/>
   
   ![login.gif](..%2F..%2FUsers%2Fuser%2FDesktop%2F%EB%B0%9C%ED%91%9C%2F%EB%B0%9C%ED%91%9C%EC%9A%A9%20%EC%9B%80%EC%A7%A4%2Flogin.gif)
 
