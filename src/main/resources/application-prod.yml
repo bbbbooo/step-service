@@ -1,0 +1,79 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://52.78.77.80:54425/onestep?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: onestep
+    password: onestep
+    hikari:
+      auto-commit: true
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL57Dialect
+    generate-ddl: true
+    show-sql: true
+    database: mysql
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+    hibernate:
+      ddl-auto: none
+    defer-datasource-initialization: true
+  sql:
+    init:
+      data-locations: classpath:static/sql/data.sql
+      mode: never
+      platform: mysql
+      encoding: UTF-8
+  # file upload
+  servlet:
+    multipart:
+      # 파일 업로드 가능 여부 선택
+      enabled: true
+      # 업로드된 파일의 임시 저장 경로
+      #            location: C:\
+      # 한 번에 최대 업로드 가능 용량
+      max-request-size: 100MB
+      # 파일 하나의 최대 크기
+      max-file-size: 20MB
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            client-id: 21f04815fbbdc192e201be195418d4c7
+            client-secret: rxVNheALkzqkNgiyA62OeNsKlJWHcBtj
+            redirect-uri: http://localhost:8888/login/oauth2/code/kakao
+            client-authentication-method: POST
+            authorization-grant-type: authorization_code
+            scope:
+              - profile_nickname
+              - profile_image
+              - account_email
+            client-name: Kakao
+        provider:
+          kakao:
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-name-attribute: id
+
+#logging:
+#  level:
+#    org.mybatis: TRACE
+#    org.thymeleaf: TRACE
+#    org.quartz.core: TRACE
+#    org.hibernate.SQL: TRACE
+#    org.h2.server.web: TRACE
+#    com.midnights.demo: TRACE
+#    org.springframework.web: TRACE
+
+mybatis:
+  mapper-locations: mapper/**/*.xml
+#encrypt:
+#    key: key-brain
+
+ai:
+  model:
+    serving:
+      url: http://192.168.0.8:5050/
+

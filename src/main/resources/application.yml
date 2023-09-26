@@ -12,7 +12,7 @@ server:
 spring:
   name : client
   profiles:
-    active: dev
+    active: prod
     web:
       resources:
         static-locations: file:src/main/resources/static/
