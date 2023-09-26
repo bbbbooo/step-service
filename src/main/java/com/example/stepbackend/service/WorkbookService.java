@@ -69,6 +69,21 @@ public class WorkbookService {
                 filteredWorkBooks.addAll(blankWorkBooks.getContent());
             }
 
+            if (filterWorkBookRequestDTO.getOrderOption() != null && filterWorkBookRequestDTO.getOrderOption()) {
+                Page<WorkBook> blankWorkBooks = workBookRepository.findByMemberNoAndQuestionTypesContaining(memberNo, "shuffle1", pageable);
+                filteredWorkBooks.addAll(blankWorkBooks.getContent());
+            }
+
+            if (filterWorkBookRequestDTO.getSentenceOption() != null && filterWorkBookRequestDTO.getSentenceOption()) {
+                Page<WorkBook> blankWorkBooks = workBookRepository.findByMemberNoAndQuestionTypesContaining(memberNo, "shuffle2", pageable);
+                filteredWorkBooks.addAll(blankWorkBooks.getContent());
+            }
+
+            if (filterWorkBookRequestDTO.getTopicOption() != null && filterWorkBookRequestDTO.getTopicOption()) {
+                Page<WorkBook> blankWorkBooks = workBookRepository.findByMemberNoAndQuestionTypesContaining(memberNo, "topic", pageable);
+                filteredWorkBooks.addAll(blankWorkBooks.getContent());
+            }
+
             if (filterWorkBookRequestDTO.getSharedOption() != null && filterWorkBookRequestDTO.getSharedOption()) {
                 Page<WorkBook> sharedWorkBooks = workBookRepository.findByMemberNoAndIsShared(memberNo, true, pageable);
                 filteredWorkBooks.addAll(sharedWorkBooks.getContent());
