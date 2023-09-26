@@ -280,18 +280,23 @@
             <div style="overflow: hidden;">
                 <div>
                     <div style="display: flex; flex-direction: column; justify-content: space-between; align-items: flex-start; margin-top: 10px">
-                    <span class="question-types">
-                        <span th:each="type : ${board.questionTypes}">
-                            <span th:if="${type == 'title'}" class="question-type-label title">제목 추론</span>
-                            <span th:if="${type == 'blank'}" class="question-type-label blank">빈칸 추론</span>
-                        </span>
-                        <span style="margin-left: 870px;">
-                            <th:block th:if="${board.memberNo == memberNo}">
-                                <button class="edit-button" th:onclick="'openModal(' + ${board.boardNo} + ')'">수정</button>
-                                <button class="delete-button" th:onclick="'deleteBoard(' + ${board.boardNo} + ')'">삭제</button>
-                            </th:block>
-                        </span>
-                    </span>
+                        <div class="question-types" style="display: flex; justify-content: space-between;">
+                            <div>
+                                <span th:each="type : ${board.questionTypes}">
+                                    <span th:if="${type == 'title'}" class="question-type-label title">제목 추론</span>
+                                    <span th:if="${type == 'blank'}" class="question-type-label blank">빈칸 추론</span>
+                                    <span th:if="${type == 'shuffle1'}" class="question-type-label blank">순서 추론</span>
+                                    <span th:if="${type == 'shuffle2'}" class="question-type-label blank">문장 추론</span>
+                                    <span th:if="${type == 'topic'}" class="question-type-label blank">주제 추론</span>
+                                </span>
+                            </div>
+                            <div style="position:absolute; right:30px;">
+                                <th:block th:if="${board.memberNo == memberNo}">
+                                    <button class="edit-button" th:onclick="'openModal(' + ${board.boardNo} + ')'">수정</button>
+                                    <button class="delete-button" th:onclick="'deleteBoard(' + ${board.boardNo} + ')'">삭제</button>
+                                </th:block>
+                            </div>
+                        </div>
                         <h2 th:text="${board.questionName}" style="margin-right: 10px;">게시물 제목</h2>
                         <p th:text="${board.description}">게시물 설명</p>
                         <span class="question-count" th:text="${'전체 ' + #lists.size(board.questionNos) + '문제'}"></span>
