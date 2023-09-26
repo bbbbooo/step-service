@@ -90,6 +90,7 @@
         .question-types {
             display: flex;
             gap: 10px;
+            flex-wrap: wrap;
             margin-top: 10px; /* 위쪽으로 10px 마진 추가 */
             margin-bottom: 10px; /* 아래쪽으로 10px 마진 추가 */
         }
@@ -282,6 +283,12 @@
             margin-left: 5px; /* 버튼 사이 간격 조절 */
         }
 
+        @media screen and (max-width: 600px) {
+            .question-types {
+                flex-direction: column; /* Stack labels vertically on smaller screens */
+            }
+        }
+
         .share-button:hover {
             background-color: #0056b3;
         }
@@ -364,6 +371,10 @@
             cursor: pointer; /* 커서 스타일을 포인터로 변경 */
         }
 
+        .question-type-container {
+            flex: 1; /* Distribute available space equally among labels */
+            min-width: 100px; /* Minimum width for each label */
+        }
 
     </style>
 </head>
@@ -382,6 +393,9 @@
     <div id="options-container" style="display: none;">
         <label><input type="checkbox" id="title-option" /> 제목 추론</label>
         <label><input type="checkbox" id="blank-option" /> 빈칸 추론</label>
+        <label><input type="checkbox" id="order-option" /> 순서 추론</label>
+        <label><input type="checkbox" id="sentence-option" /> 문장 추론</label>
+        <label><input type="checkbox" id="topic-option" /> 주제 추론</label>
         <label><input type="checkbox" id="shared-option" /> 공유 완료</label>
         <label><input type="checkbox" id="received-option" /> 공유 받음</label>
         <!-- 옵션 선택 후 적용 버튼 -->
@@ -408,13 +422,17 @@
 
             <!-- Question Type -->
             <div class="question-types">
-                <span th:each="type : ${workbook.questionTypes}">
+                <span class="question-type-container" th:each="type : ${workbook.questionTypes}">
                     <span th:if="${type == 'title'}" class="question-type-label title">제목 추론</span>
                     <span th:if="${type == 'blank'}" class="question-type-label blank">빈칸 추론</span>
+                    <span th:if="${type == 'shuffle1'}" class="question-type-label blank">순서 추론</span>
+                    <span th:if="${type == 'shuffle2'}" class="question-type-label blank">문장 추론</span>
+                    <span th:if="${type == 'topic'}" class="question-type-label blank">주제 추론</span>
                 </span>
                 <span th:if="${workbook.isShared}" class="shared-label">공유 완료</span>
                 <span th:if="${workbook.hadShared}" class="received-label">공유 받음</span>
             </div>
+
 
             <p class='time-updated' th:text="${workbook.lastUpdatedTime}"></p>
 
@@ -763,6 +781,9 @@
         const blankOption = document.getElementById('blank-option').checked;
         const sharedOption = document.getElementById('shared-option').checked;
         const receivedOption = document.getElementById('received-option').checked;
+        const orderOption = document.getElementById('order-option').checked;
+        const sentenceOption = document.getElementById('sentence-option').checked;
+        const topicOption = document.getElementById('topic-option').checked;
 
         // 현재 페이지 URL 가져오기
         const currentURL = new URL(window.location.href);
@@ -773,6 +794,9 @@
         newSearchParams.set('blankOption', blankOption);
         newSearchParams.set('sharedOption', sharedOption);
         newSearchParams.set('receivedOption', receivedOption);
+        newSearchParams.set('orderOption', orderOption);
+        newSearchParams.set('sentenceOption', sentenceOption);
+        newSearchParams.set('topicOption', topicOption);
 
         // 수정된 쿼리 문자열을 URL에 설정
         currentURL.search = newSearchParams.toString();

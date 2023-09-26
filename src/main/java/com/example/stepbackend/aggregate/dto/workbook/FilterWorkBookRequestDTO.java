@@ -10,7 +10,16 @@ import lombok.*;
 @Builder
 public class FilterWorkBookRequestDTO {
     private Boolean titleOption;
+
     private Boolean blankOption;
+
     private Boolean sharedOption;
+
     private Boolean receivedOption;
+
+    private Boolean orderOption;
+
+    private Boolean sentenceOption;
+
+    private Boolean topicOption;
 }
