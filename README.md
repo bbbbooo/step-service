@@ -37,7 +37,7 @@
   - JWT 토큰 사용
   
   
-  ![login.gif](..%2F..%2FUsers%2Fuser%2FDesktop%2F%EB%B0%9C%ED%91%9C%2F%EB%B0%9C%ED%91%9C%EC%9A%A9%20%EC%9B%80%EC%A7%A4%2Flogin.gif)
+  ![login](https://github.com/Convergence-Project/step-service/assets/105257665/24162477-4902-4c91-88e1-0a1b435dcbd1)
 
 <br/>
 
@@ -51,7 +51,7 @@
   
   <br/>
   
-    ![solve.gif](..%2F..%2FUsers%2Fuser%2FDesktop%2F%EB%B0%9C%ED%91%9C%2F%EB%B0%9C%ED%91%9C%EC%9A%A9%20%EC%9B%80%EC%A7%A4%2Fsolve.gif)
+    ![solve](https://github.com/Convergence-Project/step-service/assets/105257665/49345765-fa92-4aaa-bccb-adffd402c0f1)
 
   <br/>
   <br/>
@@ -63,7 +63,7 @@
 
   <br/>
   
-  ![scrap.gif](..%2F..%2FUsers%2Fuser%2FDesktop%2F%EB%B0%9C%ED%91%9C%2F%EB%B0%9C%ED%91%9C%EC%9A%A9%20%EC%9B%80%EC%A7%A4%2Fscrap.gif)
+  ![scrap](https://github.com/Convergence-Project/step-service/assets/105257665/1d29bd7d-2a8d-429c-8b14-bd36f5fe6090)
 
 
 <br/>
@@ -76,14 +76,14 @@
   - 문제집을 PDF로 만들어 출력 가능
 
 
-  ![workbook.gif](..%2F..%2FUsers%2Fuser%2FDesktop%2F%EB%B0%9C%ED%91%9C%2F%EB%B0%9C%ED%91%9C%EC%9A%A9%20%EC%9B%80%EC%A7%A4%2Fworkbook.gif)
+  ![workbook](https://github.com/Convergence-Project/step-service/assets/105257665/b74df62b-e88e-46c7-94a4-7b6fcf98d106)
 
 <br/>
 
   - 옵션을 통해 원하는 라벨의 문제만 볼 수 있음
   - OR 연산
 
-  ![option.gif](..%2F..%2FUsers%2Fuser%2FDesktop%2F%EB%B0%9C%ED%91%9C%2F%EB%B0%9C%ED%91%9C%EC%9A%A9%20%EC%9B%80%EC%A7%A4%2Foption.gif)
+  ![option](https://github.com/Convergence-Project/step-service/assets/105257665/d07887ce-38e2-490e-8845-b26ae8be9c05)
 
 
 <br/>
@@ -96,7 +96,7 @@
   
 
 
-  ![league.gif](..%2F..%2FUsers%2Fuser%2FDesktop%2F%EB%B0%9C%ED%91%9C%2F%EB%B0%9C%ED%91%9C%EC%9A%A9%20%EC%9B%80%EC%A7%A4%2Fleague.gif)
+  ![league](https://github.com/Convergence-Project/step-service/assets/105257665/6cef5ff1-a19f-4086-a6d4-51bf0e558013)
 
 -----------------------------------
 
