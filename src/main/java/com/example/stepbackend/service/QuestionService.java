@@ -61,7 +61,7 @@ public class QuestionService {
         questionRepository.save(question);
     }
 
-    public QuestionDTO convertToDto(JSONObject jsonObject, String classification) {
+    public QuestionDTO ㅈconvertToDto(JSONObject jsonObject, String classification) {
 
 
         String subject = null;
@@ -88,6 +88,8 @@ public class QuestionService {
             subject = "다음 빈칸에 들어갈 말로 가장 적절한 것을 고르시오.";
         } else if (classification.equals("topic")) {
             subject = "다음 글의 주제로 가장 적절한 것은?";
+        } else if (classification.equals("shuffle2")) {
+            subject = "글의 흐름으로 보아, 주어진 문장이 들어가기에 가장 적절한 곳은?";
         } else {
             subject = "주어진 글 다음에 이어질 글의 순서로 가장 적절한 것을 고르시오.";
         }
