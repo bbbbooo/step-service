@@ -146,9 +146,10 @@
     let correctedMarkingStatus = null;
     // 문제 수정 여부
     let retryStatus = false;
-
     // 스크랩 여부
     let scrapStatus = false;
+
+    let $commentary = document.getElementById('commentary-box');
 
     const $overlay = document.getElementById('overlay');
     const $correctAnswer = document.getElementById('correctAnswer');
@@ -209,6 +210,11 @@
     function next() {
         // 기존 마킹 이미지 지우기
         removeImage();
+
+        // 기존 해설지 숨김
+        $commentary.classList.add("hidden");
+        // 해설 버튼 초기화
+        document.getElementById('commentary-button').classList.remove('hidden');
 
         questionCount++;
         localStorage.setItem('questionCount', questionCount.toString());
@@ -685,10 +691,8 @@
     });
 
     function getCommentary() {
-        let commentary = document.getElementById('commentary-box');
-
         // 버튼이 클릭되었을 때 해설 출력
-        commentary.classList.remove("hidden");
+        $commentary.classList.remove("hidden");
 
         document.getElementById('commentary-button').classList.add('hidden');
     }
