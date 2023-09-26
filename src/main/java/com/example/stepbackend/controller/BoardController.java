@@ -106,8 +106,11 @@ public class BoardController {
     /* 문제 다 풀고 나만의 문제집으로 이동 */
     @PostMapping("/after/solve")
     @ResponseBody
-    public ResponseEntity<CreateSolveAfterResponseDTO> solveAfter(@RequestBody CreateSolveAfterRequestDTO createSolveAfterRequestDTO){
-        CreateSolveAfterResponseDTO createSolveAfterResponseDTO = boardService.createSolveAfter(createSolveAfterRequestDTO);
+    public ResponseEntity<CreateSolveAfterResponseDTO> solveAfter(@RequestBody CreateSolveAfterRequestDTO createSolveAfterRequestDTO,
+                                                                  @CurrentUser UserPrincipal user){
+        Long memberNo = user.getId();
+
+        CreateSolveAfterResponseDTO createSolveAfterResponseDTO = boardService.createSolveAfter(createSolveAfterRequestDTO, memberNo);
 
         return ResponseEntity.ok(createSolveAfterResponseDTO);
     }

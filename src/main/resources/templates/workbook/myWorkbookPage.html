@@ -100,6 +100,10 @@
             padding: 5px 10px;
             border-radius: 20px; /* 끝이 살짝 둥근 네모난 라벨 스타일 */
             font-weight: bold;
+            max-width: 100px; /* 최대 너비 설정 */
+            white-space: nowrap; /* 텍스트 줄 바꿈 방지 */
+            overflow: hidden; /* 넘치는 부분 숨김 */
+            text-overflow: ellipsis; /* 넘치는 부분을 점 세 개로 표시 */
         }
 
         .title {
@@ -283,11 +287,11 @@
             margin-left: 5px; /* 버튼 사이 간격 조절 */
         }
 
-        @media screen and (max-width: 600px) {
-            .question-types {
-                flex-direction: column; /* Stack labels vertically on smaller screens */
-            }
-        }
+        /*@media screen and (max-width: 600px) {*/
+        /*    .question-types {*/
+        /*        flex-direction: column; !* Stack labels vertically on smaller screens *!*/
+        /*    }*/
+        /*}*/
 
         .share-button:hover {
             background-color: #0056b3;
@@ -372,7 +376,6 @@
         }
 
         .question-type-container {
-            flex: 1; /* Distribute available space equally among labels */
             min-width: 100px; /* Minimum width for each label */
         }
 

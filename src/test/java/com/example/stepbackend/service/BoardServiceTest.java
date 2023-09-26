@@ -3,7 +3,6 @@ package com.example.stepbackend.service;
 import com.example.stepbackend.aggregate.dto.Heart.PostHeartRequestDTO;
 import com.example.stepbackend.aggregate.dto.Heart.PostHeartResponseDTO;
 import com.example.stepbackend.aggregate.dto.board.*;
-import com.example.stepbackend.aggregate.dto.question.ResQuestionDTO;
 import com.example.stepbackend.aggregate.entity.Board;
 import com.example.stepbackend.aggregate.entity.Question;
 import com.example.stepbackend.aggregate.entity.WorkBook;
@@ -220,13 +219,14 @@ class BoardServiceTest {
         // given
         Board board = Board.builder().build();
         Board createBoard = boardRepository.save(board);
+        Long memberNo = 1L;
 
         CreateSolveAfterRequestDTO createSolveAfterRequestDTO = CreateSolveAfterRequestDTO.builder()
                 .boardNo(createBoard.getBoardNo())
                 .build();
 
         // when
-        CreateSolveAfterResponseDTO createSolveAfterResponseDTO = boardService.createSolveAfter(createSolveAfterRequestDTO);
+        CreateSolveAfterResponseDTO createSolveAfterResponseDTO = boardService.createSolveAfter(createSolveAfterRequestDTO, memberNo);
 
         // then
         Assertions.assertNotNull(createSolveAfterResponseDTO);
