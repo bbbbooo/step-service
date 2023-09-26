@@ -61,7 +61,7 @@ public class QuestionService {
         questionRepository.save(question);
     }
 
-    public QuestionDTO ㅈconvertToDto(JSONObject jsonObject, String classification) {
+    public QuestionDTO convertToDto(JSONObject jsonObject, String classification) {
 
 
         String subject = null;
