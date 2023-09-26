@@ -25,6 +25,7 @@ public class BoardController {
 
     private final BoardService boardService;
 
+    /* 문제집 리그 페이지 */
     @GetMapping
     public String getBoardPage(@PageableDefault(sort = "boardNo", direction = Sort.Direction.DESC)Pageable pageable, Model model,
                                @CurrentUser UserPrincipal user){
@@ -33,10 +34,12 @@ public class BoardController {
         Page<ReadBoardPageDTO> readBoardPageDTOPage = boardService.findAll(pageable, memberNo);
 
         model.addAttribute("boards", readBoardPageDTOPage);
+        model.addAttribute("memberNo", memberNo);
 
         return "board/board";
     }
 
+    /* 문제집 공유 */
     @PostMapping("/create")
     @ResponseBody
     public ResponseEntity<CreateBoardResponseDTO> create(@RequestBody CreateBoardRequestDTO createBoardRequestDTO,
@@ -48,6 +51,7 @@ public class BoardController {
         return ResponseEntity.ok(createBoardResponseDTO);
     }
 
+    /* 문제집 리그 수정 */
     @PatchMapping("/update")
     @ResponseBody
     public ResponseEntity<UpdateBoardResponseDTO> update(@RequestBody UpdateBoardRequestDTO updateBoardRequestDTO){
@@ -56,6 +60,7 @@ public class BoardController {
         return ResponseEntity.ok(updateBoardResponseDTO);
     }
 
+    /* 문제집 리그 내 문제집 삭제 */
     @DeleteMapping("/delete")
     @ResponseBody
     public ResponseEntity<Void> delete(@RequestBody DeleteBoardDTO deleteBoardDTO){
@@ -64,6 +69,7 @@ public class BoardController {
         return ResponseEntity.noContent().build();
     }
 
+    /* 좋아요 증감 */
     @PostMapping("/heart")
     @ResponseBody
     public ResponseEntity<PostHeartResponseDTO> post(@RequestBody PostHeartRequestDTO postHeartRequestDTO,
@@ -75,6 +81,7 @@ public class BoardController {
         return ResponseEntity.ok(postHeartResponseDTO);
     }
 
+    /* 문제 풀기 페이지 이동 */
     @GetMapping("/question")
     public String question(@RequestParam("boardNo")Long boardNo , Model model){
         List<ReadBoardQuestionResponseDTO> responseDTOList = boardService.findAllBoardQuestion(boardNo);
@@ -84,6 +91,7 @@ public class BoardController {
         return "board/question";
     }
 
+    /* 문제 풀이 기록 저장 */
     @PostMapping("/solve")
     @ResponseBody
     public ResponseEntity<SolveQuestionResponseDTO> solve(@RequestBody SolveQuestionRequestDTO solveQuestionRequestDTO,
@@ -95,6 +103,7 @@ public class BoardController {
         return ResponseEntity.ok(solveQuestionResponseDTO);
     }
 
+    /* 문제 다 풀고 나만의 문제집으로 이동 */
     @PostMapping("/after/solve")
     @ResponseBody
     public ResponseEntity<CreateSolveAfterResponseDTO> solveAfter(@RequestBody CreateSolveAfterRequestDTO createSolveAfterRequestDTO){

@@ -361,17 +361,20 @@
         var questionNo = questions[currentQuestionIndex].questionNo;
         var markedNo = answer;
 
+        console.log(questionNo, markedNo, correctedMarkingStatus);
+
         axios.get('/scrap/workbook/detail/' + questionNo + '?markedNo=' + markedNo)
             .then(function(response) {
                 var dataExists = response.data;
 
+                const data = {
+                    questionNo : questionNo,
+                    markedNo : markedNo,
+                    correctedMarkingStatus : correctedMarkingStatus
+                }
+
                 if (dataExists) {
                     if (confirm('이미 스크랩한 적이 있습니다. 그래도 스크랩하시겠습니까?')) {
-                        const data = {
-                            questionNo : questionNo,
-                            markedNo : markedNo,
-                            correctedMarkingStatus : correctedMarkingStatus
-                        }
                         axios.post('/scrap/create', data)
                             .then((res) => {
                                 console.log(res)
@@ -381,6 +384,10 @@
                     }
                 } else {
 
+                    axios.post('/scrap/create', data)
+                        .then((res) => {
+                            console.log(res)
+                        })
                 }
             })
             .catch(function(error) {

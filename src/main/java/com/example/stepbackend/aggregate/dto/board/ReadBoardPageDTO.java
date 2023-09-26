@@ -17,6 +17,8 @@ import java.util.stream.Collectors;
 public class ReadBoardPageDTO {
     private Long boardNo;
 
+    private Long memberNo;
+
     private String[] questionNos;
 
     private String[] questionTypes;
@@ -43,6 +45,7 @@ public class ReadBoardPageDTO {
                     .questionNos(board.getQuestionNos().split(", "))
                     .questionTypes(board.getQuestionTypes().split(", "))
                     .questionName(board.getBoardName())
+                    .memberNo(board.getMemberNo())
                     .createdAt(board.getCreatedAt())
                     .description(board.getDescription())
                     .heartCount(board.getHeartCount())
