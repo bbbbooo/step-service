@@ -146,9 +146,10 @@
     let correctedMarkingStatus = null;
     // 문제 수정 여부
     let retryStatus = false;
-
     // 스크랩 여부
     let scrapStatus = false;
+
+    let $commentary = document.getElementById('commentary-box');
 
     const $overlay = document.getElementById('overlay');
     const $correctAnswer = document.getElementById('correctAnswer');
@@ -173,10 +174,8 @@
         window.onload;
     }
 
-
-
     // AI 서버에 문제 요청
-    if(result === null) {
+    if(result === null || result === undefined) {
         const param = new URLSearchParams(location.search);
         const name = param.get('type');
 
@@ -211,6 +210,11 @@
     function next() {
         // 기존 마킹 이미지 지우기
         removeImage();
+
+        // 기존 해설지 숨김
+        $commentary.classList.add("hidden");
+        // 해설 버튼 초기화
+        document.getElementById('commentary-button').classList.remove('hidden');
 
         questionCount++;
         localStorage.setItem('questionCount', questionCount.toString());
@@ -503,7 +507,7 @@
         const textWidth = 190;
         const splittedText = pdf.splitTextToSize(item.questionBody, textWidth);
         // const textHeight = (splittedText.length * 7) + 5; // 각 줄에 대한 높이 계산 (7은 줄 간격, 5는 여백)
-        const textHeight = (splittedText.length * 6.9); // 각 줄에 대한 높이 계산 (7은 줄 간격, 5는 여백)
+        const textHeight = (splittedText.length * 7.3); // 각 줄에 대한 높이 계산 (7은 줄 간격, 5는 여백)
 
         // 문제 설명 출력
         pdf.text(`${questionCount + 1}. ${questionSubject}`, 10, y);
@@ -522,9 +526,14 @@
         // 보기 출력
         options.forEach((option, optionIndex) => {
             const optionLabel = `①②③④⑤`.charAt(optionIndex);
-            pdf.text(`${optionLabel}\t ${option}`, 10, y);
-            pdf.text(option, x + 10, y);
+            const viewText = pdf.splitTextToSize(optionLabel + ' ' + option, textWidth);
+            pdf.text(viewText, 10, y);
             y += 8;
+
+            // width 값 넘길 경우
+            if(viewText.length > 1) {
+                y+= 8;
+            }
 
             if (y >= pdf.internal.pageSize.height) {
                 pdf.addPage();
@@ -609,7 +618,7 @@
             const textWidth = 190;
             const splittedText = pdf.splitTextToSize(question.questionBody, textWidth);
             // const textHeight = (splittedText.length * 7) + 5; // 각 줄에 대한 높이 계산 (7은 줄 간격, 5는 여백)
-            const textHeight = (splittedText.length * 6.9); // 각 줄에 대한 높이 계산 (7은 줄 간격, 5는 여백)
+            const textHeight = (splittedText.length * 7.3); // 각 줄에 대한 높이 계산 (7은 줄 간격, 5는 여백)
 
             pdf.rect(10, y, textWidth, textHeight - 5);
             pdf.text(splittedText, 10, y + 7);
@@ -624,9 +633,14 @@
             // 보기 출력
             options.forEach((option, optionIndex) => {
                 const optionLabel = `①②③④⑤`.charAt(optionIndex);
-                pdf.text(`${optionLabel}\t ${option}`, 10, y);
-                pdf.text(option, x + 10, y);
+                const viewText = pdf.splitTextToSize(optionLabel + ' ' + option, textWidth);
+                pdf.text(viewText, 10, y);
                 y += 8;
+
+                // width 값 넘길 경우
+                if(viewText.length > 1) {
+                    y+= 8;
+                }
 
                 if (y >= pdf.internal.pageSize.height) {
                     pdf.addPage();
@@ -677,10 +691,8 @@
     });
 
     function getCommentary() {
-        let commentary = document.getElementById('commentary-box');
-
         // 버튼이 클릭되었을 때 해설 출력
-        commentary.classList.remove("hidden");
+        $commentary.classList.remove("hidden");
 
         document.getElementById('commentary-button').classList.add('hidden');
     }
