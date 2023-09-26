@@ -58,7 +58,7 @@ public class QuestionService {
 
         Question question = reqQuestionDto.toEntity();
 
-        Question foundQuestion =  questionRepository.save(question);
+        questionRepository.save(question);
     }
 
     public QuestionDTO convertToDto(JSONObject jsonObject, String classification) {
@@ -66,6 +66,8 @@ public class QuestionService {
 
         String subject = null;
         String main = (String) jsonObject.get("main");
+//        Double beforeAnswer = (Double) jsonObject.get("answer");
+//        Integer answer = (int)  Math.floor(beforeAnswer);
         Integer answer = (Integer) jsonObject.get("answer");
         String commentary = (String) jsonObject.get("commentary");
         String view1 = (String) jsonObject.get("view1");
@@ -82,8 +84,12 @@ public class QuestionService {
 
         if(classification.equals("title")) {
             subject = "다음 글의 제목으로 가장 적절한 것은?";
-        } else {
+        } else if (classification.equals("blank")) {
             subject = "다음 빈칸에 들어갈 말로 가장 적절한 것을 고르시오.";
+        } else if (classification.equals("topic")) {
+            subject = "다음 글의 주제로 가장 적절한 것은?";
+        } else {
+            subject = "주어진 글 다음에 이어질 글의 순서로 가장 적절한 것을 고르시오.";
         }
 
         result.setQuestionSubject(subject);

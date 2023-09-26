@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -28,6 +29,9 @@ import java.util.List;
 public class QuestionController {
 
     private final QuestionService questionService;
+
+    @Value("${ai.model.serving.url}")
+    private String uri;
 
     @GetMapping
     public ModelAndView question(@RequestParam String type, ModelAndView mv, @CurrentUser UserPrincipal user) {
@@ -59,14 +63,15 @@ public class QuestionController {
     @ResponseBody
     public ResponseEntity readQuestion(@RequestParam String type) throws Exception {
         // 모델 서빙서버 url
-        // String uri = "http://192.168.0.5:5050/" + type;
+         String uri = "http://192.168.0.8:5050/" + type;
         // blank 빈칸 , title 제목, suffle1 순서 바꾸는 문제(a-b-c), suffle2 순서 바꾸는 문제(1,2,3,4,5), topic 주제
 
         // mock 서버 url
-        String uri = "https://ada0d2bb-3eb6-47f0-aecd-aa8ab92d46de.mock.pstmn.io/" + type;
+//        String uri = "https://ada0d2bb-3eb6-47f0-aecd-aa8ab92d46de.mock.pstmn.io/" + type;
         ResponseEntity<String> responseEntity;
 
         try {
+            // 문제 요청
             RestTemplate restTemplate = new RestTemplate();
             responseEntity = restTemplate.getForEntity(uri, String.class);
         } catch (Exception ex) {
@@ -81,8 +86,11 @@ public class QuestionController {
 
         for(Object questionObj : questions) {
             JSONObject questionJSON = (JSONObject) questionObj;
+            // 문제 변환
             QuestionDTO questionDTO =  questionService.convertToDto(questionJSON, type);
+            // 문제 저장
             questionService.registQuestion(questionDTO);
+            // 응답값에 포함
             questionDTOS.add(questionDTO);
         }
 

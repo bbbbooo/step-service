@@ -72,3 +72,8 @@ mybatis:
 #encrypt:
 #    key: key-brain
 
+ai:
+  model:
+    serving:
+      url: http://192.168.0.8:5050/
+
