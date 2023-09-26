@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta charset="UTF-8">
     <title>Board Page</title>
@@ -285,8 +285,10 @@
                             <span th:if="${type == 'blank'}" class="question-type-label blank">빈칸 추론</span>
                         </span>
                         <span style="margin-left: 870px;">
-                            <button class="edit-button" th:onclick="'openModal(' + ${board.boardNo} + ')'">수정</button>
-                            <button class="delete-button" th:onclick="'deleteBoard(' + ${board.boardNo} + ')'">삭제</button>
+                            <th:block th:if="${board.memberNo == memberNo}">
+                                <button class="edit-button" th:onclick="'openModal(' + ${board.boardNo} + ')'">수정</button>
+                                <button class="delete-button" th:onclick="'deleteBoard(' + ${board.boardNo} + ')'">삭제</button>
+                            </th:block>
                         </span>
                     </span>
                         <h2 th:text="${board.questionName}" style="margin-right: 10px;">게시물 제목</h2>

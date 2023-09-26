@@ -17,6 +17,10 @@ import java.util.stream.Collectors;
 public class ReadScrapListDTO {
     private Long scrapNo;
 
+    private Integer markedNo;
+
+    private Boolean correctedMarkingStatus;
+
     public static Page<ReadScrapListDTO> fromEntity(Page<Scrap> scraps) {
         List<ReadScrapListDTO> readScrapListDTOS = scraps.getContent().stream().map(ReadScrapListDTO::fromEntity).collect(Collectors.toList());
         return new PageImpl<>(readScrapListDTOS, scraps.getPageable(), scraps.getTotalElements());
@@ -25,6 +29,8 @@ public class ReadScrapListDTO {
     public static ReadScrapListDTO fromEntity(Scrap scrap){
         return ReadScrapListDTO.builder()
                 .scrapNo(scrap.getScrapNo())
+                .markedNo(scrap.getMarkedNo())
+                .correctedMarkingStatus(scrap.getCorrectedMarkingStatus())
                 .build();
     }
 }

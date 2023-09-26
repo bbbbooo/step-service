@@ -126,8 +126,8 @@
                     </td>
                     <td th:text="${scrap.readScrapDTO.questionCorrectAnswer}"></td>
                     <td>
-                        <span th:if="${scrap.readScrapByMemberDTO.correctedMarkingStatus}">정답</span>
-                        <span th:unless="${scrap.readScrapByMemberDTO.correctedMarkingStatus}">오답</span>
+                        <span th:if="${scrapNos.content[scrapStat.index].correctedMarkingStatus == true}">정답</span>
+                        <span th:if="${scrapNos.content[scrapStat.index].correctedMarkingStatus == false}">오답</span>
                     </td>
                     <td th:text="${scrap.readScrapByMemberDTO.markedNo}"></td>
                     <td th:text="${scrap.readScrapDTO.questionLargeClassification}"></td>
