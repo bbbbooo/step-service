@@ -56,6 +56,10 @@ public class WorkBook {
     @Comment("공유 받았는지 확인")
     private Boolean hadShared;
 
+    @Column
+    @Comment("공유 받은 게시글의 멤버 번호")
+    private Long sharedMemberNo;
+
     public static WorkBook toEntity(Long memberNo, CreateWorkBookRequestDTO createWorkBookRequestDTO, List<String> questionTypes) {
         String questionNosToString = createWorkBookRequestDTO.getQuestionNos().stream()
                 .map(String::valueOf)
@@ -76,15 +80,16 @@ public class WorkBook {
                 .build();
     }
 
-    public static WorkBook toEntityFromBoard(Board board) {
+    public static WorkBook toEntityFromBoard(Board board, Long memberNo) {
         return WorkBook.builder()
-                .memberNo(board.getMemberNo())
+                .memberNo(memberNo)
                 .questionTypes(board.getQuestionTypes())
                 .workBookName(board.getBoardName())
                 .questionNos(board.getQuestionNos())
                 .description(board.getDescription())
                 .lastUpdatedTime(LocalDateTime.now())
                 .hadShared(true)
+                .sharedMemberNo(board.getMemberNo())
                 .build();
     }
 

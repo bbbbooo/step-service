@@ -146,10 +146,10 @@ public class BoardService {
     }
 
     @Transactional
-    public CreateSolveAfterResponseDTO createSolveAfter(CreateSolveAfterRequestDTO createSolveAfterRequestDTO) {
+    public CreateSolveAfterResponseDTO createSolveAfter(CreateSolveAfterRequestDTO createSolveAfterRequestDTO, Long memberNo) {
         Board board = boardRepository.findByBoardNo(createSolveAfterRequestDTO.getBoardNo());
 
-        WorkBook workBook = WorkBook.toEntityFromBoard(board);
+        WorkBook workBook = WorkBook.toEntityFromBoard(board, memberNo);
         workBookRepository.save(workBook);
 
         CreateSolveAfterResponseDTO createSolveAfterResponseDTO = CreateSolveAfterResponseDTO.fromEntity(workBook);
